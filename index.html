@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="ne">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DEEPAK JI Support Appeal - Mobile</title>
+  <style>
+    :root {
+      --bg1: #f7ecd4;
+      --bg2: #e5c98b;
+      --paper: rgba(255, 250, 241, 0.96);
+      --ink: #382719;
+      --accent: #ab281b;
+      --accent-dark: #7c2017;
+      --gold: #ddb35b;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "Noto Sans Devanagari", "Mangal", "Kohinoor Devanagari", sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at top, rgba(255, 255, 255, 0.7), transparent 30%),
+        linear-gradient(180deg, var(--bg1) 0%, #f3e5c0 38%, var(--bg2) 100%);
+      padding: 16px;
+    }
+
+    .card {
+      max-width: 430px;
+      margin: 0 auto;
+      background: var(--paper);
+      border-radius: 28px;
+      overflow: hidden;
+      border: 2px solid rgba(171, 40, 27, 0.13);
+      box-shadow: 0 18px 46px rgba(76, 37, 10, 0.18);
+    }
+
+    .hero {
+      position: relative;
+      padding: 18px 18px 22px;
+      background:
+        linear-gradient(180deg, rgba(171, 40, 27, 0.08), rgba(171, 40, 27, 0)),
+        linear-gradient(90deg, rgba(221, 179, 91, 0.2), rgba(255, 255, 255, 0));
+    }
+
+    .hero-photos {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .photo {
+      height: 166px;
+      border-radius: 22px;
+      overflow: hidden;
+      border: 4px solid #fff7e7;
+      background-size: cover;
+      background-repeat: no-repeat;
+      box-shadow: 0 10px 22px rgba(44, 26, 12, 0.15);
+    }
+
+    .photo-left {
+      background-image: linear-gradient(rgba(51, 34, 15, 0.05), rgba(51, 34, 15, 0.15)), url("./519948108_17999173196800213_4999842382913394656_n.jpg");
+      background-position: center 20%;
+    }
+
+    .photo-right {
+      background-image: linear-gradient(rgba(16, 32, 42, 0.12), rgba(16, 32, 42, 0.18)), url("./e17e0812-74a8-4da3-a7ea-7196882f4e10.jfif");
+      background-position: 55% center;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 6px 14px;
+      border-radius: 999px;
+      background: rgba(171, 40, 27, 0.1);
+      color: var(--accent-dark);
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+    }
+
+    h1 {
+      margin: 12px 0 10px;
+      color: var(--accent);
+      font-size: 30px;
+      line-height: 1.24;
+    }
+
+    .lead {
+      margin: 0;
+      font-size: 17px;
+      line-height: 1.75;
+      font-weight: 600;
+    }
+
+    .section {
+      padding: 0 18px 18px;
+    }
+
+    .panel {
+      background: rgba(255, 255, 255, 0.82);
+      border: 1px solid rgba(171, 40, 27, 0.11);
+      border-radius: 22px;
+      padding: 18px;
+      margin-top: 14px;
+    }
+
+    .panel h2 {
+      margin: 0 0 12px;
+      color: var(--accent-dark);
+      font-size: 21px;
+    }
+
+    p {
+      margin: 0 0 14px;
+      font-size: 16px;
+      line-height: 1.9;
+    }
+
+    .panel strong {
+      color: var(--accent-dark);
+    }
+
+    .details {
+      display: grid;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .detail {
+      padding: 12px 14px;
+      border-radius: 16px;
+      background: linear-gradient(180deg, #fff8eb, #f8eed5);
+      border: 1px solid rgba(171, 40, 27, 0.08);
+      font-size: 15px;
+      line-height: 1.7;
+    }
+
+    .detail b {
+      color: var(--accent-dark);
+    }
+
+    .support {
+      background: linear-gradient(180deg, #fff4dc, #f0ddb0);
+      text-align: center;
+    }
+
+    .qr {
+      width: 100%;
+      max-width: 290px;
+      display: block;
+      margin: 14px auto 16px;
+      border-radius: 18px;
+      box-shadow: 0 12px 26px rgba(0, 0, 0, 0.18);
+    }
+
+    .account {
+      border-radius: 16px;
+      padding: 14px;
+      background: #fffdf8;
+      border: 1px dashed rgba(124, 32, 23, 0.35);
+    }
+
+    .account p {
+      margin: 6px 0;
+      font-size: 16px;
+      font-weight: 700;
+      line-height: 1.7;
+      word-break: break-word;
+    }
+
+    .cta {
+      margin: 14px 0 0;
+      border-radius: 20px;
+      padding: 18px;
+      background: linear-gradient(135deg, rgba(171, 40, 27, 0.96), rgba(124, 32, 23, 0.96));
+      color: #fff6e9;
+      text-align: center;
+      font-size: 18px;
+      line-height: 1.8;
+      font-weight: 800;
+    }
+  </style>
+</head>
+<body>
+  <main class="card">
+    <section class="hero">
+      <div class="hero-photos">
+        <div class="photo photo-left" aria-label="Deepak portrait"></div>
+        <div class="photo photo-right" aria-label="Deepak in hospital"></div>
+      </div>
+      <div class="badge">सहयोगको अपिल</div>
+      <h1>ज्यान बचाउन अत्यन्त जरुरी सहयोगको अपिल</h1>
+      <p class="lead">३५ वर्षीय दीपक चन्दको उपचार सहयोगका लागि सबै आफन्त, साथीभाइ तथा सहयोगी मनहरूमा हार्दिक अनुरोध।</p>
+    </section>
+
+    <section class="section">
+      <div class="panel">
+        <h2>अपिल</h2>
+        <p>रोजगारीको सिलसिलामा भारतको गोवामा रहेका वृद्ध बुबा–आमाको <strong>केवल मात्र एक सहारा</strong>, ३५ वर्षीय दीपक चन्द हाल <strong>गम्भीर रोग रक्त क्यान्सर (B-Cell Acute Lymphoblastic Leukemia)</strong> बाट पीडित भई उपचाररत हुनुहुन्छ।</p>
+        <p>डाक्टरहरूका अनुसार यो छिटो फैलिने तर समयमै उपचार गरे निको हुन सक्ने रोग हो। हाल उहाँको उपचार भारतको गोवास्थित मणिपाल अस्पतालमा भइरहेको छ। उपचारका लागि केमोथेरापी, औषधि तथा सम्भावित बोन म्यारो ट्रान्सप्लान्ट आवश्यक पर्ने भएकाले कुल खर्च <strong>भारु ३० लाखभन्दा बढी</strong> लाग्ने अनुमान गरिएको छ।</p>
+        <p>परिवारको सम्पूर्ण जिम्मेवारी उहाँकै काँधमा थियो। अहिले यस कठिन परिस्थितिमा परिवार आर्थिक रूपमा निकै कमजोर अवस्थामा पुगेको छ। त्यसैले सबै आफन्त, साथीभाइ, तथा सहयोगी मनहरूमा हार्दिक अनुरोध छ। कृपया सक्दो आर्थिक सहयोग गरी एक जीवन बचाउन हातेमालो गरिदिनुहोस्।</p>
+      </div>
+
+      <div class="panel">
+        <h2>रोगी विवरण</h2>
+        <div class="details">
+          <div class="detail"><b>नाम:</b> दीपक चन्द</div>
+          <div class="detail"><b>उमेर:</b> ३५ वर्ष</div>
+          <div class="detail"><b>बुवा:</b> शंकर चन्द</div>
+          <div class="detail"><b>आमा:</b> हिरा चन्द</div>
+          <div class="detail"><b>ठेगाना:</b> भि.न.पा.–२, उल्टाखाम, कञ्चनपुर, नेपाल</div>
+          <div class="detail"><b>पहाड:</b> बैतडी, तितापाई, तल्लो सोराड</div>
+        </div>
+      </div>
+
+      <div class="panel support">
+        <h2>सहयोग गर्ने माध्यम</h2>
+        <p>QR code स्क्यान गरेर वा बैंक/इसेवा मार्फत सहयोग गर्न सक्नुहुन्छ।</p>
+        <img class="qr" src="./c475f0c4-fc63-44d4-9976-a0a98474e329.jfif" alt="Donation QR code">
+        <div class="account">
+          <p>QR code &amp; Bank Account:-</p>
+          <p>(4180100000087012)</p>
+          <p>eSewa ID: (9849159274)</p>
+        </div>
+        <div class="cta">हामी सबै मिलेर साथ दियौं भने, दीपकलाई नयाँ जीवन दिन सक्छौं।</div>
+      </div>
+
+      <div class="panel">
+        <p>तपाईंको सानो सहयोगले ठूलो जीवन बच्न सक्छ। कृपया यो सन्देशलाई व्यक्तिगत मेसेन्जरमा मात्र share गरेर पनि सहयोग जुटाउन मद्दत गर्दिनुहोला।</p>
+        <p style="margin-bottom: 0;">उहाँको शीघ्र स्वास्थ्यलाभको लागि प्रार्थना गर्दै यहाँहरूको आशीर्वाद ईश्वर को कृपा को कामना गर्दछौं।</p>
+      </div>
+    </section>
+  </main>
+</body>
+</html>
