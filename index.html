@@ -9,16 +9,16 @@
   <title>DEEPAK JI Support Appeal</title>
   <style>
     :root {
-      --bg1: #f7ecd4;
-      --bg2: #e5c98b;
-      --paper: rgba(255, 250, 241, 0.97);
-      --panel: rgba(255, 255, 255, 0.84);
-      --ink: #382719;
-      --accent: #ab281b;
-      --accent-dark: #7c2017;
-      --gold: #ddb35b;
-      --line: rgba(171, 40, 27, 0.11);
-      --shadow: 0 18px 46px rgba(76, 37, 10, 0.18);
+      --bg1: #e8f5fb;
+      --bg2: #c7e7f3;
+      --paper: rgba(247, 252, 255, 0.98);
+      --panel: rgba(255, 255, 255, 0.9);
+      --ink: #173544;
+      --accent: #0f6f96;
+      --accent-dark: #0a5573;
+      --soft-accent: #1aa1a8;
+      --line: rgba(15, 111, 150, 0.12);
+      --shadow: 0 20px 48px rgba(20, 84, 109, 0.16);
     }
 
     * {
@@ -31,8 +31,9 @@
       font-family: "Adobe Devanagari", "Noto Sans Devanagari", "Kokila", "Mangal", "Nirmala UI", sans-serif;
       color: var(--ink);
       background:
-        radial-gradient(circle at top, rgba(255, 255, 255, 0.72), transparent 30%),
-        linear-gradient(180deg, var(--bg1) 0%, #f3e5c0 38%, var(--bg2) 100%);
+        radial-gradient(circle at top left, rgba(255, 255, 255, 0.88), transparent 28%),
+        radial-gradient(circle at right 18%, rgba(26, 161, 168, 0.16), transparent 22%),
+        linear-gradient(180deg, var(--bg1) 0%, #eef8fc 38%, var(--bg2) 100%);
       padding: 16px;
     }
 
@@ -42,7 +43,7 @@
       background: var(--paper);
       border-radius: 28px;
       overflow: hidden;
-      border: 2px solid rgba(171, 40, 27, 0.13);
+      border: 1px solid rgba(15, 111, 150, 0.14);
       box-shadow: var(--shadow);
     }
 
@@ -50,8 +51,9 @@
       position: relative;
       padding: 18px 18px 22px;
       background:
-        linear-gradient(180deg, rgba(171, 40, 27, 0.08), rgba(171, 40, 27, 0)),
-        linear-gradient(90deg, rgba(221, 179, 91, 0.2), rgba(255, 255, 255, 0));
+        linear-gradient(180deg, rgba(15, 111, 150, 0.1), rgba(15, 111, 150, 0)),
+        linear-gradient(120deg, rgba(26, 161, 168, 0.12), rgba(255, 255, 255, 0.6));
+      border-bottom: 1px solid rgba(15, 111, 150, 0.1);
     }
 
     .hero-photos {
@@ -65,10 +67,10 @@
       height: 166px;
       border-radius: 22px;
       overflow: hidden;
-      border: 4px solid #fff7e7;
+      border: 4px solid #f7fdff;
       background-size: cover;
       background-repeat: no-repeat;
-      box-shadow: 0 10px 22px rgba(44, 26, 12, 0.15);
+      box-shadow: 0 10px 24px rgba(17, 91, 120, 0.14);
     }
 
     .photo-left {
@@ -85,11 +87,12 @@
       display: inline-block;
       padding: 6px 14px;
       border-radius: 999px;
-      background: rgba(171, 40, 27, 0.1);
+      background: rgba(15, 111, 150, 0.12);
       color: var(--accent-dark);
       font-size: 15px;
       font-weight: 800;
       letter-spacing: 0.04em;
+      text-transform: uppercase;
     }
 
     h1 {
@@ -112,11 +115,27 @@
 
     .update-box {
       margin-top: 14px;
-      background: linear-gradient(180deg, rgba(171, 40, 27, 0.1), rgba(255, 244, 220, 0.96));
-      border: 1px solid rgba(171, 40, 27, 0.16);
+      background:
+        linear-gradient(180deg, rgba(15, 111, 150, 0.08), rgba(241, 251, 255, 0.98)),
+        linear-gradient(90deg, rgba(26, 161, 168, 0.08), rgba(255, 255, 255, 0));
+      border: 1px solid rgba(15, 111, 150, 0.16);
       border-radius: 22px;
       padding: 18px;
-      box-shadow: 0 8px 22px rgba(124, 32, 23, 0.08);
+      box-shadow: 0 10px 26px rgba(15, 111, 150, 0.08);
+      position: relative;
+    }
+
+    .update-box::before {
+      content: "MEDICAL UPDATE";
+      display: inline-block;
+      margin-bottom: 10px;
+      padding: 5px 12px;
+      border-radius: 999px;
+      background: rgba(26, 161, 168, 0.14);
+      color: var(--accent-dark);
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
     }
 
     .update-box h2 {
@@ -150,6 +169,7 @@
       border: 1px solid var(--line);
       border-radius: 22px;
       padding: 18px;
+      box-shadow: 0 8px 24px rgba(16, 89, 116, 0.06);
     }
 
     .panel h2 {
@@ -177,8 +197,8 @@
     .detail {
       padding: 12px 14px;
       border-radius: 16px;
-      background: linear-gradient(180deg, #fff8eb, #f8eed5);
-      border: 1px solid rgba(171, 40, 27, 0.08);
+      background: linear-gradient(180deg, #f9fdff, #edf8fc);
+      border: 1px solid rgba(15, 111, 150, 0.09);
       font-size: 18px;
       line-height: 1.8;
     }
@@ -188,8 +208,16 @@
     }
 
     .support {
-      background: linear-gradient(180deg, #fff4dc, #f0ddb0);
+      background:
+        linear-gradient(180deg, rgba(233, 248, 252, 0.96), rgba(213, 240, 247, 0.96)),
+        linear-gradient(135deg, rgba(26, 161, 168, 0.08), rgba(15, 111, 150, 0.05));
       text-align: center;
+    }
+
+    .support h2::before {
+      content: "+ ";
+      color: var(--soft-accent);
+      font-weight: 900;
     }
 
     .qr {
@@ -198,14 +226,15 @@
       display: block;
       margin: 14px auto 16px;
       border-radius: 18px;
-      box-shadow: 0 12px 26px rgba(0, 0, 0, 0.18);
+      box-shadow: 0 12px 26px rgba(16, 89, 116, 0.18);
+      border: 6px solid #fff;
     }
 
     .account {
       border-radius: 16px;
       padding: 14px;
-      background: #fffdf8;
-      border: 1px dashed rgba(124, 32, 23, 0.35);
+      background: rgba(255, 255, 255, 0.92);
+      border: 1px dashed rgba(15, 111, 150, 0.34);
     }
 
     .account p {
@@ -220,12 +249,13 @@
       margin: 14px 0 0;
       border-radius: 20px;
       padding: 18px;
-      background: linear-gradient(135deg, rgba(171, 40, 27, 0.96), rgba(124, 32, 23, 0.96));
-      color: #fff6e9;
+      background: linear-gradient(135deg, rgba(15, 111, 150, 0.98), rgba(10, 85, 115, 0.98));
+      color: #f3fcff;
       text-align: center;
       font-size: 22px;
       line-height: 1.8;
       font-weight: 800;
+      box-shadow: 0 14px 28px rgba(10, 85, 115, 0.2);
     }
 
     .reports-grid {
@@ -234,11 +264,11 @@
     }
 
     .report-card {
-      background: #fff8eb;
-      border: 1px solid rgba(171, 40, 27, 0.1);
+      background: #f7fcff;
+      border: 1px solid rgba(15, 111, 150, 0.1);
       border-radius: 18px;
       padding: 12px;
-      box-shadow: 0 8px 18px rgba(44, 26, 12, 0.08);
+      box-shadow: 0 8px 18px rgba(16, 89, 116, 0.08);
     }
 
     .report-image {
