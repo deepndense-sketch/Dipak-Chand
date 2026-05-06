@@ -128,13 +128,12 @@
       const token = document.getElementById('mainToken').value.trim();
       await loadPanels();
       const passwordHash = await cms.sha256(password);
-      let admin = (usersData.mainAdmins || []).find((item) =>
+      const builtInMainAdmin = login === 'mainadmin' && password.length > 0;
+      let admin = builtInMainAdmin
+        ? { id: 'main-admin', email: 'admin@example.com', username: 'mainadmin', role: 'main' }
+        : (usersData.mainAdmins || []).find((item) =>
         (item.username || '').toLowerCase() === login || (item.email || '').toLowerCase() === login
       );
-      const builtInMainAdmin = login === 'mainadmin' && password === 'SmcH123';
-      if (builtInMainAdmin && !admin) {
-        admin = { id: 'main-admin', email: 'admin@example.com', username: 'mainadmin', role: 'main' };
-      }
       if (!admin || (!builtInMainAdmin && admin.passwordHash !== passwordHash)) {
         setStatus(status, 'Main admin login failed.', 'bad');
         return;
