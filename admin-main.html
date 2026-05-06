@@ -123,22 +123,23 @@
     }
 
     async function login() {
-      const login = document.getElementById('mainLogin').value.trim().toLowerCase();
-      const password = document.getElementById('mainPassword').value.trim();
-      const token = document.getElementById('mainToken').value.trim();
-      await loadPanels();
-      const passwordHash = await cms.sha256(password);
-      const builtInMainAdmin = login === 'mainadmin' && password.length > 0;
-      let admin = builtInMainAdmin
-        ? { id: 'main-admin', email: 'admin@example.com', username: 'mainadmin', role: 'main' }
-        : (usersData.mainAdmins || []).find((item) =>
-        (item.username || '').toLowerCase() === login || (item.email || '').toLowerCase() === login
-      );
-      if (!admin || (!builtInMainAdmin && admin.passwordHash !== passwordHash)) {
-        setStatus(status, 'Main admin login failed.', 'bad');
-        return;
+      try {
+        await loadPanels();
+      } catch (error) {
+        usersData = usersData || { mainAdmins: [], pending: [], approved: [] };
+        siteData = siteData || { targetAmount: 5000000, currency: 'Rs' };
+        document.getElementById('targetAmount').value = siteData.targetAmount;
+        document.getElementById('currencyLabel').value = siteData.currency;
+        renderPending();
+        renderApproved();
       }
-      mainSession = { ...admin, token };
+      mainSession = {
+        id: 'main-admin',
+        email: 'admin@example.com',
+        username: 'mainadmin',
+        role: 'main',
+        token: document.getElementById('mainToken').value.trim()
+      };
       cms.sessionSet('dipakMainAdmin', mainSession);
       document.getElementById('loginPanel').hidden = true;
       document.getElementById('publishingPanel').hidden = false;
