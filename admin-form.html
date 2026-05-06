@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Backend 2 - Donation Form</title>
-  <link rel="stylesheet" href="./assets/css/donation-system.css?v=8">
+  <link rel="stylesheet" href="./assets/css/donation-system.css?v=9">
 </head>
 <body class="backend-body">
   <main class="backend-shell">
@@ -57,6 +57,7 @@
       <div class="backend-panel">
         <h2>Your Entries</h2>
         <div class="metrics-grid" id="adminMetrics"></div>
+        <div class="action-row" id="completeListRow" hidden></div>
         <div id="donationList" class="table-list"></div>
       </div>
     </section>
@@ -198,9 +199,15 @@
     }
 
     function renderDonations() {
-      const own = (donationData.donations || []).filter((entry) => entry.adminId === currentAdmin.id);
+      const own = cms.sortDonationsNewest((donationData.donations || []).filter((entry) => entry.adminId === currentAdmin.id));
       const publishedTotal = own.filter((entry) => entry.status === 'published').reduce((sum, entry) => sum + Number(entry.amount || 0), 0);
       const target = Number(siteData.targetAmount || 5000000);
+      const listLimit = 15;
+      const completeRow = document.getElementById('completeListRow');
+      completeRow.hidden = own.length <= listLimit;
+      completeRow.innerHTML = own.length > listLimit
+        ? `<a class="button secondary" href="donations-list.html?admin=${encodeURIComponent(currentAdmin.id)}&mode=all" target="_blank" rel="noopener">View complete list (${own.length})</a>`
+        : '';
       document.getElementById('adminMetrics').innerHTML = `
         <div class="metric-card"><h3>Your Total</h3><div class="number">${cms.money(publishedTotal, siteData.currency)}</div></div>
         <div class="metric-card"><h3>Published</h3><div class="number">${own.filter((entry) => entry.status === 'published').length}</div></div>
@@ -210,7 +217,7 @@
         mount.innerHTML = '<p class="empty-state">No donation entries yet.</p>';
         return;
       }
-      mount.innerHTML = own.map((entry) => {
+      mount.innerHTML = own.slice(0, listLimit).map((entry) => {
         const pct = target ? (Number(entry.amount || 0) / target) * 100 : 0;
         return `<article class="donation-admin-card">
           <strong>${entry.donorName}</strong>

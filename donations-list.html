@@ -1,0 +1,67 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Complete Donation List</title>
+  <link rel="stylesheet" href="./assets/css/donation-system.css?v=9">
+</head>
+<body class="backend-body">
+  <main class="detail-shell">
+    <nav class="backend-nav" style="margin-bottom: 16px;">
+      <a class="secondary" href="./index.html">Back to Website</a>
+    </nav>
+    <section class="detail-panel">
+      <div class="detail-hero">
+        <span class="chip" id="listScope">Donation list</span>
+        <h1 id="listTitle">Complete Donation List</h1>
+        <p class="backend-help" id="listSummary">Loading donations...</p>
+      </div>
+      <div id="listMount" class="complete-list-grid"></div>
+    </section>
+  </main>
+
+  <script src="./assets/js/donation-system.js"></script>
+  <script>
+    const cms = window.DipakCMS;
+    const params = new URLSearchParams(location.search);
+    const adminId = params.get('admin');
+    const mount = document.getElementById('listMount');
+
+    function donationCard(entry, target, currency, index) {
+      const color = entry.color || cms.DONOR_COLORS[index % cms.DONOR_COLORS.length];
+      const pct = target ? (Number(entry.amount || 0) / target) * 100 : 0;
+      const image = cms.primaryImage(entry);
+      return `<article class="public-donation-card" style="--donor-color:${color}">
+        <a class="donor-photo-link" href="donation.html?id=${encodeURIComponent(entry.id)}" target="_blank" rel="noopener" aria-label="${entry.donorName}">
+          ${image ? `<img class="donor-photo" src="${image.dataUrl}" alt="${entry.donorName}" style="object-position:${image.focusX || 50}% ${image.focusY || 50}%">` : `<span class="donor-photo donor-photo-fallback">${String(entry.donorName || '?').charAt(0).toUpperCase()}</span>`}
+        </a>
+        <div class="donor-summary">
+          <a href="donation.html?id=${encodeURIComponent(entry.id)}" target="_blank" rel="noopener">${entry.donorName}</a>
+          <span class="amount">${cms.money(entry.amount, currency)}</span>
+          <div class="percent">${pct.toFixed(2)}% of target</div>
+        </div>
+      </article>`;
+    }
+
+    cms.loadAllData().then(({ site, users, donations }) => {
+      const target = Number(site.targetAmount || 5000000);
+      const currency = site.currency || 'Rs';
+      const admins = new Map((users.approved || []).map((admin) => [admin.id, admin]));
+      let entries = cms.sortDonationsNewest(donations.filter((entry) => entry.status === 'published'));
+      if (adminId) entries = entries.filter((entry) => entry.adminId === adminId);
+      const total = entries.reduce((sum, entry) => sum + Number(entry.amount || 0), 0);
+      const admin = admins.get(adminId);
+      document.getElementById('listScope').textContent = admin ? admin.username : 'All admins';
+      document.getElementById('listTitle').textContent = admin ? `${admin.username} Donations` : 'Complete Donation List';
+      document.getElementById('listSummary').textContent = `${entries.length} entries · ${cms.money(total, currency)} raised`;
+      mount.innerHTML = entries.length
+        ? entries.map((entry, index) => donationCard(entry, target, currency, index)).join('')
+        : '<p class="empty-state">No published donations found.</p>';
+    }).catch((error) => {
+      mount.innerHTML = '<p class="empty-state">Unable to load donation list.</p>';
+      console.error(error);
+    });
+  </script>
+</body>
+</html>

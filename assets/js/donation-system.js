@@ -8,6 +8,7 @@ const DATA_PATHS = {
 };
 const DONOR_COLORS = ["#176b87", "#b45309", "#7c3aed", "#0f766e", "#be123c", "#2563eb", "#a16207", "#15803d", "#c2410c", "#6d28d9"];
 const TOKEN_STORAGE_KEY = "dipakGithubToken";
+const LIST_LIMIT = 15;
 
 function apiUrl(path) {
   return `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${path}`;
@@ -145,6 +146,10 @@ function groupPublishedByAdmin(donations, users) {
   return [...admins.values()].filter((admin) => admin.donations.length > 0).sort((a, b) => b.total - a.total);
 }
 
+function sortDonationsNewest(entries) {
+  return [...entries].sort((a, b) => new Date(b.publishedAt || b.createdAt || 0) - new Date(a.publishedAt || a.createdAt || 0));
+}
+
 function renderPublicDonationSummary(mountId = "donation-dashboard") {
   const mount = document.getElementById(mountId);
   if (!mount) return;
@@ -172,7 +177,7 @@ function renderPublicDonationSummary(mountId = "donation-dashboard") {
               <h3>${admin.username}</h3>
               <div class="admin-total">${money(admin.total, currency)} raised</div>
               <div class="timeline-list">
-                ${admin.donations.sort((a, b) => new Date(b.publishedAt || b.createdAt) - new Date(a.publishedAt || a.createdAt)).map((entry, index) => {
+                ${sortDonationsNewest(admin.donations).slice(0, LIST_LIMIT).map((entry, index) => {
                   const color = entry.color || DONOR_COLORS[(adminIndex + index) % DONOR_COLORS.length];
                   const pct = target ? (Number(entry.amount || 0) / target) * 100 : 0;
                   const image = primaryImage(entry);
@@ -188,6 +193,7 @@ function renderPublicDonationSummary(mountId = "donation-dashboard") {
                   </article>`;
                 }).join("")}
               </div>
+              ${admin.donations.length > LIST_LIMIT ? `<a class="complete-list-link" href="donations-list.html?admin=${encodeURIComponent(admin.id)}" target="_blank" rel="noopener">View complete list (${admin.donations.length})</a>` : ""}
             </section>`).join("")}
         </div>
       </div>`;
@@ -204,6 +210,7 @@ window.DipakCMS = {
   slugify,
   uid,
   primaryImage,
+  sortDonationsNewest,
   sha256,
   readJson,
   saveJson,
