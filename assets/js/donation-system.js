@@ -7,6 +7,7 @@ const DATA_PATHS = {
   donations: "data/donations.json"
 };
 const DONOR_COLORS = ["#176b87", "#b45309", "#7c3aed", "#0f766e", "#be123c", "#2563eb", "#a16207", "#15803d", "#c2410c", "#6d28d9"];
+const TOKEN_STORAGE_KEY = "dipakGithubToken";
 
 function apiUrl(path) {
   return `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${path}`;
@@ -102,6 +103,20 @@ function sessionGet(key) {
   catch { return null; }
 }
 
+function rememberToken(token) {
+  const value = String(token || "").trim();
+  if (value) localStorage.setItem(TOKEN_STORAGE_KEY, value);
+  return value;
+}
+
+function getRememberedToken() {
+  return localStorage.getItem(TOKEN_STORAGE_KEY) || "";
+}
+
+function forgetRememberedToken() {
+  localStorage.removeItem(TOKEN_STORAGE_KEY);
+}
+
 async function loadAllData() {
   const [site, users, donations] = await Promise.all([
     readJson(DATA_PATHS.site, { targetAmount: 5000000, currency: "Rs" }),
@@ -183,6 +198,9 @@ window.DipakCMS = {
   saveJson,
   sessionSet,
   sessionGet,
+  rememberToken,
+  getRememberedToken,
+  forgetRememberedToken,
   loadAllData,
   renderPublicDonationSummary
 };

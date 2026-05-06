@@ -30,7 +30,7 @@
             <input id="adminPassword" type="password" autocomplete="current-password">
           </label>
           <label class="full">GitHub token for publishing donation data
-            <input id="adminToken" type="password" placeholder="Fine-grained token with Contents: Read and write">
+            <input id="adminToken" type="password" autocomplete="off" placeholder="Saved locally in this browser">
           </label>
         </div>
         <div class="action-row">
@@ -56,7 +56,7 @@
         const all = await cms.loadAllData();
         const loginValue = document.getElementById('adminLogin').value.trim().toLowerCase();
         const passwordHash = await cms.sha256(document.getElementById('adminPassword').value);
-        const token = document.getElementById('adminToken').value.trim();
+        const token = cms.rememberToken(document.getElementById('adminToken').value);
         const admin = (all.users.approved || []).find((user) =>
           ((user.email || '').toLowerCase() === loginValue || (user.username || '').toLowerCase() === loginValue) && user.passwordHash === passwordHash
         );
@@ -73,6 +73,7 @@
     document.getElementById('adminPassword').addEventListener('keydown', (event) => {
       if (event.key === 'Enter') login();
     });
+    document.getElementById('adminToken').value = cms.getRememberedToken();
   </script>
 </body>
 </html>

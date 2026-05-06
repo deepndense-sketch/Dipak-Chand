@@ -42,7 +42,7 @@
         <p class="backend-help">Login does not need a GitHub token. Only enter a token here when you want to save account, approval, or target changes to GitHub Pages.</p>
         <div class="form-grid">
           <label class="full">GitHub token for saving changes
-            <input id="mainToken" type="password" placeholder="Fine-grained token with Contents: Read and write">
+            <input id="mainToken" type="password" autocomplete="off" placeholder="Saved locally in this browser">
           </label>
         </div>
         <div class="status-line">Viewing access works without this token.</div>
@@ -138,7 +138,7 @@
         email: 'admin@example.com',
         username: 'mainadmin',
         role: 'main',
-        token: document.getElementById('mainToken').value.trim()
+        token: cms.rememberToken(document.getElementById('mainToken').value)
       };
       cms.sessionSet('dipakMainAdmin', mainSession);
       document.getElementById('loginPanel').hidden = true;
@@ -225,10 +225,11 @@
     document.getElementById('mainLoginBtn').addEventListener('click', login);
     document.getElementById('mainToken').addEventListener('input', (event) => {
       if (mainSession) {
-        mainSession.token = event.target.value.trim();
+        mainSession.token = cms.rememberToken(event.target.value);
         cms.sessionSet('dipakMainAdmin', mainSession);
       }
     });
+    document.getElementById('mainToken').value = cms.getRememberedToken();
     document.getElementById('createAdminBtn').addEventListener('click', createApprovedAdmin);
     document.getElementById('pendingList').addEventListener('click', async (event) => {
       const approveId = event.target.dataset.approve;
