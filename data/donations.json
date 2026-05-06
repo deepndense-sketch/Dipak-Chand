@@ -11,8 +11,22 @@
       "adminName": "Admin 2",
       "images": [],
       "createdAt": "2026-05-06T18:53:19.566Z",
-      "updatedAt": "2026-05-06T19:02:51.780Z",
-      "publishedAt": "2026-05-06T19:02:51.780Z"
+      "updatedAt": "2026-05-06T19:03:03.145Z",
+      "publishedAt": "2026-05-06T19:03:03.145Z"
+    },
+    {
+      "id": "janam-sing-mouf25lm-2k7lfp",
+      "donorName": "Janam Sing",
+      "amount": 34567,
+      "info": "",
+      "color": "#c2410c",
+      "status": "published",
+      "adminId": "admin-moue9fg9-gdy0yd",
+      "adminName": "Admin 2",
+      "images": [],
+      "createdAt": "2026-05-06T18:54:26.266Z",
+      "updatedAt": "2026-05-06T19:02:06.814Z",
+      "publishedAt": "2026-05-06T19:02:06.814Z"
     },
     {
       "id": "janam-sing-mouf25tl-minl5i",
@@ -27,20 +41,6 @@
       "createdAt": "2026-05-06T18:54:26.553Z",
       "updatedAt": "2026-05-06T19:01:01.213Z",
       "publishedAt": "2026-05-06T19:01:01.213Z"
-    },
-    {
-      "id": "janam-sing-mouf25lm-2k7lfp",
-      "donorName": "Janam Sing",
-      "amount": 34567,
-      "info": "",
-      "color": "#c2410c",
-      "status": "draft",
-      "adminId": "admin-moue9fg9-gdy0yd",
-      "adminName": "Admin 2",
-      "images": [],
-      "createdAt": "2026-05-06T18:54:26.266Z",
-      "updatedAt": "2026-05-06T18:54:26.266Z",
-      "publishedAt": null
     },
     {
       "id": "bharat-mouezhl3-djmblj",
