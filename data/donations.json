@@ -1,17 +1,17 @@
 {
   "donations": [
     {
-      "id": "kam-bahadur-mouf0q4u-9fgsc9",
-      "donorName": "Kam Bahadur",
-      "amount": 123451,
+      "id": "padam-bahadur-mouf0y66-g1we5n",
+      "donorName": "Padam Bahadur",
+      "amount": 123434,
       "info": "",
-      "color": "#15803d",
+      "color": "#c2410c",
       "status": "draft",
       "adminId": "admin-moue9fg9-gdy0yd",
       "adminName": "Admin 2",
       "images": [],
-      "createdAt": "2026-05-06T18:53:19.566Z",
-      "updatedAt": "2026-05-06T18:53:19.566Z",
+      "createdAt": "2026-05-06T18:53:29.982Z",
+      "updatedAt": "2026-05-06T18:53:29.982Z",
       "publishedAt": null
     },
     {
