@@ -10,5 +10,17 @@
     }
   ],
   "pending": [],
-  "approved": []
+  "approved": [
+    {
+      "id": "admin-moue3a4q-kkc7lk",
+      "email": "deepndense@gmail.com",
+      "username": "Padam",
+      "passwordHash": "e2dc192f84106cbcd24567e3042018e4f91be6c79a333c990ff6a88973ff62c5",
+      "role": "donation-admin",
+      "status": "approved",
+      "createdAt": "2026-05-06T18:27:19.178Z",
+      "approvedAt": "2026-05-06T18:27:19.179Z"
+    }
+  ],
+  "updatedAt": "2026-05-06T18:27:19.179Z"
 }
