@@ -1,18 +1,18 @@
 {
   "donations": [
     {
-      "id": "kam-bahadur-mouf0q4u-9fgsc9",
-      "donorName": "Kam Bahadur",
-      "amount": 123451,
+      "id": "janam-sing-mouf25lm-2k7lfp",
+      "donorName": "Janam Sing",
+      "amount": 34567,
       "info": "",
-      "color": "#15803d",
+      "color": "#c2410c",
       "status": "published",
       "adminId": "admin-moue9fg9-gdy0yd",
       "adminName": "Admin 2",
       "images": [],
-      "createdAt": "2026-05-06T18:53:19.566Z",
-      "updatedAt": "2026-05-06T19:01:51.973Z",
-      "publishedAt": "2026-05-06T19:01:51.973Z"
+      "createdAt": "2026-05-06T18:54:26.266Z",
+      "updatedAt": "2026-05-06T19:02:06.814Z",
+      "publishedAt": "2026-05-06T19:02:06.814Z"
     },
     {
       "id": "janam-sing-mouf25tl-minl5i",
@@ -29,17 +29,17 @@
       "publishedAt": "2026-05-06T19:01:01.213Z"
     },
     {
-      "id": "janam-sing-mouf25lm-2k7lfp",
-      "donorName": "Janam Sing",
-      "amount": 34567,
+      "id": "kam-bahadur-mouf0q4u-9fgsc9",
+      "donorName": "Kam Bahadur",
+      "amount": 123451,
       "info": "",
-      "color": "#c2410c",
+      "color": "#15803d",
       "status": "draft",
       "adminId": "admin-moue9fg9-gdy0yd",
       "adminName": "Admin 2",
       "images": [],
-      "createdAt": "2026-05-06T18:54:26.266Z",
-      "updatedAt": "2026-05-06T18:54:26.266Z",
+      "createdAt": "2026-05-06T18:53:19.566Z",
+      "updatedAt": "2026-05-06T18:53:19.566Z",
       "publishedAt": null
     },
     {
