@@ -46,6 +46,26 @@
         <div id="pendingList" class="table-list"></div>
       </div>
 
+      <div class="backend-panel" id="createAdminPanel" hidden>
+        <h2>Create Backend 2 Admin</h2>
+        <p class="backend-help">Create the login account here. The user can then log in on Backend 2 with username/email and password.</p>
+        <div class="form-grid">
+          <label>Email ID
+            <input id="newAdminEmail" type="email" placeholder="admin@example.com">
+          </label>
+          <label>UserName
+            <input id="newAdminUsername" placeholder="unique username">
+          </label>
+          <label class="full">Password
+            <input id="newAdminPassword" type="password" placeholder="Create password">
+          </label>
+        </div>
+        <div class="action-row">
+          <button id="createAdminBtn">Create Approved Admin</button>
+        </div>
+        <div class="status-line" id="createAdminStatus"></div>
+      </div>
+
       <div class="backend-panel" id="targetPanel" hidden>
         <h2>Fundraising Target</h2>
         <div class="form-grid">
@@ -111,6 +131,7 @@
       cms.sessionSet('dipakMainAdmin', mainSession);
       document.getElementById('loginPanel').hidden = true;
       document.getElementById('approvalPanel').hidden = false;
+      document.getElementById('createAdminPanel').hidden = false;
       document.getElementById('targetPanel').hidden = false;
       document.getElementById('approvedPanel').hidden = false;
       setStatus(status, 'Logged in.', 'good');
@@ -156,7 +177,40 @@
       await loadPanels();
     }
 
+    async function createApprovedAdmin() {
+      const createStatus = document.getElementById('createAdminStatus');
+      try {
+        if (!mainSession?.token) throw new Error('Enter a GitHub token in the login form to create admin accounts.');
+        const email = document.getElementById('newAdminEmail').value.trim().toLowerCase();
+        const username = document.getElementById('newAdminUsername').value.trim();
+        const password = document.getElementById('newAdminPassword').value;
+        if (!email || !username || !password) throw new Error('Email ID, UserName, and password are required.');
+        const allUsers = [...(usersData.pending || []), ...(usersData.approved || []), ...(usersData.mainAdmins || [])];
+        if (allUsers.some((user) => (user.email || '').toLowerCase() === email)) throw new Error('Email ID already exists.');
+        if (allUsers.some((user) => (user.username || '').toLowerCase() === username.toLowerCase())) throw new Error('UserName already exists.');
+        const admin = {
+          id: cms.uid('admin'),
+          email,
+          username,
+          passwordHash: await cms.sha256(password),
+          role: 'donation-admin',
+          status: 'approved',
+          createdAt: new Date().toISOString(),
+          approvedAt: new Date().toISOString()
+        };
+        usersData.approved = [...(usersData.approved || []), admin];
+        await saveUsers(`Create backend admin ${username}`);
+        document.getElementById('newAdminEmail').value = '';
+        document.getElementById('newAdminUsername').value = '';
+        document.getElementById('newAdminPassword').value = '';
+        setStatus(createStatus, `${username} can now log in on Backend 2.`, 'good');
+      } catch (error) {
+        setStatus(createStatus, error.message, 'bad');
+      }
+    }
+
     document.getElementById('mainLoginBtn').addEventListener('click', login);
+    document.getElementById('createAdminBtn').addEventListener('click', createApprovedAdmin);
     document.getElementById('pendingList').addEventListener('click', async (event) => {
       const approveId = event.target.dataset.approve;
       const rejectId = event.target.dataset.reject;

@@ -20,31 +20,9 @@
     </header>
 
     <section class="backend-grid" id="authArea">
-      <div class="backend-panel" id="signupPanel">
-        <h2>Create Backend 2 Account</h2>
-        <p class="backend-help">A new account becomes active only after Backend 1 approves it. Publishing the request requires a GitHub token because this site is static.</p>
-        <div class="form-grid">
-          <label>Email ID
-            <input id="signupEmail" type="email" placeholder="admin@example.com">
-          </label>
-          <label>UserName
-            <input id="signupUsername" placeholder="unique username">
-          </label>
-          <label class="full">Password
-            <input id="signupPassword" type="password" placeholder="Create password">
-          </label>
-          <label class="full">GitHub token to submit signup request
-            <input id="signupToken" type="password" placeholder="Token with Contents: Read and write">
-          </label>
-        </div>
-        <div class="action-row">
-          <button id="signupBtn">Send for Approval</button>
-        </div>
-        <div class="status-line" id="signupStatus"></div>
-      </div>
-
       <div class="backend-panel" id="loginPanel">
         <h2>Approved Admin Login</h2>
+        <p class="backend-help">Backend 2 accounts are created and approved from Backend 1 only.</p>
         <div class="form-grid">
           <label class="full">Username or email
             <input id="adminLogin" autocomplete="username">
@@ -134,34 +112,6 @@
       usersData = all.users;
       donationData = { donations: all.donations };
       siteData = all.site;
-    }
-
-    async function signup() {
-      try {
-        await reloadData();
-        const email = document.getElementById('signupEmail').value.trim().toLowerCase();
-        const username = document.getElementById('signupUsername').value.trim();
-        const password = document.getElementById('signupPassword').value;
-        const token = document.getElementById('signupToken').value.trim();
-        if (!email || !username || !password) throw new Error('Email, username, and password are required.');
-        const allUsers = [...(usersData.pending || []), ...(usersData.approved || []), ...(usersData.mainAdmins || [])];
-        if (allUsers.some((user) => (user.email || '').toLowerCase() === email)) throw new Error('Email ID already exists.');
-        if (allUsers.some((user) => (user.username || '').toLowerCase() === username.toLowerCase())) throw new Error('UserName already exists.');
-        const request = {
-          id: cms.uid('admin'),
-          email,
-          username,
-          passwordHash: await cms.sha256(password),
-          role: 'donation-admin',
-          status: 'pending',
-          createdAt: new Date().toISOString()
-        };
-        usersData.pending = [...(usersData.pending || []), request];
-        await cms.saveJson(cms.DATA_PATHS.users, usersData, token, `Request backend access for ${username}`);
-        setStatus('signupStatus', 'Signup request sent to Backend 1 for approval.', 'good');
-      } catch (error) {
-        setStatus('signupStatus', error.message, 'bad');
-      }
     }
 
     async function login() {
@@ -289,7 +239,6 @@
       }).join('');
     }
 
-    document.getElementById('signupBtn').addEventListener('click', signup);
     document.getElementById('adminLoginBtn').addEventListener('click', login);
     document.getElementById('logoutBtn').addEventListener('click', () => {
       sessionStorage.removeItem('dipakDonationAdmin');
