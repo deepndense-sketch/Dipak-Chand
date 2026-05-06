@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Backend 1 - Main Approval</title>
-  <link rel="stylesheet" href="./assets/css/donation-system.css?v=3">
+  <link rel="stylesheet" href="./assets/css/donation-system.css?v=6">
 </head>
 <body class="backend-body">
   <main class="backend-shell">
@@ -22,7 +22,7 @@
     <section class="backend-grid">
       <div class="backend-panel" id="loginPanel">
         <h2>Main Admin Login</h2>
-        <p class="backend-help">Default first login: username <strong>mainadmin</strong>, password <strong>changeme123</strong>. Change the data file after setup for real use.</p>
+        <p class="backend-help">Main admin access: username <strong>mainadmin</strong>, password <strong>SmcH123</strong>.</p>
         <div class="form-grid">
           <label class="full">Username or email
             <input id="mainLogin" autocomplete="username" placeholder="mainadmin">
@@ -30,14 +30,22 @@
           <label class="full">Password
             <input id="mainPassword" type="password" autocomplete="current-password" placeholder="Password">
           </label>
-          <label class="full">GitHub token for publishing approvals
+        </div>
+        <div class="action-row">
+          <button type="button" id="mainLoginBtn">Login</button>
+        </div>
+        <div class="status-line" id="mainStatus"></div>
+      </div>
+
+      <div class="backend-panel" id="publishingPanel" hidden>
+        <h2>Publishing Token</h2>
+        <p class="backend-help">Login does not need a GitHub token. Only enter a token here when you want to save account, approval, or target changes to GitHub Pages.</p>
+        <div class="form-grid">
+          <label class="full">GitHub token for saving changes
             <input id="mainToken" type="password" placeholder="Fine-grained token with Contents: Read and write">
           </label>
         </div>
-        <div class="action-row">
-          <button id="mainLoginBtn">Login</button>
-        </div>
-        <div class="status-line" id="mainStatus"></div>
+        <div class="status-line">Viewing access works without this token.</div>
       </div>
 
       <div class="backend-panel" id="approvalPanel" hidden>
@@ -130,6 +138,7 @@
       mainSession = { ...admin, token };
       cms.sessionSet('dipakMainAdmin', mainSession);
       document.getElementById('loginPanel').hidden = true;
+      document.getElementById('publishingPanel').hidden = false;
       document.getElementById('approvalPanel').hidden = false;
       document.getElementById('createAdminPanel').hidden = false;
       document.getElementById('targetPanel').hidden = false;
@@ -180,7 +189,7 @@
     async function createApprovedAdmin() {
       const createStatus = document.getElementById('createAdminStatus');
       try {
-        if (!mainSession?.token) throw new Error('Enter a GitHub token in the login form to create admin accounts.');
+        if (!mainSession?.token) throw new Error('Enter a GitHub token in the Publishing Token panel to create admin accounts.');
         const email = document.getElementById('newAdminEmail').value.trim().toLowerCase();
         const username = document.getElementById('newAdminUsername').value.trim();
         const password = document.getElementById('newAdminPassword').value;
@@ -210,13 +219,19 @@
     }
 
     document.getElementById('mainLoginBtn').addEventListener('click', login);
+    document.getElementById('mainToken').addEventListener('input', (event) => {
+      if (mainSession) {
+        mainSession.token = event.target.value.trim();
+        cms.sessionSet('dipakMainAdmin', mainSession);
+      }
+    });
     document.getElementById('createAdminBtn').addEventListener('click', createApprovedAdmin);
     document.getElementById('pendingList').addEventListener('click', async (event) => {
       const approveId = event.target.dataset.approve;
       const rejectId = event.target.dataset.reject;
       if (!approveId && !rejectId) return;
       try {
-        if (!mainSession?.token) throw new Error('Enter a GitHub token in the login form to publish approvals.');
+        if (!mainSession?.token) throw new Error('Enter a GitHub token in the Publishing Token panel to publish approvals.');
         const user = (usersData.pending || []).find((item) => item.id === (approveId || rejectId));
         usersData.pending = (usersData.pending || []).filter((item) => item.id !== (approveId || rejectId));
         if (approveId && user) {
@@ -234,7 +249,7 @@
 
     document.getElementById('saveTargetBtn').addEventListener('click', async () => {
       try {
-        if (!mainSession?.token) throw new Error('Enter a GitHub token in the login form to publish target changes.');
+        if (!mainSession?.token) throw new Error('Enter a GitHub token in the Publishing Token panel to publish target changes.');
         siteData.targetAmount = Number(document.getElementById('targetAmount').value || 0);
         siteData.currency = document.getElementById('currencyLabel').value.trim() || 'Rs';
         siteData.updatedAt = new Date().toISOString();
