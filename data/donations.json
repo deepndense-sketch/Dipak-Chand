@@ -1,17 +1,31 @@
 {
   "donations": [
     {
-      "id": "shyam-bahdaru-mouf181r-md3ntc",
-      "donorName": "Shyam Bahdaru",
-      "amount": 343245,
+      "id": "gandhi-mahatma-mouf1gbq-exph6e",
+      "donorName": "Gandhi Mahatma",
+      "amount": 134534,
       "info": "",
-      "color": "#b45309",
+      "color": "#176b87",
       "status": "draft",
       "adminId": "admin-moue9fg9-gdy0yd",
       "adminName": "Admin 2",
       "images": [],
-      "createdAt": "2026-05-06T18:53:42.783Z",
-      "updatedAt": "2026-05-06T18:53:42.783Z",
+      "createdAt": "2026-05-06T18:53:53.510Z",
+      "updatedAt": "2026-05-06T18:53:53.510Z",
+      "publishedAt": null
+    },
+    {
+      "id": "kam-bahadur-mouf0q4u-9fgsc9",
+      "donorName": "Kam Bahadur",
+      "amount": 123451,
+      "info": "",
+      "color": "#15803d",
+      "status": "draft",
+      "adminId": "admin-moue9fg9-gdy0yd",
+      "adminName": "Admin 2",
+      "images": [],
+      "createdAt": "2026-05-06T18:53:19.566Z",
+      "updatedAt": "2026-05-06T18:53:19.566Z",
       "publishedAt": null
     },
     {
