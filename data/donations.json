@@ -1,18 +1,32 @@
 {
   "donations": [
     {
-      "id": "donor-3-moueri3p-hx2lri",
-      "donorName": "Donor 3",
-      "amount": 19000,
+      "id": "hari-ram-mouevs0o-zlag6b",
+      "donorName": "Hari Ram",
+      "amount": 10000,
       "info": "",
-      "color": "#7c3aed",
+      "color": "#b45309",
       "status": "published",
       "adminId": "admin-moue9fg9-gdy0yd",
       "adminName": "Admin 2",
       "images": [],
-      "createdAt": "2026-05-06T18:46:09.253Z",
-      "updatedAt": "2026-05-06T18:46:09.253Z",
-      "publishedAt": "2026-05-06T18:46:09.253Z"
+      "createdAt": "2026-05-06T18:49:28.728Z",
+      "updatedAt": "2026-05-06T18:49:28.728Z",
+      "publishedAt": "2026-05-06T18:49:28.728Z"
+    },
+    {
+      "id": "donor-3-moueqxon-wgfvbu",
+      "donorName": "Donor 3",
+      "amount": 3000,
+      "info": "",
+      "color": "#0f766e",
+      "status": "published",
+      "adminId": "admin-moue9fg9-gdy0yd",
+      "adminName": "Admin 2",
+      "images": [],
+      "createdAt": "2026-05-06T18:45:42.791Z",
+      "updatedAt": "2026-05-06T18:45:42.791Z",
+      "publishedAt": "2026-05-06T18:45:42.791Z"
     },
     {
       "id": "donar-3-moued0mx-gnv2es",
