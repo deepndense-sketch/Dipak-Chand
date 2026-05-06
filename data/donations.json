@@ -1,17 +1,17 @@
 {
   "donations": [
     {
-      "id": "gandhi-mahatma-mouf1gbq-exph6e",
-      "donorName": "Gandhi Mahatma",
-      "amount": 134534,
+      "id": "ganesh-malla-mouf1nqc-e8xp8y",
+      "donorName": "Ganesh Malla",
+      "amount": 400001,
       "info": "",
-      "color": "#176b87",
+      "color": "#a16207",
       "status": "draft",
       "adminId": "admin-moue9fg9-gdy0yd",
       "adminName": "Admin 2",
       "images": [],
-      "createdAt": "2026-05-06T18:53:53.510Z",
-      "updatedAt": "2026-05-06T18:53:53.510Z",
+      "createdAt": "2026-05-06T18:54:03.108Z",
+      "updatedAt": "2026-05-06T18:54:03.108Z",
       "publishedAt": null
     },
     {
