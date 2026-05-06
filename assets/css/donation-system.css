@@ -282,16 +282,16 @@ textarea {
 
 .public-summary {
   background: #ffffff;
-  border: 1px solid rgba(171, 40, 27, 0.12);
+  border: 1px solid #e7dfd3;
   border-radius: 8px;
-  padding: 18px;
-  box-shadow: 0 12px 26px rgba(76, 37, 10, 0.08);
+  padding: 16px;
+  box-shadow: none;
 }
 
 .public-summary h2 {
   margin: 0 0 10px;
-  color: #7c2017;
-  font-size: 28px;
+  color: #6f1b15;
+  font-size: 24px;
 }
 
 .public-summary p {
@@ -300,24 +300,24 @@ textarea {
 
 .admin-columns {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 14px;
-  margin-top: 16px;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 12px;
+  margin-top: 14px;
 }
 
 .admin-column {
   position: relative;
-  min-height: 240px;
+  min-height: 180px;
   background: #fffdf8;
-  border: 1px solid rgba(171, 40, 27, 0.1);
+  border: 1px solid #e7dfd3;
   border-radius: 8px;
-  padding: 14px;
+  padding: 12px;
 }
 
 .admin-column h3 {
   margin: 0;
-  font-size: 20px;
-  color: #7c2017;
+  font-size: 18px;
+  color: #6f1b15;
 }
 
 .admin-total {
@@ -343,9 +343,9 @@ textarea {
 
 .public-donation-card {
   position: relative;
-  padding: 12px;
-  border-left: 6px solid var(--donor-color, #176b87);
-  box-shadow: 0 8px 18px rgba(76, 37, 10, 0.06);
+  padding: 10px 12px;
+  border-left: 4px solid var(--donor-color, #176b87);
+  box-shadow: none;
 }
 
 .public-donation-card::before {
@@ -362,7 +362,7 @@ textarea {
 
 .public-donation-card a {
   color: #25324a;
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 850;
   text-decoration: none;
 }
