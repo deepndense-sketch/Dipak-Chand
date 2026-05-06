@@ -6,7 +6,7 @@
       "amount": 3432,
       "info": "sdfsdgdgdfgdfdfgdf",
       "color": "#6d28d9",
-      "status": "draft",
+      "status": "published",
       "adminId": "admin-moue9fg9-gdy0yd",
       "adminName": "Admin 2",
       "images": [
@@ -17,8 +17,8 @@
         }
       ],
       "createdAt": "2026-05-06T18:34:53.433Z",
-      "updatedAt": "2026-05-06T18:34:53.433Z",
-      "publishedAt": null
+      "updatedAt": "2026-05-06T18:35:20.777Z",
+      "publishedAt": "2026-05-06T18:35:20.777Z"
     },
     {
       "id": "donar-2-mouebmik-4yy45f",
