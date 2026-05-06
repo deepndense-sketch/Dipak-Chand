@@ -33,12 +33,13 @@
     }
 
     .card {
-      width: 100%;
-      max-width: none;
+      width: min(100%, 1320px);
+      max-width: calc(100% - 32px);
       min-height: 100vh;
       margin: 0 auto;
       background: var(--paper);
-      border: 0;
+      border-left: 1px solid var(--line);
+      border-right: 1px solid var(--line);
       border-radius: 0;
       overflow: hidden;
       box-shadow: var(--shadow);
@@ -271,6 +272,13 @@
       .detail { font-size: 19px; }
       .cta { font-size: 24px; }
       .reports-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    }
+
+    @media (min-width: 1600px) {
+      .card {
+        width: calc(100% - 600px);
+        max-width: 1320px;
+      }
     }
 
     @media (max-width: 520px) {
