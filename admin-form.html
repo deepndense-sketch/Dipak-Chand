@@ -35,8 +35,8 @@
           </label>
           <label>Status
             <select id="donorStatus">
-              <option value="draft">Draft</option>
               <option value="published">Publish</option>
+              <option value="draft">Draft</option>
             </select>
           </label>
           <label class="visually-hidden">Timeline color
@@ -98,7 +98,7 @@
       document.getElementById('donorName').value = '';
       document.getElementById('donorAmount').value = '';
       document.getElementById('donorInfo').value = '';
-      document.getElementById('donorStatus').value = 'draft';
+      document.getElementById('donorStatus').value = 'published';
       document.getElementById('donorColor').value = cms.DONOR_COLORS[Math.floor(Math.random() * cms.DONOR_COLORS.length)];
       document.getElementById('donorImages').value = '';
       selectedImages = [];
