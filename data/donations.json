@@ -1,18 +1,18 @@
 {
   "donations": [
     {
-      "id": "hari-ram-mouex5sl-f4vuyr",
+      "id": "hari-ram-mouexk48-5nr566",
       "donorName": "Hari Ram",
-      "amount": 12222,
+      "amount": 11111,
       "info": "",
-      "color": "#c2410c",
-      "status": "published",
+      "color": "#b45309",
+      "status": "draft",
       "adminId": "admin-moue9fg9-gdy0yd",
       "adminName": "Admin 2",
       "images": [],
-      "createdAt": "2026-05-06T18:50:33.237Z",
-      "updatedAt": "2026-05-06T18:50:33.237Z",
-      "publishedAt": "2026-05-06T18:50:33.237Z"
+      "createdAt": "2026-05-06T18:50:51.800Z",
+      "updatedAt": "2026-05-06T18:50:51.800Z",
+      "publishedAt": null
     },
     {
       "id": "hari-ram-mouevs0o-zlag6b",
