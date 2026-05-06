@@ -402,9 +402,10 @@ textarea {
 .donor-photo-fallback {
   display: grid;
   place-items: center;
-  color: #0f4c5c;
+  color: #fff;
   font-weight: 850;
   font-size: 22px;
+  background: var(--donor-color, #0f4c5c);
 }
 
 .donor-summary {
