@@ -1,18 +1,18 @@
 {
   "donations": [
     {
-      "id": "har-rat-mouf0hap-bxazi1",
-      "donorName": "Har Rat",
-      "amount": 1234441,
+      "id": "kam-bahadur-mouf0q4u-9fgsc9",
+      "donorName": "Kam Bahadur",
+      "amount": 123451,
       "info": "",
-      "color": "#a16207",
-      "status": "published",
+      "color": "#15803d",
+      "status": "draft",
       "adminId": "admin-moue9fg9-gdy0yd",
       "adminName": "Admin 2",
       "images": [],
-      "createdAt": "2026-05-06T18:53:08.113Z",
-      "updatedAt": "2026-05-06T18:53:08.113Z",
-      "publishedAt": "2026-05-06T18:53:08.113Z"
+      "createdAt": "2026-05-06T18:53:19.566Z",
+      "updatedAt": "2026-05-06T18:53:19.566Z",
+      "publishedAt": null
     },
     {
       "id": "bharat-mouezhl3-djmblj",
