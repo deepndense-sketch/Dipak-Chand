@@ -1,18 +1,18 @@
 {
   "donations": [
     {
-      "id": "donor-3-moueqxon-wgfvbu",
+      "id": "donor-3-moueri3p-hx2lri",
       "donorName": "Donor 3",
-      "amount": 3000,
+      "amount": 19000,
       "info": "",
-      "color": "#0f766e",
+      "color": "#7c3aed",
       "status": "published",
       "adminId": "admin-moue9fg9-gdy0yd",
       "adminName": "Admin 2",
       "images": [],
-      "createdAt": "2026-05-06T18:45:42.791Z",
-      "updatedAt": "2026-05-06T18:45:42.791Z",
-      "publishedAt": "2026-05-06T18:45:42.791Z"
+      "createdAt": "2026-05-06T18:46:09.253Z",
+      "updatedAt": "2026-05-06T18:46:09.253Z",
+      "publishedAt": "2026-05-06T18:46:09.253Z"
     },
     {
       "id": "donar-3-moued0mx-gnv2es",
