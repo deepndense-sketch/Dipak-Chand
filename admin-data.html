@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Backend 2 - Donation Entry</title>
+  <link rel="stylesheet" href="./assets/css/donation-system.css">
+</head>
+<body class="backend-body">
+  <main class="backend-shell">
+    <header class="backend-topbar">
+      <div class="backend-brand">
+        <h1>Donation Backend</h1>
+        <p>Create admin accounts, log in after main approval, and publish donor updates to the public website.</p>
+      </div>
+      <nav class="backend-nav">
+        <a class="secondary" href="./index.html">Website</a>
+        <a href="./admin-main.html">Backend 1</a>
+      </nav>
+    </header>
+
+    <section class="backend-grid">
+      <div class="backend-panel" id="signupPanel">
+        <h2>Create Backend 2 Account</h2>
+        <p class="backend-help">A new account becomes active only after Backend 1 approves it. Publishing the request requires a GitHub token because this site is static.</p>
+        <div class="form-grid">
+          <label>Email ID
+            <input id="signupEmail" type="email" placeholder="admin@example.com">
+          </label>
+          <label>UserName
+            <input id="signupUsername" placeholder="unique username">
+          </label>
+          <label class="full">Password
+            <input id="signupPassword" type="password" placeholder="Create password">
+          </label>
+          <label class="full">GitHub token to submit signup request
+            <input id="signupToken" type="password" placeholder="Token with Contents: Read and write">
+          </label>
+        </div>
+        <div class="action-row">
+          <button id="signupBtn">Send for Approval</button>
+        </div>
+        <div class="status-line" id="signupStatus"></div>
+      </div>
+
+      <div class="backend-panel" id="loginPanel">
+        <h2>Approved Admin Login</h2>
+        <div class="form-grid">
+          <label class="full">Username or email
+            <input id="adminLogin" autocomplete="username">
+          </label>
+          <label class="full">Password
+            <input id="adminPassword" type="password" autocomplete="current-password">
+          </label>
+          <label class="full">GitHub token for publishing donation data
+            <input id="adminToken" type="password" placeholder="Fine-grained token with Contents: Read and write">
+          </label>
+        </div>
+        <div class="action-row">
+          <button id="adminLoginBtn">Login</button>
+        </div>
+        <div class="status-line" id="loginStatus"></div>
+      </div>
+    </section>
+
+    <section class="backend-grid" id="workArea" hidden>
+      <div class="backend-panel">
+        <h2>Donation Info Form</h2>
+        <input id="donationId" type="hidden">
+        <div class="form-grid">
+          <label>Donor Name
+            <input id="donorName" placeholder="Donor name">
+          </label>
+          <label>Amount Donated
+            <input id="donorAmount" type="number" min="0" step="1" placeholder="5000">
+          </label>
+          <label class="full">Information
+            <textarea id="donorInfo" placeholder="Write donation details, message, date, receipt notes, etc."></textarea>
+          </label>
+          <label>Status
+            <select id="donorStatus">
+              <option value="draft">Draft</option>
+              <option value="published">Publish</option>
+            </select>
+          </label>
+          <label>Timeline color
+            <input id="donorColor" type="color" value="#176b87">
+          </label>
+          <label class="full">Upload images
+            <input id="donorImages" type="file" accept="image/*" multiple>
+          </label>
+        </div>
+        <div id="imagePreview" class="preview-grid"></div>
+        <div class="action-row">
+          <button id="saveDonationBtn">Save Donation</button>
+          <button class="secondary" id="newDonationBtn">New Entry</button>
+        </div>
+        <div class="status-line" id="donationStatus"></div>
+      </div>
+
+      <div class="backend-panel">
+        <h2>Your Entries</h2>
+        <div class="metrics-grid" id="adminMetrics"></div>
+        <div id="donationList" class="table-list"></div>
+      </div>
+    </section>
+  </main>
+
+  <script src="./assets/js/donation-system.js"></script>
+  <script>
+    const cms = window.DipakCMS;
+    let usersData = null;
+    let donationData = null;
+    let siteData = null;
+    let currentAdmin = null;
+    let selectedImages = [];
+
+    function setStatus(id, text, type = '') {
+      const el = document.getElementById(id);
+      el.className = `status-line ${type}`;
+      el.textContent = text;
+    }
+
+    async function reloadData() {
+      const all = await cms.loadAllData();
+      usersData = all.users;
+      donationData = { donations: all.donations };
+      siteData = all.site;
+    }
+
+    async function signup() {
+      try {
+        await reloadData();
+        const email = document.getElementById('signupEmail').value.trim().toLowerCase();
+        const username = document.getElementById('signupUsername').value.trim();
+        const password = document.getElementById('signupPassword').value;
+        const token = document.getElementById('signupToken').value.trim();
+        if (!email || !username || !password) throw new Error('Email, username, and password are required.');
+        const allUsers = [...(usersData.pending || []), ...(usersData.approved || []), ...(usersData.mainAdmins || [])];
+        if (allUsers.some((user) => (user.email || '').toLowerCase() === email)) throw new Error('Email ID already exists.');
+        if (allUsers.some((user) => (user.username || '').toLowerCase() === username.toLowerCase())) throw new Error('UserName already exists.');
+        const request = {
+          id: cms.uid('admin'),
+          email,
+          username,
+          passwordHash: await cms.sha256(password),
+          role: 'donation-admin',
+          status: 'pending',
+          createdAt: new Date().toISOString()
+        };
+        usersData.pending = [...(usersData.pending || []), request];
+        await cms.saveJson(cms.DATA_PATHS.users, usersData, token, `Request backend access for ${username}`);
+        setStatus('signupStatus', 'Signup request sent to Backend 1 for approval.', 'good');
+      } catch (error) {
+        setStatus('signupStatus', error.message, 'bad');
+      }
+    }
+
+    async function login() {
+      try {
+        await reloadData();
+        const loginValue = document.getElementById('adminLogin').value.trim().toLowerCase();
+        const passwordHash = await cms.sha256(document.getElementById('adminPassword').value);
+        const token = document.getElementById('adminToken').value.trim();
+        const admin = (usersData.approved || []).find((user) =>
+          ((user.email || '').toLowerCase() === loginValue || (user.username || '').toLowerCase() === loginValue) && user.passwordHash === passwordHash
+        );
+        if (!admin) throw new Error('Login failed or account is not approved yet.');
+        currentAdmin = { ...admin, token };
+        cms.sessionSet('dipakDonationAdmin', currentAdmin);
+        document.getElementById('workArea').hidden = false;
+        setStatus('loginStatus', `Logged in as ${admin.username}.`, 'good');
+        renderDonations();
+      } catch (error) {
+        setStatus('loginStatus', error.message, 'bad');
+      }
+    }
+
+    function clearForm() {
+      document.getElementById('donationId').value = '';
+      document.getElementById('donorName').value = '';
+      document.getElementById('donorAmount').value = '';
+      document.getElementById('donorInfo').value = '';
+      document.getElementById('donorStatus').value = 'draft';
+      document.getElementById('donorColor').value = cms.DONOR_COLORS[Math.floor(Math.random() * cms.DONOR_COLORS.length)];
+      document.getElementById('donorImages').value = '';
+      selectedImages = [];
+      renderPreview();
+    }
+
+    function renderPreview() {
+      const mount = document.getElementById('imagePreview');
+      mount.innerHTML = selectedImages.map((image) => `<img src="${image.dataUrl}" alt="${image.name}">`).join('');
+    }
+
+    function fileToDataUrl(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve({ id: cms.uid('image'), name: file.name, dataUrl: reader.result });
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+    }
+
+    async function saveDonation() {
+      try {
+        if (!currentAdmin?.token) throw new Error('GitHub token is required to publish donation data.');
+        const donorName = document.getElementById('donorName').value.trim();
+        const amount = Number(document.getElementById('donorAmount').value || 0);
+        if (!donorName || !amount) throw new Error('Donor name and amount are required.');
+        const id = document.getElementById('donationId').value || cms.uid(cms.slugify(donorName));
+        const status = document.getElementById('donorStatus').value;
+        const existing = (donationData.donations || []).find((entry) => entry.id === id);
+        const entry = {
+          ...(existing || {}),
+          id,
+          donorName,
+          amount,
+          info: document.getElementById('donorInfo').value.trim(),
+          color: document.getElementById('donorColor').value,
+          status,
+          adminId: currentAdmin.id,
+          adminName: currentAdmin.username,
+          images: selectedImages,
+          createdAt: existing?.createdAt || new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+          publishedAt: status === 'published' ? (existing?.publishedAt || new Date().toISOString()) : existing?.publishedAt || null
+        };
+        donationData.donations = [entry, ...(donationData.donations || []).filter((item) => item.id !== id)];
+        await cms.saveJson(cms.DATA_PATHS.donations, donationData, currentAdmin.token, `${status === 'published' ? 'Publish' : 'Save draft'} donation from ${donorName}`);
+        setStatus('donationStatus', 'Donation entry saved and website data updated.', 'good');
+        await reloadData();
+        clearForm();
+        renderDonations();
+      } catch (error) {
+        setStatus('donationStatus', error.message, 'bad');
+      }
+    }
+
+    function editDonation(id) {
+      const entry = (donationData.donations || []).find((item) => item.id === id);
+      if (!entry) return;
+      document.getElementById('donationId').value = entry.id;
+      document.getElementById('donorName').value = entry.donorName || '';
+      document.getElementById('donorAmount').value = entry.amount || '';
+      document.getElementById('donorInfo').value = entry.info || '';
+      document.getElementById('donorStatus').value = entry.status || 'draft';
+      document.getElementById('donorColor').value = entry.color || '#176b87';
+      selectedImages = entry.images || [];
+      renderPreview();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function renderDonations() {
+      const own = (donationData.donations || []).filter((entry) => entry.adminId === currentAdmin.id);
+      const publishedTotal = own.filter((entry) => entry.status === 'published').reduce((sum, entry) => sum + Number(entry.amount || 0), 0);
+      const target = Number(siteData.targetAmount || 5000000);
+      document.getElementById('adminMetrics').innerHTML = `
+        <div class="metric-card"><h3>Your Total</h3><div class="number">${cms.money(publishedTotal, siteData.currency)}</div></div>
+        <div class="metric-card"><h3>Published</h3><div class="number">${own.filter((entry) => entry.status === 'published').length}</div></div>
+        <div class="metric-card"><h3>Drafts</h3><div class="number">${own.filter((entry) => entry.status === 'draft').length}</div></div>`;
+      const mount = document.getElementById('donationList');
+      if (!own.length) {
+        mount.innerHTML = '<p class="empty-state">No donation entries yet.</p>';
+        return;
+      }
+      mount.innerHTML = own.map((entry) => {
+        const pct = target ? (Number(entry.amount || 0) / target) * 100 : 0;
+        return `<article class="donation-admin-card">
+          <strong>${entry.donorName}</strong>
+          <div>${cms.money(entry.amount, siteData.currency)} · ${pct.toFixed(2)}% of target</div>
+          <div class="chip-row"><span class="chip">${entry.status}</span><span class="chip">${(entry.images || []).length} image(s)</span></div>
+          <div class="action-row">
+            <button data-edit="${entry.id}">Edit</button>
+            <a class="button secondary" href="donation.html?id=${encodeURIComponent(entry.id)}" target="_blank">View Page</a>
+          </div>
+        </article>`;
+      }).join('');
+    }
+
+    document.getElementById('signupBtn').addEventListener('click', signup);
+    document.getElementById('adminLoginBtn').addEventListener('click', login);
+    document.getElementById('saveDonationBtn').addEventListener('click', saveDonation);
+    document.getElementById('newDonationBtn').addEventListener('click', clearForm);
+    document.getElementById('donationList').addEventListener('click', (event) => {
+      if (event.target.dataset.edit) editDonation(event.target.dataset.edit);
+    });
+    document.getElementById('donorImages').addEventListener('change', async (event) => {
+      selectedImages = await Promise.all([...event.target.files].map(fileToDataUrl));
+      renderPreview();
+    });
+    clearForm();
+  </script>
+</body>
+</html>

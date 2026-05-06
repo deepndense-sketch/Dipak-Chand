@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Backend 1 - Main Approval</title>
+  <link rel="stylesheet" href="./assets/css/donation-system.css">
+</head>
+<body class="backend-body">
+  <main class="backend-shell">
+    <header class="backend-topbar">
+      <div class="backend-brand">
+        <h1>Main Backend</h1>
+        <p>Approve admin accounts, confirm login users, and manage the overall donation target for the Dipak Chand support site.</p>
+      </div>
+      <nav class="backend-nav">
+        <a class="secondary" href="./index.html">Website</a>
+        <a href="./admin-data.html">Backend 2</a>
+      </nav>
+    </header>
+
+    <section class="backend-grid">
+      <div class="backend-panel" id="loginPanel">
+        <h2>Main Admin Login</h2>
+        <p class="backend-help">Default first login: username <strong>mainadmin</strong>, password <strong>changeme123</strong>. Change the data file after setup for real use.</p>
+        <div class="form-grid">
+          <label class="full">Username or email
+            <input id="mainLogin" autocomplete="username" placeholder="mainadmin">
+          </label>
+          <label class="full">Password
+            <input id="mainPassword" type="password" autocomplete="current-password" placeholder="Password">
+          </label>
+          <label class="full">GitHub token for publishing approvals
+            <input id="mainToken" type="password" placeholder="Fine-grained token with Contents: Read and write">
+          </label>
+        </div>
+        <div class="action-row">
+          <button id="mainLoginBtn">Login</button>
+        </div>
+        <div class="status-line" id="mainStatus"></div>
+      </div>
+
+      <div class="backend-panel" id="approvalPanel" hidden>
+        <h2>Pending Admin Confirmations</h2>
+        <p class="backend-help">Only approved accounts can access Backend 2 to publish donation entries.</p>
+        <div id="pendingList" class="table-list"></div>
+      </div>
+
+      <div class="backend-panel" id="targetPanel" hidden>
+        <h2>Fundraising Target</h2>
+        <div class="form-grid">
+          <label>Target amount
+            <input id="targetAmount" type="number" min="0" step="1">
+          </label>
+          <label>Currency label
+            <input id="currencyLabel" placeholder="Rs">
+          </label>
+        </div>
+        <div class="action-row">
+          <button id="saveTargetBtn">Save Target</button>
+        </div>
+        <div class="status-line" id="targetStatus"></div>
+      </div>
+
+      <div class="backend-panel" id="approvedPanel" hidden>
+        <h2>Approved Admins</h2>
+        <div id="approvedList" class="table-list"></div>
+      </div>
+    </section>
+  </main>
+
+  <script src="./assets/js/donation-system.js"></script>
+  <script>
+    const cms = window.DipakCMS;
+    let usersData = null;
+    let siteData = null;
+    let mainSession = null;
+
+    const status = document.getElementById('mainStatus');
+    const targetStatus = document.getElementById('targetStatus');
+
+    function setStatus(el, text, type = '') {
+      el.className = `status-line ${type}`;
+      el.textContent = text;
+    }
+
+    async function loadPanels() {
+      const all = await cms.loadAllData();
+      usersData = all.users;
+      siteData = all.site;
+      document.getElementById('targetAmount').value = siteData.targetAmount || 5000000;
+      document.getElementById('currencyLabel').value = siteData.currency || 'Rs';
+      renderPending();
+      renderApproved();
+    }
+
+    async function login() {
+      const login = document.getElementById('mainLogin').value.trim().toLowerCase();
+      const password = document.getElementById('mainPassword').value;
+      const token = document.getElementById('mainToken').value.trim();
+      await loadPanels();
+      const passwordHash = await cms.sha256(password);
+      const admin = (usersData.mainAdmins || []).find((item) =>
+        (item.username || '').toLowerCase() === login || (item.email || '').toLowerCase() === login
+      );
+      if (!admin || admin.passwordHash !== passwordHash) {
+        setStatus(status, 'Main admin login failed.', 'bad');
+        return;
+      }
+      mainSession = { ...admin, token };
+      cms.sessionSet('dipakMainAdmin', mainSession);
+      document.getElementById('loginPanel').hidden = true;
+      document.getElementById('approvalPanel').hidden = false;
+      document.getElementById('targetPanel').hidden = false;
+      document.getElementById('approvedPanel').hidden = false;
+      setStatus(status, 'Logged in.', 'good');
+    }
+
+    function renderPending() {
+      const mount = document.getElementById('pendingList');
+      const pending = usersData.pending || [];
+      if (!pending.length) {
+        mount.innerHTML = '<p class="empty-state">No pending admin requests.</p>';
+        return;
+      }
+      mount.innerHTML = pending.map((user) => `
+        <article class="user-row">
+          <strong>${user.username}</strong>
+          <div>${user.email}</div>
+          <div class="chip-row"><span class="chip">Requested ${new Date(user.createdAt).toLocaleString()}</span></div>
+          <div class="action-row">
+            <button data-approve="${user.id}">Approve</button>
+            <button class="danger" data-reject="${user.id}">Reject</button>
+          </div>
+        </article>`).join('');
+    }
+
+    function renderApproved() {
+      const mount = document.getElementById('approvedList');
+      const approved = usersData.approved || [];
+      if (!approved.length) {
+        mount.innerHTML = '<p class="empty-state">No approved Backend 2 admins yet.</p>';
+        return;
+      }
+      mount.innerHTML = approved.map((user) => `
+        <article class="user-row">
+          <strong>${user.username}</strong>
+          <div>${user.email}</div>
+          <div class="chip-row"><span class="chip">Approved</span></div>
+        </article>`).join('');
+    }
+
+    async function saveUsers(message) {
+      usersData.updatedAt = new Date().toISOString();
+      await cms.saveJson(cms.DATA_PATHS.users, usersData, mainSession.token, message);
+      await loadPanels();
+    }
+
+    document.getElementById('mainLoginBtn').addEventListener('click', login);
+    document.getElementById('pendingList').addEventListener('click', async (event) => {
+      const approveId = event.target.dataset.approve;
+      const rejectId = event.target.dataset.reject;
+      if (!approveId && !rejectId) return;
+      try {
+        if (!mainSession?.token) throw new Error('Enter a GitHub token in the login form to publish approvals.');
+        const user = (usersData.pending || []).find((item) => item.id === (approveId || rejectId));
+        usersData.pending = (usersData.pending || []).filter((item) => item.id !== (approveId || rejectId));
+        if (approveId && user) {
+          usersData.approved = [...(usersData.approved || []), { ...user, status: 'approved', approvedAt: new Date().toISOString() }];
+          await saveUsers(`Approve backend admin ${user.username}`);
+          setStatus(status, `${user.username} approved.`, 'good');
+        } else if (user) {
+          await saveUsers(`Reject backend admin ${user.username}`);
+          setStatus(status, `${user.username} rejected.`, 'good');
+        }
+      } catch (error) {
+        setStatus(status, error.message, 'bad');
+      }
+    });
+
+    document.getElementById('saveTargetBtn').addEventListener('click', async () => {
+      try {
+        if (!mainSession?.token) throw new Error('Enter a GitHub token in the login form to publish target changes.');
+        siteData.targetAmount = Number(document.getElementById('targetAmount').value || 0);
+        siteData.currency = document.getElementById('currencyLabel').value.trim() || 'Rs';
+        siteData.updatedAt = new Date().toISOString();
+        await cms.saveJson(cms.DATA_PATHS.site, siteData, mainSession.token, 'Update fundraising target');
+        setStatus(targetStatus, 'Target saved and published.', 'good');
+      } catch (error) {
+        setStatus(targetStatus, error.message, 'bad');
+      }
+    });
+  </script>
+</body>
+</html>
