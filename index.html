@@ -9,16 +9,16 @@
   <title>DEEPAK JI Support Appeal</title>
   <style>
     :root {
-      --page: #f6f3ec;
+      --page: #eef2f5;
       --paper: #ffffff;
       --panel: #ffffff;
-      --ink: #24211d;
-      --muted: #6f6a62;
-      --accent: #9d241b;
-      --accent-dark: #6f1b15;
-      --line: #e7dfd3;
-      --soft: #f9f5ed;
-      --shadow: 0 10px 30px rgba(42, 32, 18, 0.08);
+      --ink: #17212f;
+      --muted: #5f6b7a;
+      --accent: #0f4c5c;
+      --accent-dark: #0b3440;
+      --line: #d9e0e7;
+      --soft: #f8fafb;
+      --shadow: none;
     }
 
     * { box-sizing: border-box; }
@@ -29,21 +29,23 @@
       font-family: "Noto Sans Devanagari", "Nirmala UI", "Mangal", system-ui, sans-serif;
       color: var(--ink);
       background: var(--page);
-      padding: 14px;
+      padding: 0;
     }
 
     .card {
-      max-width: 1120px;
+      width: 100%;
+      max-width: none;
+      min-height: 100vh;
       margin: 0 auto;
       background: var(--paper);
-      border: 1px solid var(--line);
-      border-radius: 8px;
+      border: 0;
+      border-radius: 0;
       overflow: hidden;
       box-shadow: var(--shadow);
     }
 
     .hero {
-      padding: 14px;
+      padding: clamp(14px, 2vw, 28px);
       background: #fff;
       border-bottom: 1px solid var(--line);
     }
@@ -176,7 +178,7 @@
 
     .qr {
       width: 100%;
-      max-width: 260px;
+      max-width: 240px;
       display: block;
       margin: 12px auto 14px;
       border-radius: 8px;
@@ -202,7 +204,7 @@
       margin: 12px 0 0;
       border-radius: 8px;
       padding: 14px;
-      background: var(--accent);
+      background: #0f4c5c;
       color: #fff;
       text-align: center;
       font-size: 20px;
@@ -254,14 +256,14 @@
     }
 
     @media (min-width: 700px) {
-      body { padding: 24px; }
-      .hero { padding: 20px; }
+      body { padding: 0; }
+      .hero { padding: 28px clamp(28px, 5vw, 64px); }
       .hero-photos { gap: 14px; margin-bottom: 16px; }
       .photo { height: 300px; }
       h1 { font-size: 46px; }
       .lead { font-size: 22px; }
-      .section { padding: 20px; }
-      .content-grid { grid-template-columns: 1.15fr 0.85fr; align-items: start; }
+      .section { padding: 22px clamp(28px, 5vw, 64px); }
+      .content-grid { grid-template-columns: minmax(0, 1.15fr) minmax(320px, 0.85fr); align-items: start; }
       .main-column, .side-column { display: grid; gap: 12px; }
       .panel, .update-box { padding: 20px; }
       .panel h2, .update-box h2 { font-size: 30px; }
@@ -279,7 +281,7 @@
       .detail, .account p { font-size: 15px; }
     }
   </style>
-  <link rel="stylesheet" href="./assets/css/donation-system.css?v=7">
+  <link rel="stylesheet" href="./assets/css/donation-system.css?v=8">
 </head>
 <body>
   <main class="card">

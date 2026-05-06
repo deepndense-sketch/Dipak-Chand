@@ -34,6 +34,10 @@ function uid(prefix = "id") {
   return `${prefix}-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
 }
 
+function primaryImage(entry) {
+  return (entry.images || [])[0] || null;
+}
+
 async function sha256(text) {
   const bytes = new TextEncoder().encode(text);
   const hash = await crypto.subtle.digest("SHA-256", bytes);
@@ -171,10 +175,16 @@ function renderPublicDonationSummary(mountId = "donation-dashboard") {
                 ${admin.donations.sort((a, b) => new Date(b.publishedAt || b.createdAt) - new Date(a.publishedAt || a.createdAt)).map((entry, index) => {
                   const color = entry.color || DONOR_COLORS[(adminIndex + index) % DONOR_COLORS.length];
                   const pct = target ? (Number(entry.amount || 0) / target) * 100 : 0;
+                  const image = primaryImage(entry);
                   return `<article class="public-donation-card" style="--donor-color:${color}">
-                    <a href="donation.html?id=${encodeURIComponent(entry.id)}" target="_blank" rel="noopener">${entry.donorName}</a>
-                    <span class="amount">${money(entry.amount, currency)}</span>
-                    <div class="percent">${pct.toFixed(2)}% of target</div>
+                    <a class="donor-photo-link" href="donation.html?id=${encodeURIComponent(entry.id)}" target="_blank" rel="noopener" aria-label="${entry.donorName}">
+                      ${image ? `<img class="donor-photo" src="${image.dataUrl}" alt="${entry.donorName}" style="object-position:${image.focusX || 50}% ${image.focusY || 50}%">` : `<span class="donor-photo donor-photo-fallback">${String(entry.donorName || "?").charAt(0).toUpperCase()}</span>`}
+                    </a>
+                    <div class="donor-summary">
+                      <a href="donation.html?id=${encodeURIComponent(entry.id)}" target="_blank" rel="noopener">${entry.donorName}</a>
+                      <span class="amount">${money(entry.amount, currency)}</span>
+                      <div class="percent">${pct.toFixed(2)}% of target</div>
+                    </div>
                   </article>`;
                 }).join("")}
               </div>
@@ -193,6 +203,7 @@ window.DipakCMS = {
   money,
   slugify,
   uid,
+  primaryImage,
   sha256,
   readJson,
   saveJson,
