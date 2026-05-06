@@ -1,17 +1,17 @@
 {
   "donations": [
     {
-      "id": "ganesh-malla-mouf1nqc-e8xp8y",
-      "donorName": "Ganesh Malla",
-      "amount": 400001,
+      "id": "sonam-dorje-mouf1x3q-0jnm4u",
+      "donorName": "Sonam Dorje",
+      "amount": 133445,
       "info": "",
-      "color": "#a16207",
+      "color": "#be123c",
       "status": "draft",
       "adminId": "admin-moue9fg9-gdy0yd",
       "adminName": "Admin 2",
       "images": [],
-      "createdAt": "2026-05-06T18:54:03.108Z",
-      "updatedAt": "2026-05-06T18:54:03.108Z",
+      "createdAt": "2026-05-06T18:54:15.254Z",
+      "updatedAt": "2026-05-06T18:54:15.254Z",
       "publishedAt": null
     },
     {
