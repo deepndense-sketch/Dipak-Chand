@@ -14,7 +14,7 @@
         <p>Add new donation entries, publish them to the public website, or keep them as drafts.</p>
       </div>
       <nav class="backend-nav">
-        <a class="secondary" href="./index.html">Website</a>
+        <a class="secondary" href="./index.html" target="_blank" rel="noopener">Website</a>
         <button type="button" class="secondary" id="logoutBtn">Logout</button>
       </nav>
     </header>
@@ -188,7 +188,7 @@
           <div class="chip-row"><span class="chip">${entry.status}</span><span class="chip">${(entry.images || []).length} image(s)</span></div>
           <div class="action-row">
             <button type="button" data-edit="${entry.id}">Edit</button>
-            <a class="button secondary" href="donation.html?id=${encodeURIComponent(entry.id)}" target="_blank">View Page</a>
+            <a class="button secondary" href="donation.html?id=${encodeURIComponent(entry.id)}" target="_blank" rel="noopener">View Page</a>
           </div>
         </article>`;
       }).join('');

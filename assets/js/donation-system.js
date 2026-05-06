@@ -157,7 +157,7 @@ function renderPublicDonationSummary(mountId = "donation-dashboard") {
                   const color = entry.color || DONOR_COLORS[(adminIndex + index) % DONOR_COLORS.length];
                   const pct = target ? (Number(entry.amount || 0) / target) * 100 : 0;
                   return `<article class="public-donation-card" style="--donor-color:${color}">
-                    <a href="donation.html?id=${encodeURIComponent(entry.id)}">${entry.donorName}</a>
+                    <a href="donation.html?id=${encodeURIComponent(entry.id)}" target="_blank" rel="noopener">${entry.donorName}</a>
                     <span class="amount">${money(entry.amount, currency)}</span>
                     <div class="percent">${pct.toFixed(2)}% of target</div>
                   </article>`;
