@@ -20,7 +20,17 @@
       "status": "approved",
       "createdAt": "2026-05-06T18:27:19.178Z",
       "approvedAt": "2026-05-06T18:27:19.179Z"
+    },
+    {
+      "id": "admin-moue9fg9-gdy0yd",
+      "email": "bmalla@gmail.com",
+      "username": "Admin 2",
+      "passwordHash": "a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3",
+      "role": "donation-admin",
+      "status": "approved",
+      "createdAt": "2026-05-06T18:32:06.010Z",
+      "approvedAt": "2026-05-06T18:32:06.010Z"
     }
   ],
-  "updatedAt": "2026-05-06T18:27:19.179Z"
+  "updatedAt": "2026-05-06T18:32:06.010Z"
 }
