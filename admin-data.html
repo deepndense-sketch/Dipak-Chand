@@ -4,25 +4,24 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Backend 2 - Donation Entry</title>
-  <link rel="stylesheet" href="./assets/css/donation-system.css?v=3">
+  <link rel="stylesheet" href="./assets/css/donation-system.css?v=4">
 </head>
 <body class="backend-body">
   <main class="backend-shell">
     <header class="backend-topbar">
       <div class="backend-brand">
         <h1>Donation Backend</h1>
-        <p>Create admin accounts, log in after main approval, and publish donor updates to the public website.</p>
+        <p>Log in with an approved Backend 2 account and publish donor updates to the public website.</p>
       </div>
       <nav class="backend-nav">
         <a class="secondary" href="./index.html">Website</a>
-        <a href="./admin-main.html">Backend 1</a>
       </nav>
     </header>
 
     <section class="backend-grid" id="authArea">
       <div class="backend-panel" id="loginPanel">
         <h2>Approved Admin Login</h2>
-        <p class="backend-help">Backend 2 accounts are created and approved from Backend 1 only.</p>
+        <p class="backend-help">Use the username/email and password provided by the main administrator.</p>
         <div class="form-grid">
           <label class="full">Username or email
             <input id="adminLogin" autocomplete="username">
@@ -35,7 +34,7 @@
           </label>
         </div>
         <div class="action-row">
-          <button id="adminLoginBtn">Login</button>
+          <button type="button" id="adminLoginBtn">Login</button>
         </div>
         <div class="status-line" id="loginStatus"></div>
       </div>
@@ -45,7 +44,7 @@
       <h2 id="dashboardTitle">Donation Dashboard</h2>
       <p class="backend-help">You are logged in. Add new donation entries, publish them to the public website, or keep them as drafts.</p>
       <div class="action-row">
-        <button class="secondary" id="logoutBtn">Logout</button>
+        <button type="button" class="secondary" id="logoutBtn">Logout</button>
       </div>
     </section>
 
@@ -78,8 +77,8 @@
         </div>
         <div id="imagePreview" class="preview-grid"></div>
         <div class="action-row">
-          <button id="saveDonationBtn">Save Donation</button>
-          <button class="secondary" id="newDonationBtn">New Entry</button>
+          <button type="button" id="saveDonationBtn">Save Donation</button>
+          <button type="button" class="secondary" id="newDonationBtn">New Entry</button>
         </div>
         <div class="status-line" id="donationStatus"></div>
       </div>
@@ -232,7 +231,7 @@
           <div>${cms.money(entry.amount, siteData.currency)} · ${pct.toFixed(2)}% of target</div>
           <div class="chip-row"><span class="chip">${entry.status}</span><span class="chip">${(entry.images || []).length} image(s)</span></div>
           <div class="action-row">
-            <button data-edit="${entry.id}">Edit</button>
+            <button type="button" data-edit="${entry.id}">Edit</button>
             <a class="button secondary" href="donation.html?id=${encodeURIComponent(entry.id)}" target="_blank">View Page</a>
           </div>
         </article>`;
