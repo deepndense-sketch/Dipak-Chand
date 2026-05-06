@@ -1,17 +1,31 @@
 {
   "donations": [
     {
-      "id": "sonam-dorje-mouf1x3q-0jnm4u",
-      "donorName": "Sonam Dorje",
-      "amount": 133445,
+      "id": "janam-sing-mouf25tl-minl5i",
+      "donorName": "Janam Sing",
+      "amount": 34567,
       "info": "",
-      "color": "#be123c",
+      "color": "#c2410c",
       "status": "draft",
       "adminId": "admin-moue9fg9-gdy0yd",
       "adminName": "Admin 2",
       "images": [],
-      "createdAt": "2026-05-06T18:54:15.254Z",
-      "updatedAt": "2026-05-06T18:54:15.254Z",
+      "createdAt": "2026-05-06T18:54:26.553Z",
+      "updatedAt": "2026-05-06T18:54:26.553Z",
+      "publishedAt": null
+    },
+    {
+      "id": "janam-sing-mouf25lm-2k7lfp",
+      "donorName": "Janam Sing",
+      "amount": 34567,
+      "info": "",
+      "color": "#c2410c",
+      "status": "draft",
+      "adminId": "admin-moue9fg9-gdy0yd",
+      "adminName": "Admin 2",
+      "images": [],
+      "createdAt": "2026-05-06T18:54:26.266Z",
+      "updatedAt": "2026-05-06T18:54:26.266Z",
       "publishedAt": null
     },
     {
