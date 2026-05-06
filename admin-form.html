@@ -166,6 +166,23 @@
       }
     }
 
+    async function deleteDonation(id) {
+      try {
+        if (!currentAdmin?.token) throw new Error('GitHub token is required to delete donation data.');
+        const entry = (donationData.donations || []).find((item) => item.id === id);
+        if (!entry) return;
+        if (!confirm(`Delete donation entry for ${entry.donorName}? This will remove it from the website data.`)) return;
+        donationData.donations = (donationData.donations || []).filter((item) => item.id !== id);
+        await cms.saveJson(cms.DATA_PATHS.donations, donationData, currentAdmin.token, `Delete donation from ${entry.donorName}`);
+        setStatus('donationStatus', 'Donation entry deleted and website data updated.', 'good');
+        await reloadData();
+        clearForm();
+        renderDonations();
+      } catch (error) {
+        setStatus('donationStatus', error.message, 'bad');
+      }
+    }
+
     function editDonation(id) {
       const entry = (donationData.donations || []).find((item) => item.id === id);
       if (!entry) return;
@@ -201,6 +218,7 @@
           <div class="chip-row"><span class="chip">${entry.status}</span><span class="chip">${(entry.images || []).length} image(s)</span></div>
           <div class="action-row">
             <button type="button" data-edit="${entry.id}">Edit</button>
+            <button type="button" class="danger" data-delete="${entry.id}">Delete</button>
             <a class="button secondary" href="donation.html?id=${encodeURIComponent(entry.id)}" target="_blank" rel="noopener">View Page</a>
           </div>
         </article>`;
@@ -228,6 +246,7 @@
     document.getElementById('newDonationBtn').addEventListener('click', clearForm);
     document.getElementById('donationList').addEventListener('click', (event) => {
       if (event.target.dataset.edit) editDonation(event.target.dataset.edit);
+      if (event.target.dataset.delete) deleteDonation(event.target.dataset.delete);
     });
     document.getElementById('imagePreview').addEventListener('input', (event) => {
       const xIndex = event.target.dataset.focusX;
