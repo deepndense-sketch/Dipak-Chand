@@ -19,7 +19,7 @@
       </nav>
     </header>
 
-    <section class="backend-grid">
+    <section class="backend-grid" id="authArea">
       <div class="backend-panel" id="signupPanel">
         <h2>Create Backend 2 Account</h2>
         <p class="backend-help">A new account becomes active only after Backend 1 approves it. Publishing the request requires a GitHub token because this site is static.</p>
@@ -60,6 +60,14 @@
           <button id="adminLoginBtn">Login</button>
         </div>
         <div class="status-line" id="loginStatus"></div>
+      </div>
+    </section>
+
+    <section class="backend-panel" id="dashboardHeader" hidden>
+      <h2 id="dashboardTitle">Donation Dashboard</h2>
+      <p class="backend-help">You are logged in. Add new donation entries, publish them to the public website, or keep them as drafts.</p>
+      <div class="action-row">
+        <button class="secondary" id="logoutBtn">Logout</button>
       </div>
     </section>
 
@@ -168,6 +176,9 @@
         if (!admin) throw new Error('Login failed or account is not approved yet.');
         currentAdmin = { ...admin, token };
         cms.sessionSet('dipakDonationAdmin', currentAdmin);
+        document.getElementById('authArea').hidden = true;
+        document.getElementById('dashboardHeader').hidden = false;
+        document.getElementById('dashboardTitle').textContent = `Donation Dashboard - ${admin.username}`;
         document.getElementById('workArea').hidden = false;
         setStatus('loginStatus', `Logged in as ${admin.username}.`, 'good');
         renderDonations();
@@ -280,6 +291,14 @@
 
     document.getElementById('signupBtn').addEventListener('click', signup);
     document.getElementById('adminLoginBtn').addEventListener('click', login);
+    document.getElementById('logoutBtn').addEventListener('click', () => {
+      sessionStorage.removeItem('dipakDonationAdmin');
+      currentAdmin = null;
+      document.getElementById('authArea').hidden = false;
+      document.getElementById('dashboardHeader').hidden = true;
+      document.getElementById('workArea').hidden = true;
+      setStatus('loginStatus', 'Logged out.', 'good');
+    });
     document.getElementById('saveDonationBtn').addEventListener('click', saveDonation);
     document.getElementById('newDonationBtn').addEventListener('click', clearForm);
     document.getElementById('donationList').addEventListener('click', (event) => {
