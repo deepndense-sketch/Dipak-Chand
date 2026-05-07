@@ -337,12 +337,14 @@
         if (!confirm(`Delete donation admin ${admin.username} and remove ${adminEntries.length} donation entr${adminEntries.length === 1 ? 'y' : 'ies'} from the website?`)) return;
         usersData.approved = (usersData.approved || []).filter((user) => user.id !== id);
         await saveUsers(`Delete donation admin ${admin.username}`);
+        renderApproved();
         try {
           await cms.updateJson(cms.DATA_PATHS.donationsIndex, { donations: [] }, mainSession.token, `Remove donations from ${admin.username}`, (latest) => {
             latest.donations = (latest.donations || []).filter((entry) => !isAdminEntry(entry));
             latest.updatedAt = new Date().toISOString();
             return latest;
           });
+          donationData.donations = (donationData.donations || []).filter((entry) => !isAdminEntry(entry));
           await Promise.all(adminEntries.map((entry) =>
             cms.deleteJson(cms.donationDetailPath(entry.id), mainSession.token, `Remove donation detail from ${entry.donorName}`).catch(() => null)
           ));

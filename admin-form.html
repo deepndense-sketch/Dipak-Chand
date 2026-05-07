@@ -234,8 +234,8 @@
           latest.updatedAt = new Date().toISOString();
           return latest;
         });
+        donationData.donations = (donationData.donations || []).filter((item) => item.id !== id);
         setStatus('donationStatus', 'Donation entry deleted and website data updated.', 'good');
-        await reloadData();
         clearForm();
         renderDonations();
       } catch (error) {
