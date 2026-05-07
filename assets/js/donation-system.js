@@ -158,6 +158,12 @@ async function saveJson(path, value, token, message) {
   }
 }
 
+async function loadGithubJson(path, token) {
+  if (!token) throw new Error("GitHub token is required to verify changes.");
+  const existing = await githubGet(path, token);
+  return fromBase64Utf8(existing.content);
+}
+
 async function updateJson(path, fallback, token, message, updater) {
   if (!token) throw new Error("GitHub token is required to publish changes.");
   for (let attempt = 0; attempt < 3; attempt += 1) {
@@ -308,6 +314,7 @@ window.DipakCMS = {
   sortDonationsNewest,
   sha256,
   readJson,
+  loadGithubJson,
   saveJson,
   deleteJson,
   updateJson,

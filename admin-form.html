@@ -89,7 +89,7 @@
     </section>
   </main>
 
-  <script src="./assets/js/donation-system.js"></script>
+  <script src="./assets/js/donation-system.js?v=14"></script>
   <script>
     const cms = window.DipakCMS;
     let usersData = null;
@@ -151,6 +151,15 @@
 
       const hiddenIds = new Set(Object.keys(hidden));
       return serverDonations.filter((entry) => !hiddenIds.has(entry.id));
+    }
+
+    async function verifyDonationSaved(id) {
+      const detail = await cms.loadGithubJson(cms.donationDetailPath(id), currentAdmin.token);
+      if (detail.id !== id) throw new Error('GitHub accepted the request but the donation detail file could not be verified. Please click Save Donation again.');
+      const latest = await cms.loadGithubJson(cms.DATA_PATHS.donationsIndex, currentAdmin.token);
+      const saved = (latest.donations || []).some((entry) => entry.id === id);
+      if (!saved) throw new Error('GitHub accepted the request but the donation was not found in the database. Please click Save Donation again.');
+      return latest;
     }
 
     async function reloadData() {
@@ -227,7 +236,9 @@
 
     async function saveDonation() {
       let previousDonations;
+      const saveButton = document.getElementById('saveDonationBtn');
       try {
+        saveButton.disabled = true;
         if (!currentAdmin?.token) throw new Error('GitHub token is required to publish donation data.');
         const approvedAdmin = (usersData.approved || []).find((user) => user.id === currentAdmin.id);
         if (!approvedAdmin) throw new Error('This admin account is no longer approved. Please log in again.');
@@ -268,6 +279,9 @@
           latest.updatedAt = new Date().toISOString();
           return latest;
         });
+        const verifiedIndex = await verifyDonationSaved(id);
+        donationData.donations = applyLocalDonationDisplay(verifiedIndex.donations || []);
+        renderDonations();
         setStatus('donationStatus', 'Donation entry saved and website data updated.', 'good');
         clearForm();
       } catch (error) {
@@ -276,6 +290,8 @@
           renderDonations();
         }
         setStatus('donationStatus', error.message, 'bad');
+      } finally {
+        saveButton.disabled = false;
       }
     }
 
