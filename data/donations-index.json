@@ -85,20 +85,6 @@
       "publishedAt": "2026-05-06T19:12:02.732Z"
     },
     {
-      "id": "ganesh-malla-moufg4s3-zs4xlg",
-      "donorName": "Ganesh Malla",
-      "amount": 100000,
-      "color": "#15803d",
-      "status": "published",
-      "adminId": "admin-moue9fg9-gdy0yd",
-      "adminName": "Admin 2",
-      "address": "",
-      "imageCount": 0,
-      "createdAt": "2026-05-06T19:05:18.387Z",
-      "updatedAt": "2026-05-06T19:05:18.388Z",
-      "publishedAt": "2026-05-06T19:05:18.388Z"
-    },
-    {
       "id": "kam-bahadur-mouf0q4u-9fgsc9",
       "donorName": "Kam Bahadur",
       "amount": 123451,
@@ -155,5 +141,5 @@
       "publishedAt": "2026-05-06T18:28:18.853Z"
     }
   ],
-  "updatedAt": "2026-05-07T03:37:41.411Z"
+  "updatedAt": "2026-05-07T03:39:12.735Z"
 }
