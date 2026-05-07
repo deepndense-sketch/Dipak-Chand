@@ -37,13 +37,13 @@
       document.title = `${siteTitle} - ${entry.donorName}`;
       mount.innerHTML = `
         <section class="detail-appeal">
-          <a class="detail-appeal-photo photo-left" href="./index.html" aria-label="Dipak Chand appeal"></a>
-          <a class="detail-appeal-photo photo-right" href="./index.html" aria-label="Dipak Chand hospital photo"></a>
           <div class="detail-appeal-copy">
             <span class="chip">Support Appeal</span>
             <h1><a href="./index.html">${siteTitle}</a></h1>
             <p>Dipak Chand support page</p>
           </div>
+          <a class="detail-appeal-photo photo-left" href="./index.html" aria-label="Dipak Chand appeal"></a>
+          <a class="detail-appeal-photo photo-right" href="./index.html" aria-label="Dipak Chand hospital photo"></a>
         </section>
         <section class="detail-hero ${profileImage ? 'with-profile' : ''}">
           ${profileImage ? `<div class="detail-profile-photo"><img src="${profileImage.dataUrl}" alt="${profileImage.name || entry.donorName}" style="object-position:${profileImage.focusX || 50}% ${profileImage.focusY || 50}%; transform:scale(${profileImage.zoom || 1})"></div>` : ''}

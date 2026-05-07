@@ -452,9 +452,9 @@ textarea {
 
 .detail-appeal {
   display: grid;
-  grid-template-columns: minmax(120px, 0.55fr) minmax(120px, 0.55fr) minmax(0, 1fr);
+  grid-template-columns: repeat(2, minmax(120px, 1fr));
   gap: 12px;
-  align-items: stretch;
+  align-items: start;
   margin-bottom: 20px;
   padding-bottom: 18px;
   border-bottom: 1px solid var(--admin-line);
@@ -481,7 +481,8 @@ textarea {
 
 .detail-appeal-copy {
   display: grid;
-  align-content: center;
+  grid-column: 1 / -1;
+  align-content: start;
   gap: 8px;
 }
 
