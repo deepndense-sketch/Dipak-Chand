@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Main Admin</title>
-  <link rel="stylesheet" href="./assets/css/donation-system.css?v=10">
+  <link rel="stylesheet" href="./assets/css/donation-system.css?v=11">
 </head>
 <body class="backend-body">
   <main class="backend-shell">
@@ -26,6 +26,9 @@
         <div class="form-grid">
           <label class="full">Username or email
             <input id="mainLogin" autocomplete="username" placeholder="mainadmin">
+          </label>
+          <label class="full">Password
+            <input id="mainPassword" type="password" autocomplete="current-password" placeholder="Enter password">
           </label>
         </div>
         <div class="action-row">
@@ -87,6 +90,26 @@
         <div class="status-line" id="targetStatus"></div>
       </div>
 
+      <div class="backend-panel" id="mainPasswordPanel" hidden>
+        <h2>Change Main Password</h2>
+        <p class="backend-help">Update the main admin login password and save it to the site data.</p>
+        <div class="form-grid">
+          <label class="full">Current password
+            <input id="currentMainPassword" type="password" autocomplete="current-password">
+          </label>
+          <label>New password
+            <input id="newMainPassword" type="password" autocomplete="new-password">
+          </label>
+          <label>Confirm new password
+            <input id="confirmMainPassword" type="password" autocomplete="new-password">
+          </label>
+        </div>
+        <div class="action-row">
+          <button id="saveMainPasswordBtn" type="button">Save Password</button>
+        </div>
+        <div class="status-line" id="mainPasswordStatus"></div>
+      </div>
+
       <div class="backend-panel" id="approvedPanel" hidden>
         <h2>Approved Admins</h2>
         <div id="approvedList" class="table-list"></div>
@@ -103,6 +126,7 @@
 
     const status = document.getElementById('mainStatus');
     const targetStatus = document.getElementById('targetStatus');
+    const mainPasswordStatus = document.getElementById('mainPasswordStatus');
 
     function setStatus(el, text, type = '') {
       el.className = `status-line ${type}`;
@@ -122,27 +146,27 @@
     async function login() {
       try {
         await loadPanels();
+        const loginValue = document.getElementById('mainLogin').value.trim().toLowerCase();
+        const passwordHash = await cms.sha256(document.getElementById('mainPassword').value);
+        const admin = (usersData.mainAdmins || []).find((user) =>
+          ((user.email || '').toLowerCase() === loginValue || (user.username || '').toLowerCase() === loginValue) && user.passwordHash === passwordHash
+        );
+        if (!admin) throw new Error('Login failed.');
+        mainSession = {
+          ...admin,
+          token: cms.rememberToken(document.getElementById('mainToken').value)
+        };
       } catch (error) {
-        usersData = usersData || { mainAdmins: [], pending: [], approved: [] };
-        siteData = siteData || { targetAmount: 5000000, currency: 'Rs' };
-        document.getElementById('targetAmount').value = siteData.targetAmount;
-        document.getElementById('currencyLabel').value = siteData.currency;
-        renderPending();
-        renderApproved();
+        setStatus(status, error.message || 'Login failed.', 'bad');
+        return;
       }
-      mainSession = {
-        id: 'main-admin',
-        email: 'admin@example.com',
-        username: 'mainadmin',
-        role: 'main',
-        token: cms.rememberToken(document.getElementById('mainToken').value)
-      };
       cms.sessionSet('dipakMainAdmin', mainSession);
       document.getElementById('loginPanel').hidden = true;
       document.getElementById('publishingPanel').hidden = false;
       document.getElementById('approvalPanel').hidden = false;
       document.getElementById('createAdminPanel').hidden = false;
       document.getElementById('targetPanel').hidden = false;
+      document.getElementById('mainPasswordPanel').hidden = false;
       document.getElementById('approvedPanel').hidden = false;
       setStatus(status, 'Logged in.', 'good');
     }
@@ -219,7 +243,40 @@
       }
     }
 
+    async function changeMainPassword() {
+      try {
+        if (!mainSession?.token) throw new Error('Enter a GitHub token in the Publishing Token panel to save the password change.');
+        const adminIndex = (usersData.mainAdmins || []).findIndex((user) => user.id === mainSession.id);
+        if (adminIndex < 0) throw new Error('Main admin account was not found.');
+        const currentPassword = document.getElementById('currentMainPassword').value;
+        const newPassword = document.getElementById('newMainPassword').value;
+        const confirmPassword = document.getElementById('confirmMainPassword').value;
+        if (!currentPassword || !newPassword || !confirmPassword) throw new Error('Current password, new password, and confirmation are required.');
+        if (newPassword.length < 6) throw new Error('New password must be at least 6 characters.');
+        if (newPassword !== confirmPassword) throw new Error('New password and confirmation do not match.');
+        const currentHash = await cms.sha256(currentPassword);
+        if (currentHash !== usersData.mainAdmins[adminIndex].passwordHash) throw new Error('Current password is not correct.');
+        usersData.mainAdmins[adminIndex] = {
+          ...usersData.mainAdmins[adminIndex],
+          passwordHash: await cms.sha256(newPassword),
+          updatedAt: new Date().toISOString()
+        };
+        await saveUsers('Update main admin password');
+        mainSession = { ...usersData.mainAdmins[adminIndex], token: mainSession.token };
+        cms.sessionSet('dipakMainAdmin', mainSession);
+        document.getElementById('currentMainPassword').value = '';
+        document.getElementById('newMainPassword').value = '';
+        document.getElementById('confirmMainPassword').value = '';
+        setStatus(mainPasswordStatus, 'Main admin password saved.', 'good');
+      } catch (error) {
+        setStatus(mainPasswordStatus, error.message, 'bad');
+      }
+    }
+
     document.getElementById('mainLoginBtn').addEventListener('click', login);
+    document.getElementById('mainPassword').addEventListener('keydown', (event) => {
+      if (event.key === 'Enter') login();
+    });
     document.getElementById('mainToken').addEventListener('input', (event) => {
       if (mainSession) {
         mainSession.token = cms.rememberToken(event.target.value);
@@ -228,6 +285,7 @@
     });
     document.getElementById('mainToken').value = cms.getRememberedToken();
     document.getElementById('createAdminBtn').addEventListener('click', createApprovedAdmin);
+    document.getElementById('saveMainPasswordBtn').addEventListener('click', changeMainPassword);
     document.getElementById('pendingList').addEventListener('click', async (event) => {
       const approveId = event.target.dataset.approve;
       const rejectId = event.target.dataset.reject;
