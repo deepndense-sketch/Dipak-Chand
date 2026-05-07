@@ -32,20 +32,6 @@
       "publishedAt": "2026-05-07T13:26:51.081Z"
     },
     {
-      "id": "ram-movisg1q-g0o11d",
-      "donorName": "Ram",
-      "amount": 12324,
-      "color": "#a16207",
-      "status": "published",
-      "adminId": "admin-mouy6qsq-7goq2m",
-      "adminName": "Shankar Chand",
-      "address": "",
-      "imageCount": 0,
-      "createdAt": "2026-05-07T13:26:37.886Z",
-      "updatedAt": "2026-05-07T13:26:37.886Z",
-      "publishedAt": "2026-05-07T13:26:37.886Z"
-    },
-    {
       "id": "samar-movimv4x-33wk9y",
       "donorName": "Samar",
       "amount": 123445,
@@ -105,5 +91,5 @@
       }
     }
   ],
-  "updatedAt": "2026-05-07T14:36:12.085Z"
+  "updatedAt": "2026-05-07T14:36:14.234Z"
 }
