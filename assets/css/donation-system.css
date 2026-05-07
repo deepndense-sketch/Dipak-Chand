@@ -192,6 +192,7 @@ textarea {
 body:not(.backend-body) {
   margin: 0;
   min-height: 100vh;
+  font-family: "Noto Sans Devanagari", "Nirmala UI", "Mangal", system-ui, sans-serif;
   color: #17212f;
   background: #eef2f5;
   padding: 0;
@@ -598,6 +599,7 @@ body:not(.backend-body) .section {
   display: grid;
   gap: 10px;
   margin: 0 0 16px;
+  font-family: "Noto Sans Devanagari", "Nirmala UI", "Mangal", system-ui, sans-serif;
 }
 
 .public-site-header .site-title,
@@ -611,6 +613,7 @@ body:not(.backend-body) .section {
   letter-spacing: 0;
   text-decoration: none;
   text-transform: uppercase;
+  font-family: inherit;
 }
 
 .site-actions {
@@ -639,6 +642,7 @@ body:not(.backend-body) .section {
   line-height: 1;
   text-decoration: none;
   box-shadow: none;
+  font-family: inherit;
   transition: background-color 0.15s ease, color 0.15s ease;
 }
 
