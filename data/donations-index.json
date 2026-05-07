@@ -1,20 +1,6 @@
 {
   "donations": [
     {
-      "id": "ram-movi942i-82iu24",
-      "donorName": "Ram",
-      "amount": 1234,
-      "color": "#c2410c",
-      "status": "published",
-      "adminId": "admin-mouy6qsq-7goq2m",
-      "adminName": "Shankar Chand",
-      "address": "",
-      "imageCount": 0,
-      "createdAt": "2026-05-07T13:11:35.898Z",
-      "updatedAt": "2026-05-07T13:11:35.898Z",
-      "publishedAt": "2026-05-07T13:11:35.898Z"
-    },
-    {
       "id": "hsja-movhwd5j-qmhgch",
       "donorName": "Hsja",
       "amount": 55,
@@ -29,5 +15,5 @@
       "publishedAt": "2026-05-07T13:01:41.144Z"
     }
   ],
-  "updatedAt": "2026-05-07T13:12:49.872Z"
+  "updatedAt": "2026-05-07T13:12:51.663Z"
 }
