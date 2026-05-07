@@ -99,6 +99,8 @@
     let profileImage = null;
     let otherImages = [];
     let visibleEntryCount = 10;
+    const LOCAL_PENDING_DONATIONS_KEY = 'dipakPendingDonationEntries';
+    const LOCAL_HIDDEN_DONATIONS_KEY = 'dipakHiddenDonationEntries';
 
     function setStatus(id, text, type = '') {
       const el = document.getElementById(id);
@@ -106,10 +108,76 @@
       el.textContent = text;
     }
 
+    function readLocalJson(key, fallback) {
+      try {
+        return JSON.parse(localStorage.getItem(key) || JSON.stringify(fallback));
+      } catch (error) {
+        return fallback;
+      }
+    }
+
+    function writeLocalJson(key, value) {
+      localStorage.setItem(key, JSON.stringify(value));
+    }
+
+    function getPendingDonations() {
+      return readLocalJson(LOCAL_PENDING_DONATIONS_KEY, []);
+    }
+
+    function setPendingDonations(entries) {
+      writeLocalJson(LOCAL_PENDING_DONATIONS_KEY, entries);
+    }
+
+    function rememberPendingDonation(entry) {
+      const pending = getPendingDonations().filter((item) => item.id !== entry.id);
+      setPendingDonations([{ ...entry, localUpdatedAt: new Date().toISOString() }, ...pending]);
+    }
+
+    function forgetPendingDonation(id) {
+      setPendingDonations(getPendingDonations().filter((entry) => entry.id !== id));
+    }
+
+    function getHiddenDonations() {
+      return readLocalJson(LOCAL_HIDDEN_DONATIONS_KEY, {});
+    }
+
+    function setHiddenDonations(hidden) {
+      writeLocalJson(LOCAL_HIDDEN_DONATIONS_KEY, hidden);
+    }
+
+    function rememberHiddenDonation(id) {
+      const hidden = getHiddenDonations();
+      hidden[id] = Date.now();
+      setHiddenDonations(hidden);
+    }
+
+    function forgetHiddenDonation(id) {
+      const hidden = getHiddenDonations();
+      delete hidden[id];
+      setHiddenDonations(hidden);
+    }
+
+    function applyLocalDonationDisplay(serverDonations) {
+      const serverIds = new Set(serverDonations.map((entry) => entry.id));
+      const hidden = getHiddenDonations();
+      Object.keys(hidden).forEach((id) => {
+        if (!serverIds.has(id)) delete hidden[id];
+      });
+      setHiddenDonations(hidden);
+
+      const hiddenIds = new Set(Object.keys(hidden));
+      const pending = getPendingDonations().filter((entry) => !serverIds.has(entry.id) && !hiddenIds.has(entry.id));
+      setPendingDonations(pending);
+
+      const pendingIds = new Set(pending.map((entry) => entry.id));
+      const visibleServer = serverDonations.filter((entry) => !hiddenIds.has(entry.id) && !pendingIds.has(entry.id));
+      return [...pending, ...visibleServer];
+    }
+
     async function reloadData() {
       const all = await cms.loadAllData();
       usersData = all.users;
-      donationData = { donations: all.donations };
+      donationData = { donations: applyLocalDonationDisplay(all.donations || []) };
       siteData = all.site;
     }
 
@@ -180,6 +248,7 @@
 
     async function saveDonation() {
       let previousDonations;
+      let optimisticId = '';
       try {
         if (!currentAdmin?.token) throw new Error('GitHub token is required to publish donation data.');
         const approvedAdmin = (usersData.approved || []).find((user) => user.id === currentAdmin.id);
@@ -190,6 +259,7 @@
         const amount = Number(document.getElementById('donorAmount').value || 0);
         if (!donorName || !amount) throw new Error('Donor name and amount are required.');
         const id = document.getElementById('donationId').value || cms.uid(cms.slugify(donorName));
+        optimisticId = id;
         const status = document.getElementById('donorStatus').value;
         const existing = (donationData.donations || []).find((entry) => entry.id === id);
         const entry = {
@@ -210,18 +280,22 @@
           publishedAt: status === 'published' ? (existing?.publishedAt || new Date().toISOString()) : existing?.publishedAt || null
         };
         previousDonations = [...(donationData.donations || [])];
-        donationData.donations = [cms.donationSummary(entry), ...previousDonations.filter((item) => item.id !== id)];
+        const summary = cms.donationSummary(entry);
+        rememberPendingDonation(summary);
+        forgetHiddenDonation(id);
+        donationData.donations = [summary, ...previousDonations.filter((item) => item.id !== id)];
         renderDonations();
         setStatus('donationStatus', 'Saving donation entry...', 'good');
         await cms.saveJson(cms.donationDetailPath(id), entry, currentAdmin.token, `${status === 'published' ? 'Publish' : 'Save draft'} donation detail from ${donorName}`);
         await cms.updateJson(cms.DATA_PATHS.donationsIndex, { donations: [] }, currentAdmin.token, `${status === 'published' ? 'Publish' : 'Save draft'} donation from ${donorName}`, (latest) => {
-          latest.donations = [cms.donationSummary(entry), ...((latest.donations || []).filter((item) => item.id !== id))];
+          latest.donations = [summary, ...((latest.donations || []).filter((item) => item.id !== id))];
           latest.updatedAt = new Date().toISOString();
           return latest;
         });
         setStatus('donationStatus', 'Donation entry saved and website data updated.', 'good');
         clearForm();
       } catch (error) {
+        if (optimisticId) forgetPendingDonation(optimisticId);
         if (previousDonations) {
           donationData.donations = previousDonations;
           renderDonations();
@@ -231,21 +305,32 @@
     }
 
     async function deleteDonation(id) {
+      let previousDonations;
       try {
         if (!currentAdmin?.token) throw new Error('GitHub token is required to delete donation data.');
         const entry = (donationData.donations || []).find((item) => item.id === id);
         if (!entry) return;
         if (!confirm(`Delete donation entry for ${entry.donorName}? This will remove it from the website data.`)) return;
+        previousDonations = [...(donationData.donations || [])];
+        rememberHiddenDonation(id);
+        forgetPendingDonation(id);
+        donationData.donations = previousDonations.filter((item) => item.id !== id);
+        setStatus('donationStatus', 'Deleting donation entry...', 'good');
+        renderDonations();
         await cms.updateJson(cms.DATA_PATHS.donationsIndex, { donations: [] }, currentAdmin.token, `Delete donation from ${entry.donorName}`, (latest) => {
           latest.donations = (latest.donations || []).filter((item) => item.id !== id);
           latest.updatedAt = new Date().toISOString();
           return latest;
         });
-        donationData.donations = (donationData.donations || []).filter((item) => item.id !== id);
+        await cms.deleteJson(cms.donationDetailPath(id), currentAdmin.token, `Delete donation detail from ${entry.donorName}`).catch(() => null);
         setStatus('donationStatus', 'Donation entry deleted and website data updated.', 'good');
         clearForm();
-        renderDonations();
       } catch (error) {
+        forgetHiddenDonation(id);
+        if (previousDonations) {
+          donationData.donations = previousDonations;
+          renderDonations();
+        }
         setStatus('donationStatus', error.message, 'bad');
       }
     }
