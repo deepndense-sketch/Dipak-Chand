@@ -1,20 +1,6 @@
 {
   "donations": [
     {
-      "id": "ram-movgnke1-fwn5im",
-      "donorName": "Ram",
-      "amount": 1234,
-      "color": "#b45309",
-      "status": "published",
-      "adminId": "admin-mouy6qsq-7goq2m",
-      "adminName": "Shankar Chand",
-      "address": "",
-      "imageCount": 0,
-      "createdAt": "2026-05-07T12:26:51.001Z",
-      "updatedAt": "2026-05-07T12:26:51.001Z",
-      "publishedAt": "2026-05-07T12:26:51.001Z"
-    },
-    {
       "id": "kadam-movgl8k6-0vwklw",
       "donorName": "Kadam",
       "amount": 12345,
@@ -57,5 +43,5 @@
       "publishedAt": "2026-05-07T12:22:31.293Z"
     }
   ],
-  "updatedAt": "2026-05-07T12:26:52.861Z"
+  "updatedAt": "2026-05-07T12:33:58.572Z"
 }
