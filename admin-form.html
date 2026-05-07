@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Donation Entry Form</title>
-  <link rel="stylesheet" href="./assets/css/donation-system.css?v=24">
+  <link rel="stylesheet" href="./assets/css/donation-system.css?v=25">
 </head>
 <body class="backend-body">
   <main class="backend-shell">
@@ -72,7 +72,6 @@
       <div class="backend-panel">
         <h2>All Entries</h2>
         <div class="metrics-grid" id="adminMetrics"></div>
-        <div class="action-row" id="completeListRow" hidden></div>
         <div id="donationList" class="table-list"></div>
         <div class="action-row" id="showMoreEntriesRow" hidden>
           <button type="button" class="secondary" id="showMoreEntriesBtn">See more</button>
@@ -383,11 +382,6 @@
       const allPublished = allEntries.filter((entry) => entry.status === 'published');
       const allTotal = allPublished.reduce((sum, entry) => sum + Number(entry.amount || 0), 0);
       const listLimit = visibleEntryCount;
-      const completeRow = document.getElementById('completeListRow');
-      completeRow.hidden = allPublished.length <= 0;
-      completeRow.innerHTML = allPublished.length
-        ? `<a class="button secondary" href="donations-list.html">View complete list (${allPublished.length})</a>`
-        : '';
       const showMoreRow = document.getElementById('showMoreEntriesRow');
       const showMoreBtn = document.getElementById('showMoreEntriesBtn');
       const remainingEntries = Math.max(0, allEntries.length - visibleEntryCount);

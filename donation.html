@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Save Dipak Chand - Donation Detail</title>
-  <link rel="stylesheet" href="./assets/css/donation-system.css?v=24">
+  <link rel="stylesheet" href="./assets/css/donation-system.css?v=25">
 </head>
 <body>
   <main class="detail-shell">
@@ -41,17 +41,6 @@
       const otherImages = entry.otherImages || (entry.images || []).slice(profileImage ? 1 : 0);
       document.title = `${siteTitle} - ${entry.donorName}`;
       mount.innerHTML = `
-        <section class="detail-appeal">
-          <div class="detail-appeal-copy">
-            <span class="chip">Support Appeal</span>
-            <h1><a href="./index.html">${siteTitle}</a></h1>
-            <p>Dipak Chand support page</p>
-          </div>
-          <div class="detail-appeal-photos">
-            <a class="detail-appeal-photo photo-left" href="./index.html" aria-label="Dipak Chand appeal"></a>
-            <a class="detail-appeal-photo photo-right" href="./index.html" aria-label="Dipak Chand hospital photo"></a>
-          </div>
-        </section>
         <section class="detail-hero ${profileImage ? 'with-profile' : ''}">
           ${profileImage ? `<div class="detail-profile-photo"><img src="${profileImage.dataUrl}" alt="${profileImage.name || entry.donorName}" style="object-position:${profileImage.focusX || 50}% ${profileImage.focusY || 50}%; transform:scale(${profileImage.zoom || 1})"></div>` : ''}
           <div>
