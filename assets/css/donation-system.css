@@ -509,11 +509,9 @@ textarea {
 }
 
 .public-site-header {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 18px;
-  margin: 0 0 18px;
+  display: grid;
+  gap: 14px;
+  margin: 0 0 20px;
 }
 
 .public-site-header .site-title,
@@ -530,55 +528,42 @@ textarea {
 }
 
 .site-actions {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: flex-end;
-  gap: 8px;
-  padding-top: 4px;
+  display: inline-grid;
+  grid-template-columns: repeat(2, minmax(118px, 1fr));
+  gap: 0;
+  width: min(100%, 340px);
+  padding: 4px;
+  border: 1px solid #d7e0e5;
+  border-radius: 8px;
+  background: #f7fafb;
 }
 
 .nav-button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-height: 38px;
-  border: 1px solid #cad6dc;
-  border-radius: 999px;
-  padding: 8px 14px;
-  background: #ffffff;
-  color: #0f4c5c;
+  min-height: 40px;
+  border: 0;
+  border-radius: 6px;
+  padding: 9px 12px;
+  background: transparent;
+  color: #263849;
   font-weight: 850;
-  font-size: 14px;
+  font-size: 15px;
   line-height: 1;
   text-decoration: none;
   box-shadow: none;
-  transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+  transition: background-color 0.15s ease, color 0.15s ease;
 }
 
 .nav-button:hover,
 .nav-button:focus-visible {
-  background: #eef7f8;
-  border-color: #8fb8c2;
-  color: #0b3440;
+  background: #e9f1f3;
+  color: #0f4c5c;
 }
 
 .nav-button.active {
-  background: #f8e9ec;
-  border-color: #d7a5ae;
-  color: #9f1d35;
-}
-
-.site-actions .nav-button[href$="donate.html"] {
-  background: #9f1d35;
-  border-color: #9f1d35;
-  color: #fff;
-}
-
-.site-actions .nav-button[href$="donate.html"]:hover,
-.site-actions .nav-button[href$="donate.html"]:focus-visible,
-.site-actions .nav-button[href$="donate.html"].active {
-  background: #7f172a;
-  border-color: #7f172a;
+  background: #0f4c5c;
   color: #fff;
 }
 
@@ -596,15 +581,10 @@ textarea {
   margin: 0 auto;
 }
 
-@media (max-width: 720px) {
-  .public-site-header {
-    display: grid;
-    gap: 12px;
-  }
-
+@media (max-width: 520px) {
   .site-actions {
-    justify-content: flex-start;
-    padding-top: 0;
+    grid-template-columns: 1fr 1fr;
+    width: 100%;
   }
 }
 
