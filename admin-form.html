@@ -179,6 +179,7 @@
     }
 
     async function saveDonation() {
+      let previousDonations;
       try {
         if (!currentAdmin?.token) throw new Error('GitHub token is required to publish donation data.');
         const approvedAdmin = (usersData.approved || []).find((user) => user.id === currentAdmin.id);
@@ -208,6 +209,10 @@
           updatedAt: new Date().toISOString(),
           publishedAt: status === 'published' ? (existing?.publishedAt || new Date().toISOString()) : existing?.publishedAt || null
         };
+        previousDonations = [...(donationData.donations || [])];
+        donationData.donations = [cms.donationSummary(entry), ...previousDonations.filter((item) => item.id !== id)];
+        renderDonations();
+        setStatus('donationStatus', 'Saving donation entry...', 'good');
         await cms.saveJson(cms.donationDetailPath(id), entry, currentAdmin.token, `${status === 'published' ? 'Publish' : 'Save draft'} donation detail from ${donorName}`);
         await cms.updateJson(cms.DATA_PATHS.donationsIndex, { donations: [] }, currentAdmin.token, `${status === 'published' ? 'Publish' : 'Save draft'} donation from ${donorName}`, (latest) => {
           latest.donations = [cms.donationSummary(entry), ...((latest.donations || []).filter((item) => item.id !== id))];
@@ -215,10 +220,12 @@
           return latest;
         });
         setStatus('donationStatus', 'Donation entry saved and website data updated.', 'good');
-        await reloadData();
         clearForm();
-        renderDonations();
       } catch (error) {
+        if (previousDonations) {
+          donationData.donations = previousDonations;
+          renderDonations();
+        }
         setStatus('donationStatus', error.message, 'bad');
       }
     }
