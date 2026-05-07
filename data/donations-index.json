@@ -43,20 +43,6 @@
       "publishedAt": "2026-05-07T02:13:21.067Z"
     },
     {
-      "id": "test-test-mouu2nl7-dh5l97",
-      "donorName": "Test Test",
-      "amount": 1000,
-      "color": "#0f766e",
-      "status": "published",
-      "adminId": "admin-moue9fg9-gdy0yd",
-      "adminName": "Admin 2",
-      "address": "",
-      "imageCount": 1,
-      "createdAt": "2026-05-07T01:54:43.819Z",
-      "updatedAt": "2026-05-07T01:54:43.826Z",
-      "publishedAt": "2026-05-07T01:54:43.826Z"
-    },
-    {
       "id": "shawan-sing-ji-maharaj-mouftfdl-zex5nn",
       "donorName": "Shawan Sing Ji Maharaj",
       "amount": 120000,
@@ -323,5 +309,5 @@
       "publishedAt": "2026-05-06T18:28:18.853Z"
     }
   ],
-  "updatedAt": "2026-05-07T03:28:46.138Z"
+  "updatedAt": "2026-05-07T03:36:38.581Z"
 }
