@@ -189,6 +189,140 @@ textarea {
   resize: vertical;
 }
 
+body:not(.backend-body) {
+  margin: 0;
+  min-height: 100vh;
+  color: #17212f;
+  background: #eef2f5;
+  padding: 0;
+}
+
+body:not(.backend-body) .card {
+  width: min(100%, 1320px);
+  max-width: calc(100% - 32px);
+  min-height: 100vh;
+  margin: 0 auto;
+  background: #ffffff;
+  border-left: 1px solid #d9e0e7;
+  border-right: 1px solid #d9e0e7;
+  overflow: hidden;
+}
+
+body:not(.backend-body) .hero {
+  padding: clamp(14px, 2vw, 28px);
+  background: #ffffff;
+  border-bottom: 1px solid #d9e0e7;
+}
+
+body:not(.backend-body) .hero-photos {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+body:not(.backend-body) .photo {
+  height: 180px;
+  border: 1px solid #d9e0e7;
+  border-radius: 8px;
+  overflow: hidden;
+  background-color: #eeeeee;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+body:not(.backend-body) .photo-left {
+  background-image: url("../../519948108_17999173196800213_4999842382913394656_n.jpg");
+  background-position: center calc(20% - 100px);
+}
+
+body:not(.backend-body) .photo-right {
+  background-image: url("../../e17e0812-74a8-4da3-a7ea-7196882f4e10.jfif");
+  background-position: 55% center;
+}
+
+body:not(.backend-body) .badge {
+  display: inline-block;
+  padding: 5px 10px;
+  border-radius: 999px;
+  background: #f4e9e7;
+  color: #0b3440;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+body:not(.backend-body) .hero h1 {
+  margin: 10px 0 8px;
+  color: #0f4c5c;
+  font-size: 32px;
+  line-height: 1.28;
+  letter-spacing: 0;
+}
+
+body:not(.backend-body) .lead {
+  margin: 0;
+  color: #5f6b7a;
+  font-size: 18px;
+  line-height: 1.75;
+  font-weight: 650;
+}
+
+body:not(.backend-body) .section {
+  padding: 14px;
+}
+
+@media (min-width: 700px) {
+  body:not(.backend-body) .hero {
+    padding: 28px clamp(28px, 5vw, 64px);
+  }
+
+  body:not(.backend-body) .hero-photos {
+    gap: 14px;
+    margin-bottom: 16px;
+  }
+
+  body:not(.backend-body) .photo {
+    height: 300px;
+  }
+
+  body:not(.backend-body) .hero h1 {
+    font-size: 46px;
+  }
+
+  body:not(.backend-body) .lead {
+    font-size: 22px;
+  }
+
+  body:not(.backend-body) .section {
+    padding: 22px clamp(28px, 5vw, 64px);
+  }
+}
+
+@media (min-width: 1600px) {
+  body:not(.backend-body) .card {
+    width: calc(100% - 600px);
+    max-width: 1320px;
+  }
+}
+
+@media (max-width: 520px) {
+  body:not(.backend-body) .hero-photos {
+    grid-template-columns: 1fr;
+  }
+
+  body:not(.backend-body) .photo {
+    height: 220px;
+  }
+
+  body:not(.backend-body) .hero h1 {
+    font-size: 30px;
+  }
+
+  body:not(.backend-body) .lead {
+    font-size: 16px;
+  }
+}
+
 .action-row {
   display: flex;
   flex-wrap: wrap;
