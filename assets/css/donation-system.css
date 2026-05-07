@@ -561,11 +561,16 @@ textarea {
 }
 
 .nav-button:hover,
-.nav-button:focus-visible,
-.nav-button.active {
+.nav-button:focus-visible {
   background: #f2f6f7;
   border-color: #b8c9d2;
   color: #0f4c5c;
+}
+
+.nav-button.active {
+  border-color: #0f4c5c;
+  background: #0f4c5c;
+  color: #ffffff;
 }
 
 .detail-shell > .public-site-header {
