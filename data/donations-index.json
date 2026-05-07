@@ -85,20 +85,6 @@
       "publishedAt": "2026-05-06T19:12:02.732Z"
     },
     {
-      "id": "kanshi-ram-malla-moufi094-g0xmmn",
-      "donorName": "Kanshi Ram Malla",
-      "amount": 1200000,
-      "color": "#b45309",
-      "status": "published",
-      "adminId": "admin-moue9fg9-gdy0yd",
-      "adminName": "Admin 2",
-      "address": "",
-      "imageCount": 0,
-      "createdAt": "2026-05-06T19:06:45.832Z",
-      "updatedAt": "2026-05-06T19:06:45.832Z",
-      "publishedAt": "2026-05-06T19:06:45.832Z"
-    },
-    {
       "id": "ganesh-malla-moufg4s3-zs4xlg",
       "donorName": "Ganesh Malla",
       "amount": 100000,
@@ -267,5 +253,5 @@
       "publishedAt": "2026-05-06T18:28:18.853Z"
     }
   ],
-  "updatedAt": "2026-05-07T03:36:46.215Z"
+  "updatedAt": "2026-05-07T03:36:49.157Z"
 }
