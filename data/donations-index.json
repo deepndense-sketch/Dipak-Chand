@@ -1,20 +1,6 @@
 {
   "donations": [
     {
-      "id": "ram-malla-movgjwpu-mzhsqk",
-      "donorName": "Ram Malla",
-      "amount": 12344,
-      "color": "#0f766e",
-      "status": "published",
-      "adminId": "admin-mouy6qsq-7goq2m",
-      "adminName": "Shankar Chand",
-      "address": "1234",
-      "imageCount": 0,
-      "createdAt": "2026-05-07T12:24:00.354Z",
-      "updatedAt": "2026-05-07T12:24:00.354Z",
-      "publishedAt": "2026-05-07T12:24:00.354Z"
-    },
-    {
       "id": "padam-movghzzw-5ig8zv",
       "donorName": "Padam",
       "amount": 12345,
@@ -29,5 +15,5 @@
       "publishedAt": "2026-05-07T12:22:31.293Z"
     }
   ],
-  "updatedAt": "2026-05-07T12:34:04.354Z"
+  "updatedAt": "2026-05-07T12:34:05.776Z"
 }
