@@ -529,9 +529,9 @@ textarea {
 
 .site-actions {
   display: inline-grid;
-  grid-template-columns: repeat(2, minmax(118px, 1fr));
+  grid-template-columns: repeat(3, minmax(96px, 1fr));
   gap: 0;
-  width: min(100%, 340px);
+  width: min(100%, 430px);
   padding: 4px;
   border: 1px solid #d7e0e5;
   border-radius: 8px;
@@ -583,7 +583,7 @@ textarea {
 
 @media (max-width: 520px) {
   .site-actions {
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr;
     width: 100%;
   }
 }
