@@ -214,7 +214,6 @@ function renderPublicDonationSummary(mountId = "donation-dashboard") {
               <div class="timeline-list">
                 ${sortDonationsNewest(admin.donations).slice(0, LIST_LIMIT).map((entry, index) => {
                   const color = entry.color || DONOR_COLORS[(adminIndex + index) % DONOR_COLORS.length];
-                  const pct = target ? (Number(entry.amount || 0) / target) * 100 : 0;
                   const image = primaryImage(entry);
                   return `<article class="public-donation-card" style="--donor-color:${color}">
                     <a class="donor-photo-link" href="donation.html?id=${encodeURIComponent(entry.id)}" target="_blank" rel="noopener" aria-label="${entry.donorName}">
@@ -223,7 +222,6 @@ function renderPublicDonationSummary(mountId = "donation-dashboard") {
                     <div class="donor-summary">
                       <a href="donation.html?id=${encodeURIComponent(entry.id)}" target="_blank" rel="noopener">${entry.donorName}</a>
                       <span class="amount">${money(entry.amount, currency)}</span>
-                      <div class="percent">${pct.toFixed(2)}% of target</div>
                     </div>
                   </article>`;
                 }).join("")}
