@@ -99,6 +99,7 @@
     let profileImage = null;
     let otherImages = [];
     let visibleEntryCount = 10;
+    let isSavingDonation = false;
     const LOCAL_PENDING_DONATIONS_KEY = 'dipakPendingDonationEntries';
     const LOCAL_HIDDEN_DONATIONS_KEY = 'dipakHiddenDonationEntries';
 
@@ -238,7 +239,9 @@
       let previousDonations;
       const saveButton = document.getElementById('saveDonationBtn');
       try {
+        isSavingDonation = true;
         saveButton.disabled = true;
+        saveButton.textContent = 'Saving...';
         if (!currentAdmin?.token) throw new Error('GitHub token is required to publish donation data.');
         const approvedAdmin = (usersData.approved || []).find((user) => user.id === currentAdmin.id);
         if (!approvedAdmin) throw new Error('This admin account is no longer approved. Please log in again.');
@@ -272,13 +275,15 @@
         forgetHiddenDonation(id);
         donationData.donations = [summary, ...previousDonations.filter((item) => item.id !== id)];
         renderDonations();
-        setStatus('donationStatus', 'Saving donation entry...', 'good');
+        setStatus('donationStatus', 'Saving to GitHub. Please keep this page open until the saved message appears.', 'good');
         await cms.saveJson(cms.donationDetailPath(id), entry, currentAdmin.token, `${status === 'published' ? 'Publish' : 'Save draft'} donation detail from ${donorName}`);
+        setStatus('donationStatus', 'Donation detail saved. Updating the website list now, keep this page open.', 'good');
         await cms.updateJson(cms.DATA_PATHS.donationsIndex, { donations: [] }, currentAdmin.token, `${status === 'published' ? 'Publish' : 'Save draft'} donation from ${donorName}`, (latest) => {
           latest.donations = [summary, ...((latest.donations || []).filter((item) => item.id !== id))];
           latest.updatedAt = new Date().toISOString();
           return latest;
         });
+        setStatus('donationStatus', 'Verifying GitHub saved the donation. Please wait...', 'good');
         const verifiedIndex = await verifyDonationSaved(id);
         donationData.donations = applyLocalDonationDisplay(verifiedIndex.donations || []);
         renderDonations();
@@ -291,7 +296,9 @@
         }
         setStatus('donationStatus', error.message, 'bad');
       } finally {
+        isSavingDonation = false;
         saveButton.disabled = false;
+        saveButton.textContent = 'Save Donation';
       }
     }
 
@@ -417,6 +424,11 @@
     document.getElementById('donationList').addEventListener('click', (event) => {
       if (event.target.dataset.edit) editDonation(event.target.dataset.edit);
       if (event.target.dataset.delete) deleteDonation(event.target.dataset.delete);
+    });
+    window.addEventListener('beforeunload', (event) => {
+      if (!isSavingDonation) return;
+      event.preventDefault();
+      event.returnValue = 'Donation is still saving to GitHub. Please stay on this page until it finishes.';
     });
     document.getElementById('profilePreview').addEventListener('input', (event) => {
       if (!profileImage) return;
