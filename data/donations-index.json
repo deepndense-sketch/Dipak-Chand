@@ -1,4 +1,19 @@
 {
-  "donations": [],
-  "updatedAt": "2026-05-07T12:34:07.630Z"
+  "donations": [
+    {
+      "id": "geeta-babita-movh15m0-jy5e9r",
+      "donorName": "Geeta Babita",
+      "amount": 4000,
+      "color": "#0f766e",
+      "status": "published",
+      "adminId": "admin-moue3a4q-kkc7lk",
+      "adminName": "Padam",
+      "address": "1234 Ramgali",
+      "imageCount": 1,
+      "createdAt": "2026-05-07T12:37:25.033Z",
+      "updatedAt": "2026-05-07T12:37:25.033Z",
+      "publishedAt": "2026-05-07T12:37:25.033Z"
+    }
+  ],
+  "updatedAt": "2026-05-07T12:37:28.565Z"
 }
