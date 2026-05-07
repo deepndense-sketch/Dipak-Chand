@@ -1,89 +1,19 @@
-﻿{
-    "donations":  [
-                      {
-                          "id":  "kamala-movhgbod-dodg3w",
-                          "donorName":  "Kamala",
-                          "amount":  12345,
-                          "color":  "#176b87",
-                          "status":  "published",
-                          "adminId":  "admin-mouy8t21-l51py5",
-                          "adminName":  "Padam Malla",
-                          "address":  "",
-                          "imageCount":  0,
-                          "createdAt":  "2026-05-07T12:49:12.733Z",
-                          "updatedAt":  "2026-05-07T12:49:12.733Z",
-                          "publishedAt":  "2026-05-07T12:49:12.733Z"
-                      },
-                      {
-                          "id":  "padam-movhfu9s-s8e5kw",
-                          "donorName":  "Padam",
-                          "amount":  1234,
-                          "color":  "#176b87",
-                          "status":  "published",
-                          "adminId":  "admin-mouy8t21-l51py5",
-                          "adminName":  "Padam Malla",
-                          "address":  "",
-                          "imageCount":  0,
-                          "createdAt":  "2026-05-07T12:48:50.176Z",
-                          "updatedAt":  "2026-05-07T12:48:50.176Z",
-                          "publishedAt":  "2026-05-07T12:48:50.176Z"
-                      },
-                      {
-                          "id":  "radha-movhee20-55y8rm",
-                          "donorName":  "Radha",
-                          "amount":  12345,
-                          "color":  "#176b87",
-                          "status":  "published",
-                          "adminId":  "admin-mouy8t21-l51py5",
-                          "adminName":  "Padam Malla",
-                          "address":  "",
-                          "imageCount":  0,
-                          "createdAt":  "2026-05-07T12:47:42.504Z",
-                          "updatedAt":  "2026-05-07T12:47:42.504Z",
-                          "publishedAt":  "2026-05-07T12:47:42.504Z"
-                      },
-                      {
-                          "id":  "radha-movhe12i-3szx1s",
-                          "donorName":  "Radha",
-                          "amount":  1234,
-                          "color":  "#15803d",
-                          "status":  "published",
-                          "adminId":  "admin-mouy8t21-l51py5",
-                          "adminName":  "Padam Malla",
-                          "address":  "",
-                          "imageCount":  0,
-                          "createdAt":  "2026-05-07T12:47:25.674Z",
-                          "updatedAt":  "2026-05-07T12:47:25.674Z",
-                          "publishedAt":  "2026-05-07T12:47:25.674Z"
-                      },
-                      {
-                          "id":  "padam-movhbvjq-6w0iuq",
-                          "donorName":  "Padam",
-                          "amount":  50,
-                          "color":  "#c2410c",
-                          "status":  "published",
-                          "adminId":  "admin-mouy8t21-l51py5",
-                          "adminName":  "Padam Malla",
-                          "address":  "hj",
-                          "imageCount":  0,
-                          "createdAt":  "2026-05-07T12:45:45.207Z",
-                          "updatedAt":  "2026-05-07T12:45:45.207Z",
-                          "publishedAt":  "2026-05-07T12:45:45.207Z"
-                      },
-                      {
-                          "id":  "padam-movhb2ki-bmxefs",
-                          "donorName":  "padam",
-                          "amount":  50,
-                          "color":  "#2563eb",
-                          "status":  "published",
-                          "adminId":  "admin-mouy8t21-l51py5",
-                          "adminName":  "Padam Malla",
-                          "address":  "nepal",
-                          "imageCount":  1,
-                          "createdAt":  "2026-05-07T12:45:07.652Z",
-                          "updatedAt":  "2026-05-07T12:45:07.668Z",
-                          "publishedAt":  "2026-05-07T12:45:07.668Z"
-                      }
-                  ],
-    "updatedAt":  "2026-05-07T12:54:31.4179618Z"
+{
+  "donations": [
+    {
+      "id": "tilak-movht0u0-cedfx0",
+      "donorName": "tilak",
+      "amount": 5000,
+      "color": "#2563eb",
+      "status": "published",
+      "adminId": "admin-mouy8t21-l51py5",
+      "adminName": "Padam Malla",
+      "address": "us",
+      "imageCount": 1,
+      "createdAt": "2026-05-07T12:59:05.213Z",
+      "updatedAt": "2026-05-07T12:59:05.219Z",
+      "publishedAt": "2026-05-07T12:59:05.219Z"
+    }
+  ],
+  "updatedAt": "2026-05-07T12:59:08.910Z"
 }
