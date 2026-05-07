@@ -36,7 +36,7 @@ function uid(prefix = "id") {
 }
 
 function primaryImage(entry) {
-  return (entry.images || [])[0] || null;
+  return entry.profileImage || (entry.images || [])[0] || null;
 }
 
 async function sha256(text) {
@@ -72,15 +72,11 @@ function toBase64Utf8(value) {
   return btoa(unescape(encodeURIComponent(JSON.stringify(value, null, 2) + "\n")));
 }
 
-async function saveJson(path, value, token, message) {
-  if (!token) throw new Error("GitHub token is required to publish changes.");
-  let sha;
-  try {
-    const existing = await githubGet(path, token);
-    sha = existing.sha;
-  } catch (error) {
-    sha = undefined;
-  }
+function fromBase64Utf8(value) {
+  return JSON.parse(decodeURIComponent(escape(atob(String(value || "").replace(/\s/g, "")))));
+}
+
+async function githubPutJson(path, value, token, message, sha) {
   const response = await fetch(apiUrl(path), {
     method: "PUT",
     headers: {
@@ -97,6 +93,45 @@ async function saveJson(path, value, token, message) {
   });
   if (!response.ok) throw new Error(await response.text());
   return response.json();
+}
+
+async function saveJson(path, value, token, message) {
+  if (!token) throw new Error("GitHub token is required to publish changes.");
+  for (let attempt = 0; attempt < 2; attempt += 1) {
+    let sha;
+    try {
+      const existing = await githubGet(path, token);
+      sha = existing.sha;
+    } catch (error) {
+      sha = undefined;
+    }
+    try {
+      return await githubPutJson(path, value, token, message, sha);
+    } catch (error) {
+      if (!String(error.message || "").includes('"status": "409"') || attempt === 1) throw error;
+    }
+  }
+}
+
+async function updateJson(path, fallback, token, message, updater) {
+  if (!token) throw new Error("GitHub token is required to publish changes.");
+  for (let attempt = 0; attempt < 3; attempt += 1) {
+    let sha;
+    let current = structuredClone(fallback);
+    try {
+      const existing = await githubGet(path, token);
+      sha = existing.sha;
+      current = fromBase64Utf8(existing.content);
+    } catch (error) {
+      if (attempt > 0) throw error;
+    }
+    const next = await updater(structuredClone(current));
+    try {
+      return await githubPutJson(path, next, token, message, sha);
+    } catch (error) {
+      if (!String(error.message || "").includes('"status": "409"') || attempt === 2) throw error;
+    }
+  }
 }
 
 function sessionSet(key, value) {
@@ -183,7 +218,7 @@ function renderPublicDonationSummary(mountId = "donation-dashboard") {
                   const image = primaryImage(entry);
                   return `<article class="public-donation-card" style="--donor-color:${color}">
                     <a class="donor-photo-link" href="donation.html?id=${encodeURIComponent(entry.id)}" target="_blank" rel="noopener" aria-label="${entry.donorName}">
-                      ${image ? `<img class="donor-photo" src="${image.dataUrl}" alt="${entry.donorName}" style="object-position:${image.focusX || 50}% ${image.focusY || 50}%">` : `<span class="donor-photo donor-photo-fallback">${String(entry.donorName || "?").charAt(0).toUpperCase()}</span>`}
+                      ${image ? `<img class="donor-photo" src="${image.dataUrl}" alt="${entry.donorName}" style="object-position:${image.focusX || 50}% ${image.focusY || 50}%; transform:scale(${image.zoom || 1})">` : `<span class="donor-photo donor-photo-fallback">${String(entry.donorName || "?").charAt(0).toUpperCase()}</span>`}
                     </a>
                     <div class="donor-summary">
                       <a href="donation.html?id=${encodeURIComponent(entry.id)}" target="_blank" rel="noopener">${entry.donorName}</a>
@@ -214,6 +249,7 @@ window.DipakCMS = {
   sha256,
   readJson,
   saveJson,
+  updateJson,
   sessionSet,
   sessionGet,
   rememberToken,

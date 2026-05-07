@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Donation Detail</title>
-  <link rel="stylesheet" href="./assets/css/donation-system.css?v=10">
+  <link rel="stylesheet" href="./assets/css/donation-system.css?v=12">
 </head>
 <body class="backend-body">
   <main class="detail-shell">
@@ -36,7 +36,7 @@
       document.title = `${entry.donorName} - Donation Detail`;
       mount.innerHTML = `
         <section class="detail-hero ${profileImage ? 'with-profile' : ''}">
-          ${profileImage ? `<div class="detail-profile-photo"><img src="${profileImage.dataUrl}" alt="${profileImage.name || entry.donorName}" style="object-position:${profileImage.focusX || 50}% ${profileImage.focusY || 50}%"></div>` : ''}
+          ${profileImage ? `<div class="detail-profile-photo"><img src="${profileImage.dataUrl}" alt="${profileImage.name || entry.donorName}" style="object-position:${profileImage.focusX || 50}% ${profileImage.focusY || 50}%; transform:scale(${profileImage.zoom || 1})"></div>` : ''}
           <div>
             <span class="chip">${entry.adminName || 'Admin'}</span>
             <h1>${entry.donorName}</h1>

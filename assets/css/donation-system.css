@@ -537,6 +537,7 @@ textarea {
   border: 0;
   border-radius: 0;
   aspect-ratio: auto;
+  transform-origin: center;
 }
 
 .face-controls {
@@ -598,6 +599,11 @@ textarea {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  transform-origin: center;
+}
+
+.donor-photo {
+  transform-origin: center;
 }
 
 @media (max-width: 980px) {

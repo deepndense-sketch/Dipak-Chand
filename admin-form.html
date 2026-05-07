@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Donation Entry Form</title>
-  <link rel="stylesheet" href="./assets/css/donation-system.css?v=10">
+  <link rel="stylesheet" href="./assets/css/donation-system.css?v=12">
 </head>
 <body class="backend-body">
   <main class="backend-shell">
@@ -125,7 +125,7 @@
       profileMount.innerHTML = profileImage ? `
         <div class="face-preview-card">
           <div class="face-frame">
-            <img src="${profileImage.dataUrl}" alt="${profileImage.name}" style="object-position:${profileImage.focusX || 50}% ${profileImage.focusY || 50}%">
+            <img src="${profileImage.dataUrl}" alt="${profileImage.name}" style="object-position:${profileImage.focusX || 50}% ${profileImage.focusY || 50}%; transform:scale(${profileImage.zoom || 1})">
           </div>
           <div class="face-controls">
             <label>Move left/right
@@ -133,6 +133,9 @@
             </label>
             <label>Move up/down
               <input type="range" min="0" max="100" value="${profileImage.focusY || 50}" data-profile-focus-y>
+            </label>
+            <label>Zoom
+              <input type="range" min="1" max="2.5" step="0.05" value="${profileImage.zoom || 1}" data-profile-zoom>
             </label>
           </div>
         </div>` : '<p class="empty-state">Optional profile photo.</p>';
@@ -148,7 +151,7 @@
     function fileToDataUrl(file) {
       return new Promise((resolve, reject) => {
         const reader = new FileReader();
-        reader.onload = () => resolve({ id: cms.uid('image'), name: file.name, dataUrl: reader.result, focusX: 50, focusY: 50 });
+        reader.onload = () => resolve({ id: cms.uid('image'), name: file.name, dataUrl: reader.result, focusX: 50, focusY: 50, zoom: 1 });
         reader.onerror = reject;
         reader.readAsDataURL(file);
       });
@@ -180,8 +183,10 @@
           updatedAt: new Date().toISOString(),
           publishedAt: status === 'published' ? (existing?.publishedAt || new Date().toISOString()) : existing?.publishedAt || null
         };
-        donationData.donations = [entry, ...(donationData.donations || []).filter((item) => item.id !== id)];
-        await cms.saveJson(cms.DATA_PATHS.donations, donationData, currentAdmin.token, `${status === 'published' ? 'Publish' : 'Save draft'} donation from ${donorName}`);
+        await cms.updateJson(cms.DATA_PATHS.donations, { donations: [] }, currentAdmin.token, `${status === 'published' ? 'Publish' : 'Save draft'} donation from ${donorName}`, (latest) => {
+          latest.donations = [entry, ...((latest.donations || []).filter((item) => item.id !== id))];
+          return latest;
+        });
         setStatus('donationStatus', 'Donation entry saved and website data updated.', 'good');
         await reloadData();
         clearForm();
@@ -197,8 +202,10 @@
         const entry = (donationData.donations || []).find((item) => item.id === id);
         if (!entry) return;
         if (!confirm(`Delete donation entry for ${entry.donorName}? This will remove it from the website data.`)) return;
-        donationData.donations = (donationData.donations || []).filter((item) => item.id !== id);
-        await cms.saveJson(cms.DATA_PATHS.donations, donationData, currentAdmin.token, `Delete donation from ${entry.donorName}`);
+        await cms.updateJson(cms.DATA_PATHS.donations, { donations: [] }, currentAdmin.token, `Delete donation from ${entry.donorName}`, (latest) => {
+          latest.donations = (latest.donations || []).filter((item) => item.id !== id);
+          return latest;
+        });
         setStatus('donationStatus', 'Donation entry deleted and website data updated.', 'good');
         await reloadData();
         clearForm();
@@ -218,6 +225,7 @@
       document.getElementById('donorStatus').value = entry.status || 'draft';
       document.getElementById('donorColor').value = entry.color || '#176b87';
       profileImage = entry.profileImage || (entry.images || [])[0] || null;
+      if (profileImage && !profileImage.zoom) profileImage.zoom = 1;
       otherImages = entry.otherImages || (entry.images || []).slice(profileImage ? 1 : 0);
       renderPreview();
       window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -284,9 +292,13 @@
       if (!profileImage) return;
       if (event.target.dataset.profileFocusX !== undefined) profileImage.focusX = Number(event.target.value);
       if (event.target.dataset.profileFocusY !== undefined) profileImage.focusY = Number(event.target.value);
+      if (event.target.dataset.profileZoom !== undefined) profileImage.zoom = Number(event.target.value);
       const card = event.target.closest('.face-preview-card');
       const img = card?.querySelector('.face-frame img');
-      if (img) img.style.objectPosition = `${profileImage.focusX || 50}% ${profileImage.focusY || 50}%`;
+      if (img) {
+        img.style.objectPosition = `${profileImage.focusX || 50}% ${profileImage.focusY || 50}%`;
+        img.style.transform = `scale(${profileImage.zoom || 1})`;
+      }
     });
     document.getElementById('profileImage').addEventListener('change', async (event) => {
       profileImage = event.target.files[0] ? await fileToDataUrl(event.target.files[0]) : null;

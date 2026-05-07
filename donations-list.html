@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Complete Donation List</title>
-  <link rel="stylesheet" href="./assets/css/donation-system.css?v=9">
+  <link rel="stylesheet" href="./assets/css/donation-system.css?v=12">
 </head>
 <body class="backend-body">
   <main class="detail-shell">
@@ -34,7 +34,7 @@
       const image = cms.primaryImage(entry);
       return `<article class="public-donation-card" style="--donor-color:${color}">
         <a class="donor-photo-link" href="donation.html?id=${encodeURIComponent(entry.id)}" target="_blank" rel="noopener" aria-label="${entry.donorName}">
-          ${image ? `<img class="donor-photo" src="${image.dataUrl}" alt="${entry.donorName}" style="object-position:${image.focusX || 50}% ${image.focusY || 50}%">` : `<span class="donor-photo donor-photo-fallback">${String(entry.donorName || '?').charAt(0).toUpperCase()}</span>`}
+          ${image ? `<img class="donor-photo" src="${image.dataUrl}" alt="${entry.donorName}" style="object-position:${image.focusX || 50}% ${image.focusY || 50}%; transform:scale(${image.zoom || 1})">` : `<span class="donor-photo donor-photo-fallback">${String(entry.donorName || '?').charAt(0).toUpperCase()}</span>`}
         </a>
         <div class="donor-summary">
           <a href="donation.html?id=${encodeURIComponent(entry.id)}" target="_blank" rel="noopener">${entry.donorName}</a>
