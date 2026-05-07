@@ -89,7 +89,7 @@
     </section>
   </main>
 
-  <script src="./assets/js/donation-system.js?v=14"></script>
+  <script src="./assets/js/donation-system.js?v=15"></script>
   <script>
     const cms = window.DipakCMS;
     let usersData = null;
@@ -235,6 +235,31 @@
       });
     }
 
+    function makeProfileThumb(image, size = 96) {
+      if (!image?.dataUrl) return Promise.resolve(null);
+      return new Promise((resolve, reject) => {
+        const source = new Image();
+        source.onload = () => {
+          const canvas = document.createElement('canvas');
+          canvas.width = size;
+          canvas.height = size;
+          const context = canvas.getContext('2d');
+          const zoom = Number(image.zoom || 1);
+          const coverScale = Math.max(size / source.naturalWidth, size / source.naturalHeight) * zoom;
+          const drawWidth = source.naturalWidth * coverScale;
+          const drawHeight = source.naturalHeight * coverScale;
+          const maxOffsetX = Math.max(0, drawWidth - size);
+          const maxOffsetY = Math.max(0, drawHeight - size);
+          const offsetX = maxOffsetX * Number(image.focusX || 50) / 100;
+          const offsetY = maxOffsetY * Number(image.focusY || 50) / 100;
+          context.drawImage(source, -offsetX, -offsetY, drawWidth, drawHeight);
+          resolve({ dataUrl: canvas.toDataURL('image/jpeg', 0.72) });
+        };
+        source.onerror = () => reject(new Error('Could not create profile thumbnail.'));
+        source.src = image.dataUrl;
+      });
+    }
+
     async function saveDonation() {
       let previousDonations;
       const saveButton = document.getElementById('saveDonationBtn');
@@ -253,6 +278,7 @@
         const id = document.getElementById('donationId').value || cms.uid(cms.slugify(donorName));
         const status = document.getElementById('donorStatus').value;
         const existing = (donationData.donations || []).find((entry) => entry.id === id);
+        const profileThumb = profileImage ? await makeProfileThumb(profileImage) : null;
         const entry = {
           ...(existing || {}),
           id,
@@ -265,6 +291,7 @@
           adminId: currentAdmin.id,
           adminName: currentAdmin.username,
           profileImage,
+          profileThumb,
           otherImages,
           createdAt: existing?.createdAt || new Date().toISOString(),
           updatedAt: new Date().toISOString(),

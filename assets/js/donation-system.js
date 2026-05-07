@@ -59,6 +59,7 @@ function donationSummary(entry) {
     adminId: entry.adminId || "",
     adminName: entry.adminName || "",
     address: entry.address || "",
+    profileThumb: entry.profileThumb || null,
     imageCount: imageCount(entry),
     createdAt: entry.createdAt || null,
     updatedAt: entry.updatedAt || null,
@@ -279,9 +280,12 @@ function renderPublicDonationSummary(mountId = "donation-dashboard") {
               <div class="timeline-list">
                 ${sortDonationsNewest(admin.donations).slice(0, LIST_LIMIT).map((entry, index) => {
                   const color = entry.color || DONOR_COLORS[(adminIndex + index) % DONOR_COLORS.length];
+                  const profileThumb = entry.profileThumb;
                   return `<article class="public-donation-card" style="--donor-color:${color}">
                     <a class="donor-photo-link" href="donation.html?id=${encodeURIComponent(entry.id)}" aria-label="${entry.donorName}">
-                      <span class="donor-photo donor-photo-fallback">${String(entry.donorName || "?").charAt(0).toUpperCase()}</span>
+                      ${profileThumb?.dataUrl
+                        ? `<img class="donor-photo" src="${profileThumb.dataUrl}" alt="${entry.donorName}" loading="lazy" decoding="async">`
+                        : `<span class="donor-photo donor-photo-fallback">${String(entry.donorName || "?").charAt(0).toUpperCase()}</span>`}
                     </a>
                     <div class="donor-summary">
                       <a href="donation.html?id=${encodeURIComponent(entry.id)}">${entry.donorName}</a>
