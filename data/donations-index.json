@@ -113,20 +113,6 @@
       "publishedAt": "2026-05-06T19:02:51.780Z"
     },
     {
-      "id": "bharat-mouezhl3-djmblj",
-      "donorName": "Bharat",
-      "amount": 100000,
-      "color": "#be123c",
-      "status": "published",
-      "adminId": "admin-moue9fg9-gdy0yd",
-      "adminName": "Admin 2",
-      "address": "",
-      "imageCount": 0,
-      "createdAt": "2026-05-06T18:52:21.831Z",
-      "updatedAt": "2026-05-06T18:52:21.831Z",
-      "publishedAt": "2026-05-06T18:52:21.831Z"
-    },
-    {
       "id": "hari-har-mouey7vu-p6q3ym",
       "donorName": "Hari Har",
       "amount": 11111,
@@ -225,5 +211,5 @@
       "publishedAt": "2026-05-06T18:28:18.853Z"
     }
   ],
-  "updatedAt": "2026-05-07T03:36:53.375Z"
+  "updatedAt": "2026-05-07T03:36:55.948Z"
 }
