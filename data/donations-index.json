@@ -1,48 +1,6 @@
 {
   "donations": [
     {
-      "id": "chadam-mouveb1g-j1nvf0",
-      "donorName": "Chadam",
-      "amount": 1234,
-      "color": "#6d28d9",
-      "status": "published",
-      "adminId": "admin-moue3a4q-kkc7lk",
-      "adminName": "Padam",
-      "address": "",
-      "imageCount": 6,
-      "createdAt": "2026-05-07T02:31:47.044Z",
-      "updatedAt": "2026-05-07T02:31:47.044Z",
-      "publishedAt": "2026-05-07T02:31:47.044Z"
-    },
-    {
-      "id": "kadam-mouuzum0-4hks8t",
-      "donorName": "Kadam",
-      "amount": 12345,
-      "color": "#a16207",
-      "status": "published",
-      "adminId": "admin-moue3a4q-kkc7lk",
-      "adminName": "Padam",
-      "address": "",
-      "imageCount": 6,
-      "createdAt": "2026-05-07T02:20:32.568Z",
-      "updatedAt": "2026-05-07T02:20:32.568Z",
-      "publishedAt": "2026-05-07T02:20:32.568Z"
-    },
-    {
-      "id": "padam-mouuqlnu-lrsbul",
-      "donorName": "Padam",
-      "amount": 12345,
-      "color": "#176b87",
-      "status": "published",
-      "adminId": "admin-moue3a4q-kkc7lk",
-      "adminName": "Padam",
-      "address": "",
-      "imageCount": 8,
-      "createdAt": "2026-05-07T02:13:21.067Z",
-      "updatedAt": "2026-05-07T02:13:21.067Z",
-      "publishedAt": "2026-05-07T02:13:21.067Z"
-    },
-    {
       "id": "shawan-sing-ji-maharaj-mouftfdl-zex5nn",
       "donorName": "Shawan Sing Ji Maharaj",
       "amount": 120000,
@@ -125,21 +83,7 @@
       "createdAt": "2026-05-06T18:45:42.791Z",
       "updatedAt": "2026-05-06T18:45:42.791Z",
       "publishedAt": "2026-05-06T18:45:42.791Z"
-    },
-    {
-      "id": "ram-moue4k6d-eg3udm",
-      "donorName": "Ram",
-      "amount": 5000,
-      "color": "#6d28d9",
-      "status": "published",
-      "adminId": "admin-moue3a4q-kkc7lk",
-      "adminName": "Padam",
-      "address": "",
-      "imageCount": 1,
-      "createdAt": "2026-05-06T18:28:18.853Z",
-      "updatedAt": "2026-05-06T18:28:18.853Z",
-      "publishedAt": "2026-05-06T18:28:18.853Z"
     }
   ],
-  "updatedAt": "2026-05-07T03:39:12.735Z"
+  "updatedAt": "2026-05-07T03:39:43.426Z"
 }
