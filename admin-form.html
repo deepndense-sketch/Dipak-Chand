@@ -181,6 +181,10 @@
     async function saveDonation() {
       try {
         if (!currentAdmin?.token) throw new Error('GitHub token is required to publish donation data.');
+        const approvedAdmin = (usersData.approved || []).find((user) => user.id === currentAdmin.id);
+        if (!approvedAdmin) throw new Error('This admin account is no longer approved. Please log in again.');
+        currentAdmin = { ...approvedAdmin, token: currentAdmin.token };
+        cms.sessionSet('dipakDonationAdmin', currentAdmin);
         const donorName = document.getElementById('donorName').value.trim();
         const amount = Number(document.getElementById('donorAmount').value || 0);
         if (!donorName || !amount) throw new Error('Donor name and amount are required.');
@@ -304,6 +308,14 @@
         return;
       }
       await reloadData();
+      const approvedAdmin = (usersData.approved || []).find((user) => user.id === currentAdmin.id);
+      if (!approvedAdmin) {
+        sessionStorage.removeItem('dipakDonationAdmin');
+        document.getElementById('notLoggedIn').hidden = false;
+        return;
+      }
+      currentAdmin = { ...approvedAdmin, token: currentAdmin.token };
+      cms.sessionSet('dipakDonationAdmin', currentAdmin);
       document.getElementById('dashboardTitle').textContent = `Donation Form - ${currentAdmin.username}`;
       document.getElementById('workArea').hidden = false;
       clearForm();
