@@ -4,13 +4,17 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Save Dipak Chand - Complete Donation List</title>
-  <link rel="stylesheet" href="./assets/css/donation-system.css?v=13">
+  <link rel="stylesheet" href="./assets/css/donation-system.css?v=17">
 </head>
 <body class="backend-body">
   <main class="detail-shell">
-    <nav class="backend-nav" style="margin-bottom: 16px;">
-      <a class="secondary site-home-link" href="./index.html">Save Dipak Chand</a>
-    </nav>
+    <header class="public-site-header">
+      <a class="public-page-title" href="./index.html">Save Dipak Chand</a>
+      <nav class="site-actions" aria-label="Main navigation">
+        <a class="nav-button" href="./about.html">About Dipak</a>
+        <a class="nav-button" href="./donate.html">Donate</a>
+      </nav>
+    </header>
     <section class="detail-panel">
       <div class="detail-hero">
         <span class="chip" id="listScope">Donation list</span>
@@ -21,7 +25,7 @@
     </section>
   </main>
 
-  <script src="./assets/js/donation-system.js?v=16"></script>
+  <script src="./assets/js/donation-system.js?v=17"></script>
   <script>
     const cms = window.DipakCMS;
     const params = new URLSearchParams(location.search);
@@ -30,9 +34,12 @@
 
     function donationCard(entry, currency, index) {
       const color = entry.color || cms.DONOR_COLORS[index % cms.DONOR_COLORS.length];
+      const profileImage = entry.profileThumb || entry.profileImage;
       return `<article class="public-donation-card" style="--donor-color:${color}">
         <a class="donor-photo-link" href="donation.html?id=${encodeURIComponent(entry.id)}" aria-label="${entry.donorName}">
-          <span class="donor-photo donor-photo-fallback">${String(entry.donorName || '?').charAt(0).toUpperCase()}</span>
+          ${profileImage?.dataUrl
+            ? `<img class="donor-photo" src="${profileImage.dataUrl}" alt="${entry.donorName}" loading="lazy" decoding="async">`
+            : `<span class="donor-photo donor-photo-fallback">${String(entry.donorName || '?').charAt(0).toUpperCase()}</span>`}
         </a>
         <div class="donor-summary">
           <a href="donation.html?id=${encodeURIComponent(entry.id)}">${entry.donorName}</a>

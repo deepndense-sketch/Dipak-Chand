@@ -508,6 +508,62 @@ textarea {
   text-transform: uppercase;
 }
 
+.public-site-header {
+  display: grid;
+  gap: 12px;
+  margin: 0 0 16px;
+}
+
+.public-site-header .site-title,
+.public-page-title {
+  display: block;
+  margin: 0;
+  color: #9f1d35;
+  font-size: clamp(42px, 8vw, 82px);
+  line-height: 0.95;
+  font-weight: 900;
+  letter-spacing: 0;
+  text-decoration: none;
+  text-transform: uppercase;
+}
+
+.site-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.nav-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 42px;
+  border-radius: 8px;
+  padding: 10px 14px;
+  background: #0f4c5c;
+  color: #fff;
+  font-weight: 850;
+  text-decoration: none;
+}
+
+.nav-button.active {
+  background: #9f1d35;
+}
+
+.detail-shell > .public-site-header {
+  margin-bottom: 18px;
+}
+
+.about-grid,
+.donate-grid {
+  grid-template-columns: 1fr !important;
+}
+
+.donate-grid {
+  max-width: 720px;
+  margin: 0 auto;
+}
+
 .detail-appeal-copy p {
   margin: 0;
   color: var(--admin-muted);

@@ -4,19 +4,23 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Save Dipak Chand - Donation Detail</title>
-  <link rel="stylesheet" href="./assets/css/donation-system.css?v=14">
+  <link rel="stylesheet" href="./assets/css/donation-system.css?v=17">
 </head>
 <body class="backend-body">
   <main class="detail-shell">
-    <nav class="backend-nav" style="margin-bottom: 16px;">
-      <a class="secondary site-home-link" href="./index.html">Save Dipak Chand</a>
-    </nav>
+    <header class="public-site-header">
+      <a class="public-page-title" href="./index.html">Save Dipak Chand</a>
+      <nav class="site-actions" aria-label="Main navigation">
+        <a class="nav-button" href="./about.html">About Dipak</a>
+        <a class="nav-button" href="./donate.html">Donate</a>
+      </nav>
+    </header>
     <article class="detail-panel" id="detailMount">
       <p class="empty-state">Loading donation details...</p>
     </article>
   </main>
 
-  <script src="./assets/js/donation-system.js?v=16"></script>
+  <script src="./assets/js/donation-system.js?v=17"></script>
   <script>
     const cms = window.DipakCMS;
     const mount = document.getElementById('detailMount');
