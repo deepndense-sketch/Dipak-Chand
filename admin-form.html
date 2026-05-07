@@ -156,12 +156,25 @@
         </div>`).join('') : '<p class="empty-state">Optional additional images.</p>';
     }
 
-    function fileToDataUrl(file) {
+    function fileToDataUrl(file, maxSize = 1400) {
       return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onload = () => resolve({ id: cms.uid('image'), name: file.name, dataUrl: reader.result, focusX: 50, focusY: 50, zoom: 1 });
-        reader.onerror = reject;
-        reader.readAsDataURL(file);
+        const url = URL.createObjectURL(file);
+        const image = new Image();
+        image.onload = () => {
+          const scale = Math.min(1, maxSize / Math.max(image.naturalWidth, image.naturalHeight));
+          const canvas = document.createElement('canvas');
+          canvas.width = Math.max(1, Math.round(image.naturalWidth * scale));
+          canvas.height = Math.max(1, Math.round(image.naturalHeight * scale));
+          const context = canvas.getContext('2d');
+          context.drawImage(image, 0, 0, canvas.width, canvas.height);
+          URL.revokeObjectURL(url);
+          resolve({ id: cms.uid('image'), name: file.name, dataUrl: canvas.toDataURL('image/jpeg', 0.78), focusX: 50, focusY: 50, zoom: 1 });
+        };
+        image.onerror = () => {
+          URL.revokeObjectURL(url);
+          reject(new Error(`Could not load image ${file.name}`));
+        };
+        image.src = url;
       });
     }
 
@@ -187,13 +200,14 @@
           adminName: currentAdmin.username,
           profileImage,
           otherImages,
-          images: [profileImage, ...otherImages].filter(Boolean),
           createdAt: existing?.createdAt || new Date().toISOString(),
           updatedAt: new Date().toISOString(),
           publishedAt: status === 'published' ? (existing?.publishedAt || new Date().toISOString()) : existing?.publishedAt || null
         };
-        await cms.updateJson(cms.DATA_PATHS.donations, { donations: [] }, currentAdmin.token, `${status === 'published' ? 'Publish' : 'Save draft'} donation from ${donorName}`, (latest) => {
-          latest.donations = [entry, ...((latest.donations || []).filter((item) => item.id !== id))];
+        await cms.saveJson(cms.donationDetailPath(id), entry, currentAdmin.token, `${status === 'published' ? 'Publish' : 'Save draft'} donation detail from ${donorName}`);
+        await cms.updateJson(cms.DATA_PATHS.donationsIndex, { donations: [] }, currentAdmin.token, `${status === 'published' ? 'Publish' : 'Save draft'} donation from ${donorName}`, (latest) => {
+          latest.donations = [cms.donationSummary(entry), ...((latest.donations || []).filter((item) => item.id !== id))];
+          latest.updatedAt = new Date().toISOString();
           return latest;
         });
         setStatus('donationStatus', 'Donation entry saved and website data updated.', 'good');
@@ -211,8 +225,9 @@
         const entry = (donationData.donations || []).find((item) => item.id === id);
         if (!entry) return;
         if (!confirm(`Delete donation entry for ${entry.donorName}? This will remove it from the website data.`)) return;
-        await cms.updateJson(cms.DATA_PATHS.donations, { donations: [] }, currentAdmin.token, `Delete donation from ${entry.donorName}`, (latest) => {
+        await cms.updateJson(cms.DATA_PATHS.donationsIndex, { donations: [] }, currentAdmin.token, `Delete donation from ${entry.donorName}`, (latest) => {
           latest.donations = (latest.donations || []).filter((item) => item.id !== id);
+          latest.updatedAt = new Date().toISOString();
           return latest;
         });
         setStatus('donationStatus', 'Donation entry deleted and website data updated.', 'good');
@@ -224,8 +239,8 @@
       }
     }
 
-    function editDonation(id) {
-      const entry = (donationData.donations || []).find((item) => item.id === id);
+    async function editDonation(id) {
+      const entry = await cms.loadDonationDetail(id);
       if (!entry) return;
       document.getElementById('donationId').value = entry.id;
       document.getElementById('donorName').value = entry.donorName || '';
@@ -272,7 +287,7 @@
         return `<article class="donation-admin-card">
           <strong>${entry.donorName}</strong>
           <div>${cms.money(entry.amount, siteData.currency)}</div>
-          <div class="chip-row"><span class="chip">${entry.status}</span><span class="chip">${entry.adminName || 'Admin'}</span><span class="chip">${[entry.profileImage, ...(entry.otherImages || entry.images || [])].filter(Boolean).length} image(s)</span></div>
+          <div class="chip-row"><span class="chip">${entry.status}</span><span class="chip">${entry.adminName || 'Admin'}</span><span class="chip">${cms.imageCount(entry)} image(s)</span></div>
           <div class="action-row">
             ${canManage ? `<button type="button" data-edit="${entry.id}">Edit</button>
             <button type="button" class="danger" data-delete="${entry.id}">Delete</button>` : ''}
@@ -322,11 +337,11 @@
       }
     });
     document.getElementById('profileImage').addEventListener('change', async (event) => {
-      profileImage = event.target.files[0] ? await fileToDataUrl(event.target.files[0]) : null;
+      profileImage = event.target.files[0] ? await fileToDataUrl(event.target.files[0], 900) : null;
       renderPreview();
     });
     document.getElementById('otherImages').addEventListener('change', async (event) => {
-      otherImages = await Promise.all([...event.target.files].map(fileToDataUrl));
+      otherImages = await Promise.all([...event.target.files].map((file) => fileToDataUrl(file, 1400)));
       renderPreview();
     });
     init();

@@ -22,10 +22,12 @@
     const mount = document.getElementById('detailMount');
     const id = new URLSearchParams(location.search).get('id');
 
-    cms.loadAllData().then(({ site, donations }) => {
+    Promise.all([
+      cms.readJson(cms.DATA_PATHS.site, { title: cms.DEFAULT_SITE_TITLE, targetAmount: 5000000, currency: 'Rs' }),
+      cms.loadDonationDetail(id)
+    ]).then(([site, entry]) => {
       const siteTitle = site.title || cms.DEFAULT_SITE_TITLE || 'Save Dipak Chand';
-      const entry = donations.find((item) => item.id === id && item.status === 'published');
-      if (!entry) {
+      if (!entry || entry.status !== 'published') {
         mount.innerHTML = '<h1>Donation not found</h1><p class="empty-state">This donation page is not published or the link is incorrect.</p>';
         document.title = `${siteTitle} - Donation not found`;
         return;

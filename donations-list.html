@@ -30,10 +30,9 @@
 
     function donationCard(entry, currency, index) {
       const color = entry.color || cms.DONOR_COLORS[index % cms.DONOR_COLORS.length];
-      const image = cms.primaryImage(entry);
       return `<article class="public-donation-card" style="--donor-color:${color}">
         <a class="donor-photo-link" href="donation.html?id=${encodeURIComponent(entry.id)}" aria-label="${entry.donorName}">
-          ${image ? `<img class="donor-photo" src="${image.dataUrl}" alt="${entry.donorName}" style="object-position:${image.focusX || 50}% ${image.focusY || 50}%; transform:scale(${image.zoom || 1})">` : `<span class="donor-photo donor-photo-fallback">${String(entry.donorName || '?').charAt(0).toUpperCase()}</span>`}
+          <span class="donor-photo donor-photo-fallback">${String(entry.donorName || '?').charAt(0).toUpperCase()}</span>
         </a>
         <div class="donor-summary">
           <a href="donation.html?id=${encodeURIComponent(entry.id)}">${entry.donorName}</a>

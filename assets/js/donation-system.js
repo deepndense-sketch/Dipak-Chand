@@ -4,7 +4,8 @@ const BRANCH = "main";
 const DATA_PATHS = {
   site: "data/site.json",
   users: "data/admin-users.json",
-  donations: "data/donations.json"
+  donations: "data/donations.json",
+  donationsIndex: "data/donations-index.json"
 };
 const DONOR_COLORS = ["#176b87", "#b45309", "#7c3aed", "#0f766e", "#be123c", "#2563eb", "#a16207", "#15803d", "#c2410c", "#6d28d9"];
 const TOKEN_STORAGE_KEY = "dipakGithubToken";
@@ -38,6 +39,31 @@ function uid(prefix = "id") {
 
 function primaryImage(entry) {
   return entry.profileImage || (entry.images || [])[0] || null;
+}
+
+function donationDetailPath(id) {
+  return `data/donations/${String(id || "entry").replace(/[^a-zA-Z0-9_-]/g, "-")}.json`;
+}
+
+function imageCount(entry) {
+  return Number(entry.imageCount || [entry.profileImage, ...(entry.otherImages || []), ...(entry.images || [])].filter((image) => image && image.dataUrl).length);
+}
+
+function donationSummary(entry) {
+  return {
+    id: entry.id,
+    donorName: entry.donorName || "",
+    amount: Number(entry.amount || 0),
+    color: entry.color || "",
+    status: entry.status || "draft",
+    adminId: entry.adminId || "",
+    adminName: entry.adminName || "",
+    address: entry.address || "",
+    imageCount: imageCount(entry),
+    createdAt: entry.createdAt || null,
+    updatedAt: entry.updatedAt || null,
+    publishedAt: entry.publishedAt || null
+  };
 }
 
 async function sha256(text) {
@@ -159,12 +185,20 @@ function forgetRememberedToken() {
 }
 
 async function loadAllData() {
-  const [site, users, donations] = await Promise.all([
+  const [site, users, donationIndex] = await Promise.all([
     readJson(DATA_PATHS.site, { title: DEFAULT_SITE_TITLE, targetAmount: 5000000, currency: "Rs" }),
     readJson(DATA_PATHS.users, { mainAdmins: [], pending: [], approved: [] }),
-    readJson(DATA_PATHS.donations, { donations: [] })
+    readJson(DATA_PATHS.donationsIndex, { donations: null })
   ]);
+  let donations = donationIndex;
+  if (!Array.isArray(donations.donations)) donations = await readJson(DATA_PATHS.donations, { donations: [] });
   return { site, users, donations: donations.donations || [] };
+}
+
+async function loadDonationDetail(id) {
+  if (!id) return null;
+  const detail = await readJson(donationDetailPath(id), null);
+  return detail && detail.id ? detail : null;
 }
 
 function groupPublishedByAdmin(donations, users) {
@@ -215,10 +249,9 @@ function renderPublicDonationSummary(mountId = "donation-dashboard") {
               <div class="timeline-list">
                 ${sortDonationsNewest(admin.donations).slice(0, LIST_LIMIT).map((entry, index) => {
                   const color = entry.color || DONOR_COLORS[(adminIndex + index) % DONOR_COLORS.length];
-                  const image = primaryImage(entry);
                   return `<article class="public-donation-card" style="--donor-color:${color}">
                     <a class="donor-photo-link" href="donation.html?id=${encodeURIComponent(entry.id)}" aria-label="${entry.donorName}">
-                      ${image ? `<img class="donor-photo" src="${image.dataUrl}" alt="${entry.donorName}" style="object-position:${image.focusX || 50}% ${image.focusY || 50}%; transform:scale(${image.zoom || 1})">` : `<span class="donor-photo donor-photo-fallback">${String(entry.donorName || "?").charAt(0).toUpperCase()}</span>`}
+                      <span class="donor-photo donor-photo-fallback">${String(entry.donorName || "?").charAt(0).toUpperCase()}</span>
                     </a>
                     <div class="donor-summary">
                       <a href="donation.html?id=${encodeURIComponent(entry.id)}">${entry.donorName}</a>
@@ -245,6 +278,9 @@ window.DipakCMS = {
   slugify,
   uid,
   primaryImage,
+  donationDetailPath,
+  donationSummary,
+  imageCount,
   sortDonationsNewest,
   sha256,
   readJson,
@@ -256,5 +292,6 @@ window.DipakCMS = {
   getRememberedToken,
   forgetRememberedToken,
   loadAllData,
+  loadDonationDetail,
   renderPublicDonationSummary
 };
