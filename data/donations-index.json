@@ -1,19 +1,4 @@
 {
-  "donations": [
-    {
-      "id": "padam-movghzzw-5ig8zv",
-      "donorName": "Padam",
-      "amount": 12345,
-      "color": "#176b87",
-      "status": "published",
-      "adminId": "admin-mouy6qsq-7goq2m",
-      "adminName": "Shankar Chand",
-      "address": "Kathmandu",
-      "imageCount": 3,
-      "createdAt": "2026-05-07T12:22:31.293Z",
-      "updatedAt": "2026-05-07T12:22:31.293Z",
-      "publishedAt": "2026-05-07T12:22:31.293Z"
-    }
-  ],
-  "updatedAt": "2026-05-07T12:34:05.776Z"
+  "donations": [],
+  "updatedAt": "2026-05-07T12:34:07.630Z"
 }
