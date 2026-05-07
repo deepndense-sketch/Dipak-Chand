@@ -85,20 +85,6 @@
       "publishedAt": "2026-05-06T19:12:02.732Z"
     },
     {
-      "id": "hamesh-ram-mall-moufjw8l-ilbo2r",
-      "donorName": "Hamesh Ram Mall",
-      "amount": 1247890,
-      "color": "#176b87",
-      "status": "published",
-      "adminId": "admin-moue9fg9-gdy0yd",
-      "adminName": "Admin 2",
-      "address": "",
-      "imageCount": 0,
-      "createdAt": "2026-05-06T19:08:13.941Z",
-      "updatedAt": "2026-05-06T19:08:13.941Z",
-      "publishedAt": "2026-05-06T19:08:13.941Z"
-    },
-    {
       "id": "ram-malla-moufixml-bpc3tz",
       "donorName": "Ram Malla",
       "amount": 1200000,
@@ -295,5 +281,5 @@
       "publishedAt": "2026-05-06T18:28:18.853Z"
     }
   ],
-  "updatedAt": "2026-05-07T03:36:42.965Z"
+  "updatedAt": "2026-05-07T03:36:44.536Z"
 }
