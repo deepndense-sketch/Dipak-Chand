@@ -18,20 +18,6 @@
       }
     },
     {
-      "id": "kamansa-movisq89-25cmmx",
-      "donorName": "Kamansa",
-      "amount": 1223434,
-      "color": "#a16207",
-      "status": "published",
-      "adminId": "admin-mouy6qsq-7goq2m",
-      "adminName": "Shankar Chand",
-      "address": "",
-      "imageCount": 0,
-      "createdAt": "2026-05-07T13:26:51.081Z",
-      "updatedAt": "2026-05-07T13:26:51.081Z",
-      "publishedAt": "2026-05-07T13:26:51.081Z"
-    },
-    {
       "id": "hsja-movhwd5j-qmhgch",
       "donorName": "Hsja",
       "amount": 55,
@@ -49,5 +35,5 @@
       }
     }
   ],
-  "updatedAt": "2026-05-07T14:36:27.014Z"
+  "updatedAt": "2026-05-07T14:36:31.805Z"
 }
