@@ -451,16 +451,20 @@ textarea {
 }
 
 .detail-appeal {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(120px, 1fr));
-  gap: 12px;
-  align-items: start;
+  display: block;
   margin-bottom: 20px;
   padding-bottom: 18px;
   border-bottom: 1px solid var(--admin-line);
 }
 
+.detail-appeal-photos {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(120px, 1fr));
+  gap: 12px;
+}
+
 .detail-appeal-photo {
+  display: block;
   min-height: 190px;
   border-radius: 8px;
   border: 1px solid var(--admin-line);
@@ -481,9 +485,9 @@ textarea {
 
 .detail-appeal-copy {
   display: grid;
-  grid-column: 1 / -1;
   align-content: start;
   gap: 8px;
+  margin-bottom: 12px;
 }
 
 .detail-appeal-copy h1 {
@@ -677,7 +681,7 @@ textarea {
   .form-grid,
   .metrics-grid,
   .upload-preview-layout,
-  .detail-appeal,
+  .detail-appeal-photos,
   .detail-hero.with-profile {
     grid-template-columns: 1fr;
   }
