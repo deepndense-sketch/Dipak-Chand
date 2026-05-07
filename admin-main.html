@@ -200,8 +200,22 @@
       mount.innerHTML = approved.map((user) => `
         <article class="user-row">
           <strong>${user.username}</strong>
-          <div>${user.email}</div>
+          <div class="form-grid">
+            <label>Email ID
+              <input data-admin-email="${user.id}" type="email" value="${user.email || ''}">
+            </label>
+            <label>UserName
+              <input data-admin-username="${user.id}" value="${user.username || ''}">
+            </label>
+            <label class="full">New password
+              <input data-admin-password="${user.id}" type="password" placeholder="Leave blank to keep current password">
+            </label>
+          </div>
           <div class="chip-row"><span class="chip">Approved</span></div>
+          <div class="action-row">
+            <button type="button" data-save-admin="${user.id}">Save Admin</button>
+            <button type="button" class="danger" data-delete-admin="${user.id}">Delete Admin</button>
+          </div>
         </article>`).join('');
     }
 
@@ -273,6 +287,53 @@
       }
     }
 
+    async function saveApprovedAdmin(id) {
+      try {
+        if (!mainSession?.token) throw new Error('Enter a GitHub token in the Publishing Token panel to save admin changes.');
+        const adminIndex = (usersData.approved || []).findIndex((user) => user.id === id);
+        if (adminIndex < 0) throw new Error('Approved admin was not found.');
+        const email = document.querySelector(`[data-admin-email="${id}"]`).value.trim().toLowerCase();
+        const username = document.querySelector(`[data-admin-username="${id}"]`).value.trim();
+        const password = document.querySelector(`[data-admin-password="${id}"]`).value;
+        if (!email || !username) throw new Error('Email ID and UserName are required.');
+        const otherUsers = [
+          ...(usersData.pending || []),
+          ...(usersData.mainAdmins || []),
+          ...(usersData.approved || []).filter((user) => user.id !== id)
+        ];
+        if (otherUsers.some((user) => (user.email || '').toLowerCase() === email)) throw new Error('Email ID already exists.');
+        if (otherUsers.some((user) => (user.username || '').toLowerCase() === username.toLowerCase())) throw new Error('UserName already exists.');
+        usersData.approved[adminIndex] = {
+          ...usersData.approved[adminIndex],
+          email,
+          username,
+          updatedAt: new Date().toISOString()
+        };
+        if (password) {
+          if (password.length < 6) throw new Error('New password must be at least 6 characters.');
+          usersData.approved[adminIndex].passwordHash = await cms.sha256(password);
+        }
+        await saveUsers(`Update donation admin ${username}`);
+        setStatus(status, `${username} updated.`, 'good');
+      } catch (error) {
+        setStatus(status, error.message, 'bad');
+      }
+    }
+
+    async function deleteApprovedAdmin(id) {
+      try {
+        if (!mainSession?.token) throw new Error('Enter a GitHub token in the Publishing Token panel to delete admin accounts.');
+        const admin = (usersData.approved || []).find((user) => user.id === id);
+        if (!admin) throw new Error('Approved admin was not found.');
+        if (!confirm(`Delete donation admin ${admin.username}? Their existing donation entries will stay on the website.`)) return;
+        usersData.approved = (usersData.approved || []).filter((user) => user.id !== id);
+        await saveUsers(`Delete donation admin ${admin.username}`);
+        setStatus(status, `${admin.username} deleted.`, 'good');
+      } catch (error) {
+        setStatus(status, error.message, 'bad');
+      }
+    }
+
     document.getElementById('mainLoginBtn').addEventListener('click', login);
     document.getElementById('mainPassword').addEventListener('keydown', (event) => {
       if (event.key === 'Enter') login();
@@ -305,6 +366,13 @@
       } catch (error) {
         setStatus(status, error.message, 'bad');
       }
+    });
+
+    document.getElementById('approvedList').addEventListener('click', async (event) => {
+      const saveId = event.target.dataset.saveAdmin;
+      const deleteId = event.target.dataset.deleteAdmin;
+      if (saveId) await saveApprovedAdmin(saveId);
+      if (deleteId) await deleteApprovedAdmin(deleteId);
     });
 
     document.getElementById('saveTargetBtn').addEventListener('click', async () => {
