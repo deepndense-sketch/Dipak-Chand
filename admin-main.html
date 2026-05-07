@@ -122,6 +122,7 @@
     const cms = window.DipakCMS;
     let usersData = null;
     let siteData = null;
+    let donationData = null;
     let mainSession = null;
 
     const status = document.getElementById('mainStatus');
@@ -137,6 +138,7 @@
       const all = await cms.loadAllData();
       usersData = all.users;
       siteData = all.site;
+      donationData = { donations: all.donations || [] };
       document.getElementById('targetAmount').value = siteData.targetAmount || 5000000;
       document.getElementById('currencyLabel').value = siteData.currency || 'Rs';
       renderPending();
@@ -325,10 +327,16 @@
         if (!mainSession?.token) throw new Error('Enter a GitHub token in the Publishing Token panel to delete admin accounts.');
         const admin = (usersData.approved || []).find((user) => user.id === id);
         if (!admin) throw new Error('Approved admin was not found.');
-        if (!confirm(`Delete donation admin ${admin.username}? Their existing donation entries will stay on the website.`)) return;
+        const adminEntries = (donationData.donations || []).filter((entry) => entry.adminId === id);
+        if (!confirm(`Delete donation admin ${admin.username} and remove ${adminEntries.length} donation entr${adminEntries.length === 1 ? 'y' : 'ies'} from the website?`)) return;
         usersData.approved = (usersData.approved || []).filter((user) => user.id !== id);
+        await cms.updateJson(cms.DATA_PATHS.donationsIndex, { donations: [] }, mainSession.token, `Remove donations from ${admin.username}`, (latest) => {
+          latest.donations = (latest.donations || []).filter((entry) => entry.adminId !== id);
+          latest.updatedAt = new Date().toISOString();
+          return latest;
+        });
         await saveUsers(`Delete donation admin ${admin.username}`);
-        setStatus(status, `${admin.username} deleted.`, 'good');
+        setStatus(status, `${admin.username} deleted and ${adminEntries.length} donation entr${adminEntries.length === 1 ? 'y' : 'ies'} removed from the website.`, 'good');
       } catch (error) {
         setStatus(status, error.message, 'bad');
       }
