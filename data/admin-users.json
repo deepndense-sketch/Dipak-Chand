@@ -12,17 +12,6 @@
   "pending": [],
   "approved": [
     {
-      "id": "admin-mouy6qsq-7goq2m",
-      "email": "bharatmalla18@gmail.com",
-      "username": "Shankar Chand",
-      "passwordHash": "ae07817887ff550770ad27dd2a864bb820c962c0dada2d6fd52623201201c59c",
-      "role": "donation-admin",
-      "status": "approved",
-      "createdAt": "2026-05-07T03:49:53.067Z",
-      "approvedAt": "2026-05-07T03:49:53.067Z",
-      "updatedAt": "2026-05-07T03:53:04.994Z"
-    },
-    {
       "id": "admin-mouy8t21-l51py5",
       "email": "bmalla1993@gmail.com",
       "username": "Padam Malla",
@@ -33,5 +22,5 @@
       "approvedAt": "2026-05-07T03:51:29.305Z"
     }
   ],
-  "updatedAt": "2026-05-07T03:53:04.994Z"
+  "updatedAt": "2026-05-07T14:39:45.289Z"
 }
