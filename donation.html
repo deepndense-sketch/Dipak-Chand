@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Donation Detail</title>
-  <link rel="stylesheet" href="./assets/css/donation-system.css?v=8">
+  <link rel="stylesheet" href="./assets/css/donation-system.css?v=10">
 </head>
 <body class="backend-body">
   <main class="detail-shell">
@@ -31,20 +31,25 @@
       }
       const target = Number(site.targetAmount || 5000000);
       const pct = target ? (Number(entry.amount || 0) / target) * 100 : 0;
+      const profileImage = entry.profileImage || (entry.images || [])[0] || null;
+      const otherImages = entry.otherImages || (entry.images || []).slice(profileImage ? 1 : 0);
       document.title = `${entry.donorName} - Donation Detail`;
       mount.innerHTML = `
-        <section class="detail-hero">
-          <span class="chip">${entry.adminName || 'Admin'}</span>
-          <h1>${entry.donorName}</h1>
-          <div class="detail-amount">${cms.money(entry.amount, site.currency)}</div>
-          <div class="progress-shell"><div class="progress-fill" style="width:${Math.min(100, pct)}%"></div></div>
-          <p>${pct.toFixed(2)}% of ${cms.money(target, site.currency)} target</p>
+        <section class="detail-hero ${profileImage ? 'with-profile' : ''}">
+          ${profileImage ? `<div class="detail-profile-photo"><img src="${profileImage.dataUrl}" alt="${profileImage.name || entry.donorName}" style="object-position:${profileImage.focusX || 50}% ${profileImage.focusY || 50}%"></div>` : ''}
+          <div>
+            <span class="chip">${entry.adminName || 'Admin'}</span>
+            <h1>${entry.donorName}</h1>
+            <div class="detail-amount">${cms.money(entry.amount, site.currency)}</div>
+            <div class="progress-shell"><div class="progress-fill" style="width:${Math.min(100, pct)}%"></div></div>
+            <p>${pct.toFixed(2)}% of ${cms.money(target, site.currency)} target</p>
+          </div>
         </section>
         <section>
           <h2>Donation Information</h2>
           <p>${(entry.info || 'No additional information provided.').replace(/\n/g, '<br>')}</p>
         </section>
-        ${(entry.images || []).length ? `<section class="image-grid">${entry.images.map((image) => `<img src="${image.dataUrl}" alt="${image.name || entry.donorName}" style="object-position:${image.focusX || 50}% ${image.focusY || 50}%">`).join('')}</section>` : ''}
+        ${otherImages.length ? `<section><h2>Photos</h2><div class="image-grid">${otherImages.map((image) => `<img src="${image.dataUrl}" alt="${image.name || entry.donorName}">`).join('')}</div></section>` : ''}
       `;
     }).catch((error) => {
       mount.innerHTML = '<h1>Unable to load donation</h1><p class="empty-state">Please try again later.</p>';

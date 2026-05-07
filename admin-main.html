@@ -3,32 +3,29 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Backend 1 - Main Approval</title>
-  <link rel="stylesheet" href="./assets/css/donation-system.css?v=6">
+  <title>Main Admin</title>
+  <link rel="stylesheet" href="./assets/css/donation-system.css?v=10">
 </head>
 <body class="backend-body">
   <main class="backend-shell">
     <header class="backend-topbar">
       <div class="backend-brand">
-        <h1>Main Backend</h1>
+        <h1>Main Admin</h1>
         <p>Approve admin accounts, confirm login users, and manage the overall donation target for the Dipak Chand support site.</p>
       </div>
       <nav class="backend-nav">
         <a class="secondary" href="./index.html" target="_blank" rel="noopener">Website</a>
-        <a href="./admin-data.html" target="_blank" rel="noopener">Backend 2</a>
+        <a href="./admin-data.html" target="_blank" rel="noopener">Donation Admin</a>
       </nav>
     </header>
 
     <section class="backend-grid">
       <div class="backend-panel" id="loginPanel">
         <h2>Main Admin Login</h2>
-        <p class="backend-help">Main admin access: username <strong>mainadmin</strong>, password <strong>SmcH123</strong>.</p>
+        <p class="backend-help">Sign in to manage donation admins and site settings.</p>
         <div class="form-grid">
           <label class="full">Username or email
             <input id="mainLogin" autocomplete="username" placeholder="mainadmin">
-          </label>
-          <label class="full">Password
-            <input id="mainPassword" type="password" autocomplete="current-password" placeholder="Password">
           </label>
         </div>
         <div class="action-row">
@@ -50,13 +47,13 @@
 
       <div class="backend-panel" id="approvalPanel" hidden>
         <h2>Pending Admin Confirmations</h2>
-        <p class="backend-help">Only approved accounts can access Backend 2 to publish donation entries.</p>
+        <p class="backend-help">Only approved accounts can publish donation entries.</p>
         <div id="pendingList" class="table-list"></div>
       </div>
 
       <div class="backend-panel" id="createAdminPanel" hidden>
-        <h2>Create Backend 2 Admin</h2>
-        <p class="backend-help">Create the login account here. The user can then log in on Backend 2 with username/email and password.</p>
+        <h2>Create Donation Admin</h2>
+        <p class="backend-help">Create the login account here. The user can then log in with username/email and password.</p>
         <div class="form-grid">
           <label>Email ID
             <input id="newAdminEmail" type="email" placeholder="admin@example.com">
@@ -173,7 +170,7 @@
       const mount = document.getElementById('approvedList');
       const approved = usersData.approved || [];
       if (!approved.length) {
-        mount.innerHTML = '<p class="empty-state">No approved Backend 2 admins yet.</p>';
+        mount.innerHTML = '<p class="empty-state">No approved donation admins yet.</p>';
         return;
       }
       mount.innerHTML = approved.map((user) => `
@@ -212,11 +209,11 @@
           approvedAt: new Date().toISOString()
         };
         usersData.approved = [...(usersData.approved || []), admin];
-        await saveUsers(`Create backend admin ${username}`);
+        await saveUsers(`Create donation admin ${username}`);
         document.getElementById('newAdminEmail').value = '';
         document.getElementById('newAdminUsername').value = '';
         document.getElementById('newAdminPassword').value = '';
-        setStatus(createStatus, `${username} can now log in on Backend 2.`, 'good');
+        setStatus(createStatus, `${username} can now log in as a donation admin.`, 'good');
       } catch (error) {
         setStatus(createStatus, error.message, 'bad');
       }
@@ -241,10 +238,10 @@
         usersData.pending = (usersData.pending || []).filter((item) => item.id !== (approveId || rejectId));
         if (approveId && user) {
           usersData.approved = [...(usersData.approved || []), { ...user, status: 'approved', approvedAt: new Date().toISOString() }];
-          await saveUsers(`Approve backend admin ${user.username}`);
+          await saveUsers(`Approve donation admin ${user.username}`);
           setStatus(status, `${user.username} approved.`, 'good');
         } else if (user) {
-          await saveUsers(`Reject backend admin ${user.username}`);
+          await saveUsers(`Reject donation admin ${user.username}`);
           setStatus(status, `${user.username} rejected.`, 'good');
         }
       } catch (error) {

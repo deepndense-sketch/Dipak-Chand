@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Backend 2 - Donation Form</title>
-  <link rel="stylesheet" href="./assets/css/donation-system.css?v=9">
+  <title>Donation Entry Form</title>
+  <link rel="stylesheet" href="./assets/css/donation-system.css?v=10">
 </head>
 <body class="backend-body">
   <main class="backend-shell">
@@ -42,11 +42,23 @@
           <label class="visually-hidden">Timeline color
             <input id="donorColor" type="color" value="#176b87">
           </label>
-          <label class="full">Upload images
-            <input id="donorImages" type="file" accept="image/*" multiple>
+          <label class="full">Profile photo
+            <input id="profileImage" type="file" accept="image/*">
+          </label>
+          <label class="full">Other images
+            <input id="otherImages" type="file" accept="image/*" multiple>
           </label>
         </div>
-        <div id="imagePreview" class="preview-grid face-preview-grid"></div>
+        <div class="upload-preview-layout">
+          <div>
+            <h3>Profile Photo</h3>
+            <div id="profilePreview" class="preview-grid face-preview-grid"></div>
+          </div>
+          <div>
+            <h3>Other Images</h3>
+            <div id="otherPreview" class="preview-grid gallery-preview-grid"></div>
+          </div>
+        </div>
         <div class="action-row">
           <button type="button" id="saveDonationBtn">Save Donation</button>
           <button type="button" class="secondary" id="newDonationBtn">New Entry</button>
@@ -78,7 +90,8 @@
     let donationData = null;
     let siteData = null;
     let currentAdmin = null;
-    let selectedImages = [];
+    let profileImage = null;
+    let otherImages = [];
 
     function setStatus(id, text, type = '') {
       const el = document.getElementById(id);
@@ -100,27 +113,36 @@
       document.getElementById('donorInfo').value = '';
       document.getElementById('donorStatus').value = 'published';
       document.getElementById('donorColor').value = cms.DONOR_COLORS[Math.floor(Math.random() * cms.DONOR_COLORS.length)];
-      document.getElementById('donorImages').value = '';
-      selectedImages = [];
+      document.getElementById('profileImage').value = '';
+      document.getElementById('otherImages').value = '';
+      profileImage = null;
+      otherImages = [];
       renderPreview();
     }
 
     function renderPreview() {
-      const mount = document.getElementById('imagePreview');
-      mount.innerHTML = selectedImages.map((image, index) => `
+      const profileMount = document.getElementById('profilePreview');
+      profileMount.innerHTML = profileImage ? `
         <div class="face-preview-card">
           <div class="face-frame">
-            <img src="${image.dataUrl}" alt="${image.name}" style="object-position:${image.focusX || 50}% ${image.focusY || 50}%">
+            <img src="${profileImage.dataUrl}" alt="${profileImage.name}" style="object-position:${profileImage.focusX || 50}% ${profileImage.focusY || 50}%">
           </div>
           <div class="face-controls">
             <label>Move left/right
-              <input type="range" min="0" max="100" value="${image.focusX || 50}" data-focus-x="${index}">
+              <input type="range" min="0" max="100" value="${profileImage.focusX || 50}" data-profile-focus-x>
             </label>
             <label>Move up/down
-              <input type="range" min="0" max="100" value="${image.focusY || 50}" data-focus-y="${index}">
+              <input type="range" min="0" max="100" value="${profileImage.focusY || 50}" data-profile-focus-y>
             </label>
           </div>
-        </div>`).join('');
+        </div>` : '<p class="empty-state">Optional profile photo.</p>';
+
+      const otherMount = document.getElementById('otherPreview');
+      otherMount.innerHTML = otherImages.length ? otherImages.map((image) => `
+        <div class="gallery-preview-card">
+          <img src="${image.dataUrl}" alt="${image.name}">
+          <span>${image.name}</span>
+        </div>`).join('') : '<p class="empty-state">Optional additional images.</p>';
     }
 
     function fileToDataUrl(file) {
@@ -151,7 +173,9 @@
           status,
           adminId: currentAdmin.id,
           adminName: currentAdmin.username,
-          images: selectedImages,
+          profileImage,
+          otherImages,
+          images: [profileImage, ...otherImages].filter(Boolean),
           createdAt: existing?.createdAt || new Date().toISOString(),
           updatedAt: new Date().toISOString(),
           publishedAt: status === 'published' ? (existing?.publishedAt || new Date().toISOString()) : existing?.publishedAt || null
@@ -193,7 +217,8 @@
       document.getElementById('donorInfo').value = entry.info || '';
       document.getElementById('donorStatus').value = entry.status || 'draft';
       document.getElementById('donorColor').value = entry.color || '#176b87';
-      selectedImages = entry.images || [];
+      profileImage = entry.profileImage || (entry.images || [])[0] || null;
+      otherImages = entry.otherImages || (entry.images || []).slice(profileImage ? 1 : 0);
       renderPreview();
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
@@ -222,7 +247,7 @@
         return `<article class="donation-admin-card">
           <strong>${entry.donorName}</strong>
           <div>${cms.money(entry.amount, siteData.currency)} · ${pct.toFixed(2)}% of target</div>
-          <div class="chip-row"><span class="chip">${entry.status}</span><span class="chip">${(entry.images || []).length} image(s)</span></div>
+          <div class="chip-row"><span class="chip">${entry.status}</span><span class="chip">${[entry.profileImage, ...(entry.otherImages || entry.images || [])].filter(Boolean).length} image(s)</span></div>
           <div class="action-row">
             <button type="button" data-edit="${entry.id}">Edit</button>
             <button type="button" class="danger" data-delete="${entry.id}">Delete</button>
@@ -255,18 +280,20 @@
       if (event.target.dataset.edit) editDonation(event.target.dataset.edit);
       if (event.target.dataset.delete) deleteDonation(event.target.dataset.delete);
     });
-    document.getElementById('imagePreview').addEventListener('input', (event) => {
-      const xIndex = event.target.dataset.focusX;
-      const yIndex = event.target.dataset.focusY;
-      if (xIndex !== undefined) selectedImages[Number(xIndex)].focusX = Number(event.target.value);
-      if (yIndex !== undefined) selectedImages[Number(yIndex)].focusY = Number(event.target.value);
+    document.getElementById('profilePreview').addEventListener('input', (event) => {
+      if (!profileImage) return;
+      if (event.target.dataset.profileFocusX !== undefined) profileImage.focusX = Number(event.target.value);
+      if (event.target.dataset.profileFocusY !== undefined) profileImage.focusY = Number(event.target.value);
       const card = event.target.closest('.face-preview-card');
       const img = card?.querySelector('.face-frame img');
-      const image = selectedImages[Number(xIndex ?? yIndex)];
-      if (img && image) img.style.objectPosition = `${image.focusX || 50}% ${image.focusY || 50}%`;
+      if (img) img.style.objectPosition = `${profileImage.focusX || 50}% ${profileImage.focusY || 50}%`;
     });
-    document.getElementById('donorImages').addEventListener('change', async (event) => {
-      selectedImages = await Promise.all([...event.target.files].map(fileToDataUrl));
+    document.getElementById('profileImage').addEventListener('change', async (event) => {
+      profileImage = event.target.files[0] ? await fileToDataUrl(event.target.files[0]) : null;
+      renderPreview();
+    });
+    document.getElementById('otherImages').addEventListener('change', async (event) => {
+      otherImages = await Promise.all([...event.target.files].map(fileToDataUrl));
       renderPreview();
     });
     init();
