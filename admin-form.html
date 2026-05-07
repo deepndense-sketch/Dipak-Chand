@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Donation Entry Form</title>
-  <link rel="stylesheet" href="./assets/css/donation-system.css?v=12">
+  <link rel="stylesheet" href="./assets/css/donation-system.css?v=13">
 </head>
 <body class="backend-body">
   <main class="backend-shell">
@@ -67,7 +67,7 @@
       </div>
 
       <div class="backend-panel">
-        <h2>Your Entries</h2>
+        <h2>All Entries</h2>
         <div class="metrics-grid" id="adminMetrics"></div>
         <div class="action-row" id="completeListRow" hidden></div>
         <div id="donationList" class="table-list"></div>
@@ -232,33 +232,35 @@
     }
 
     function renderDonations() {
-      const own = cms.sortDonationsNewest((donationData.donations || []).filter((entry) => entry.adminId === currentAdmin.id));
+      const allEntries = cms.sortDonationsNewest(donationData.donations || []);
+      const own = allEntries.filter((entry) => entry.adminId === currentAdmin.id);
       const publishedTotal = own.filter((entry) => entry.status === 'published').reduce((sum, entry) => sum + Number(entry.amount || 0), 0);
-      const target = Number(siteData.targetAmount || 5000000);
+      const allPublished = allEntries.filter((entry) => entry.status === 'published');
+      const allTotal = allPublished.reduce((sum, entry) => sum + Number(entry.amount || 0), 0);
       const listLimit = 15;
       const completeRow = document.getElementById('completeListRow');
-      completeRow.hidden = own.length <= listLimit;
-      completeRow.innerHTML = own.length > listLimit
-        ? `<a class="button secondary" href="donations-list.html?admin=${encodeURIComponent(currentAdmin.id)}&mode=all" target="_blank" rel="noopener">View complete list (${own.length})</a>`
+      completeRow.hidden = allEntries.length <= listLimit;
+      completeRow.innerHTML = allEntries.length > listLimit
+        ? `<a class="button secondary" href="donations-list.html" target="_blank" rel="noopener">View complete list (${allPublished.length})</a>`
         : '';
       document.getElementById('adminMetrics').innerHTML = `
         <div class="metric-card"><h3>Your Total</h3><div class="number">${cms.money(publishedTotal, siteData.currency)}</div></div>
-        <div class="metric-card"><h3>Published</h3><div class="number">${own.filter((entry) => entry.status === 'published').length}</div></div>
-        <div class="metric-card"><h3>Drafts</h3><div class="number">${own.filter((entry) => entry.status === 'draft').length}</div></div>`;
+        <div class="metric-card"><h3>All Published</h3><div class="number">${allPublished.length}</div></div>
+        <div class="metric-card"><h3>All Total</h3><div class="number">${cms.money(allTotal, siteData.currency)}</div></div>`;
       const mount = document.getElementById('donationList');
-      if (!own.length) {
+      if (!allEntries.length) {
         mount.innerHTML = '<p class="empty-state">No donation entries yet.</p>';
         return;
       }
-      mount.innerHTML = own.slice(0, listLimit).map((entry) => {
-        const pct = target ? (Number(entry.amount || 0) / target) * 100 : 0;
+      mount.innerHTML = allEntries.slice(0, listLimit).map((entry) => {
+        const canManage = entry.adminId === currentAdmin.id;
         return `<article class="donation-admin-card">
           <strong>${entry.donorName}</strong>
-          <div>${cms.money(entry.amount, siteData.currency)} · ${pct.toFixed(2)}% of target</div>
-          <div class="chip-row"><span class="chip">${entry.status}</span><span class="chip">${[entry.profileImage, ...(entry.otherImages || entry.images || [])].filter(Boolean).length} image(s)</span></div>
+          <div>${cms.money(entry.amount, siteData.currency)}</div>
+          <div class="chip-row"><span class="chip">${entry.status}</span><span class="chip">${entry.adminName || 'Admin'}</span><span class="chip">${[entry.profileImage, ...(entry.otherImages || entry.images || [])].filter(Boolean).length} image(s)</span></div>
           <div class="action-row">
-            <button type="button" data-edit="${entry.id}">Edit</button>
-            <button type="button" class="danger" data-delete="${entry.id}">Delete</button>
+            ${canManage ? `<button type="button" data-edit="${entry.id}">Edit</button>
+            <button type="button" class="danger" data-delete="${entry.id}">Delete</button>` : ''}
             <a class="button secondary" href="donation.html?id=${encodeURIComponent(entry.id)}" target="_blank" rel="noopener">View Page</a>
           </div>
         </article>`;
