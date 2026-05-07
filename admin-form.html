@@ -30,6 +30,9 @@
           <label>Amount Donated
             <input id="donorAmount" type="number" min="0" step="1" placeholder="5000">
           </label>
+          <label class="full">Address
+            <input id="donorAddress" placeholder="Donor address">
+          </label>
           <label class="full">Information
             <textarea id="donorInfo" placeholder="Write donation details, message, date, receipt notes, etc."></textarea>
           </label>
@@ -71,6 +74,9 @@
         <div class="metrics-grid" id="adminMetrics"></div>
         <div class="action-row" id="completeListRow" hidden></div>
         <div id="donationList" class="table-list"></div>
+        <div class="action-row" id="showMoreEntriesRow" hidden>
+          <button type="button" class="secondary" id="showMoreEntriesBtn">See more</button>
+        </div>
       </div>
     </section>
 
@@ -92,6 +98,7 @@
     let currentAdmin = null;
     let profileImage = null;
     let otherImages = [];
+    let visibleEntryCount = 10;
 
     function setStatus(id, text, type = '') {
       const el = document.getElementById(id);
@@ -110,6 +117,7 @@
       document.getElementById('donationId').value = '';
       document.getElementById('donorName').value = '';
       document.getElementById('donorAmount').value = '';
+      document.getElementById('donorAddress').value = '';
       document.getElementById('donorInfo').value = '';
       document.getElementById('donorStatus').value = 'published';
       document.getElementById('donorColor').value = cms.DONOR_COLORS[Math.floor(Math.random() * cms.DONOR_COLORS.length)];
@@ -171,6 +179,7 @@
           id,
           donorName,
           amount,
+          address: document.getElementById('donorAddress').value.trim(),
           info: document.getElementById('donorInfo').value.trim(),
           color: document.getElementById('donorColor').value,
           status,
@@ -221,6 +230,7 @@
       document.getElementById('donationId').value = entry.id;
       document.getElementById('donorName').value = entry.donorName || '';
       document.getElementById('donorAmount').value = entry.amount || '';
+      document.getElementById('donorAddress').value = entry.address || '';
       document.getElementById('donorInfo').value = entry.info || '';
       document.getElementById('donorStatus').value = entry.status || 'draft';
       document.getElementById('donorColor').value = entry.color || '#176b87';
@@ -237,12 +247,17 @@
       const publishedTotal = own.filter((entry) => entry.status === 'published').reduce((sum, entry) => sum + Number(entry.amount || 0), 0);
       const allPublished = allEntries.filter((entry) => entry.status === 'published');
       const allTotal = allPublished.reduce((sum, entry) => sum + Number(entry.amount || 0), 0);
-      const listLimit = 15;
+      const listLimit = visibleEntryCount;
       const completeRow = document.getElementById('completeListRow');
-      completeRow.hidden = allEntries.length <= listLimit;
-      completeRow.innerHTML = allEntries.length > listLimit
-        ? `<a class="button secondary" href="donations-list.html" target="_blank" rel="noopener">View complete list (${allPublished.length})</a>`
+      completeRow.hidden = allPublished.length <= 0;
+      completeRow.innerHTML = allPublished.length
+        ? `<a class="button secondary" href="donations-list.html">View complete list (${allPublished.length})</a>`
         : '';
+      const showMoreRow = document.getElementById('showMoreEntriesRow');
+      const showMoreBtn = document.getElementById('showMoreEntriesBtn');
+      const remainingEntries = Math.max(0, allEntries.length - visibleEntryCount);
+      showMoreRow.hidden = !remainingEntries;
+      showMoreBtn.textContent = `See more (${Math.min(50, remainingEntries)} more)`;
       document.getElementById('adminMetrics').innerHTML = `
         <div class="metric-card"><h3>Your Total</h3><div class="number">${cms.money(publishedTotal, siteData.currency)}</div></div>
         <div class="metric-card"><h3>All Published</h3><div class="number">${allPublished.length}</div></div>
@@ -261,7 +276,7 @@
           <div class="action-row">
             ${canManage ? `<button type="button" data-edit="${entry.id}">Edit</button>
             <button type="button" class="danger" data-delete="${entry.id}">Delete</button>` : ''}
-            <a class="button secondary" href="donation.html?id=${encodeURIComponent(entry.id)}" target="_blank" rel="noopener">View Page</a>
+            <a class="button secondary" href="donation.html?id=${encodeURIComponent(entry.id)}">View Page</a>
           </div>
         </article>`;
       }).join('');
@@ -286,6 +301,10 @@
     });
     document.getElementById('saveDonationBtn').addEventListener('click', saveDonation);
     document.getElementById('newDonationBtn').addEventListener('click', clearForm);
+    document.getElementById('showMoreEntriesBtn').addEventListener('click', () => {
+      visibleEntryCount += 50;
+      renderDonations();
+    });
     document.getElementById('donationList').addEventListener('click', (event) => {
       if (event.target.dataset.edit) editDonation(event.target.dataset.edit);
       if (event.target.dataset.delete) deleteDonation(event.target.dataset.delete);

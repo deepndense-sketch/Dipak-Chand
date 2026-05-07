@@ -3,13 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Donation Detail</title>
-  <link rel="stylesheet" href="./assets/css/donation-system.css?v=12">
+  <title>Save Dipak Chand - Donation Detail</title>
+  <link rel="stylesheet" href="./assets/css/donation-system.css?v=13">
 </head>
 <body class="backend-body">
   <main class="detail-shell">
     <nav class="backend-nav" style="margin-bottom: 16px;">
-      <a class="secondary" href="./index.html">Back to Website</a>
+      <a class="secondary site-home-link" href="./index.html">Save Dipak Chand</a>
     </nav>
     <article class="detail-panel" id="detailMount">
       <p class="empty-state">Loading donation details...</p>
@@ -23,26 +23,33 @@
     const id = new URLSearchParams(location.search).get('id');
 
     cms.loadAllData().then(({ site, donations }) => {
+      const siteTitle = site.title || cms.DEFAULT_SITE_TITLE || 'Save Dipak Chand';
       const entry = donations.find((item) => item.id === id && item.status === 'published');
       if (!entry) {
         mount.innerHTML = '<h1>Donation not found</h1><p class="empty-state">This donation page is not published or the link is incorrect.</p>';
-        document.title = 'Donation not found';
+        document.title = `${siteTitle} - Donation not found`;
         return;
       }
-      const target = Number(site.targetAmount || 5000000);
-      const pct = target ? (Number(entry.amount || 0) / target) * 100 : 0;
       const profileImage = entry.profileImage || (entry.images || [])[0] || null;
       const otherImages = entry.otherImages || (entry.images || []).slice(profileImage ? 1 : 0);
-      document.title = `${entry.donorName} - Donation Detail`;
+      document.title = `${siteTitle} - ${entry.donorName}`;
       mount.innerHTML = `
+        <section class="detail-appeal">
+          <a class="detail-appeal-photo photo-left" href="./index.html" aria-label="Dipak Chand appeal"></a>
+          <a class="detail-appeal-photo photo-right" href="./index.html" aria-label="Dipak Chand hospital photo"></a>
+          <div class="detail-appeal-copy">
+            <span class="chip">Support Appeal</span>
+            <h1><a href="./index.html">${siteTitle}</a></h1>
+            <p>Dipak Chand support page</p>
+          </div>
+        </section>
         <section class="detail-hero ${profileImage ? 'with-profile' : ''}">
           ${profileImage ? `<div class="detail-profile-photo"><img src="${profileImage.dataUrl}" alt="${profileImage.name || entry.donorName}" style="object-position:${profileImage.focusX || 50}% ${profileImage.focusY || 50}%; transform:scale(${profileImage.zoom || 1})"></div>` : ''}
           <div>
             <span class="chip">${entry.adminName || 'Admin'}</span>
             <h1>${entry.donorName}</h1>
             <div class="detail-amount">${cms.money(entry.amount, site.currency)}</div>
-            <div class="progress-shell"><div class="progress-fill" style="width:${Math.min(100, pct)}%"></div></div>
-            <p>${pct.toFixed(2)}% of ${cms.money(target, site.currency)} target</p>
+            ${entry.address ? `<p class="detail-address"><strong>Address:</strong> ${entry.address}</p>` : ''}
           </div>
         </section>
         <section>

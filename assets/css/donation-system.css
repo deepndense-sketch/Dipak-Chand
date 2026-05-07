@@ -335,6 +335,7 @@ textarea {
 .admin-total {
   margin: 6px 0 12px;
   font-weight: 850;
+  color: #0f4c5c;
 }
 
 .timeline-list {
@@ -419,12 +420,6 @@ textarea {
   font-weight: 850;
 }
 
-.public-donation-card .percent {
-  margin-top: 6px;
-  color: #647086;
-  font-size: 13px;
-}
-
 .complete-list-link {
   display: inline-flex;
   align-items: center;
@@ -455,6 +450,57 @@ textarea {
   padding: 22px;
 }
 
+.detail-appeal {
+  display: grid;
+  grid-template-columns: minmax(120px, 0.55fr) minmax(120px, 0.55fr) minmax(0, 1fr);
+  gap: 12px;
+  align-items: stretch;
+  margin-bottom: 20px;
+  padding-bottom: 18px;
+  border-bottom: 1px solid var(--admin-line);
+}
+
+.detail-appeal-photo {
+  min-height: 190px;
+  border-radius: 8px;
+  border: 1px solid var(--admin-line);
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-color: #eef2f5;
+}
+
+.detail-appeal .photo-left {
+  background-image: url("../../519948108_17999173196800213_4999842382913394656_n.jpg");
+  background-position: center calc(20% - 80px);
+}
+
+.detail-appeal .photo-right {
+  background-image: url("../../e17e0812-74a8-4da3-a7ea-7196882f4e10.jfif");
+  background-position: 55% center;
+}
+
+.detail-appeal-copy {
+  display: grid;
+  align-content: center;
+  gap: 8px;
+}
+
+.detail-appeal-copy h1 {
+  margin: 0;
+  font-size: clamp(26px, 4vw, 44px);
+  line-height: 1.22;
+}
+
+.detail-appeal-copy h1 a {
+  color: #0f4c5c;
+  text-decoration: none;
+}
+
+.detail-appeal-copy p {
+  margin: 0;
+  color: var(--admin-muted);
+}
+
 .detail-hero {
   display: grid;
   gap: 8px;
@@ -471,6 +517,13 @@ textarea {
   color: #168447;
   font-size: 30px;
   font-weight: 900;
+}
+
+.detail-address {
+  margin: 10px 0 0;
+  color: var(--admin-muted);
+  font-size: 16px;
+  line-height: 1.55;
 }
 
 .image-grid {
@@ -616,6 +669,7 @@ textarea {
   .form-grid,
   .metrics-grid,
   .upload-preview-layout,
+  .detail-appeal,
   .detail-hero.with-profile {
     grid-template-columns: 1fr;
   }

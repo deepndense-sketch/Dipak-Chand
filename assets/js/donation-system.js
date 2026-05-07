@@ -9,6 +9,7 @@ const DATA_PATHS = {
 const DONOR_COLORS = ["#176b87", "#b45309", "#7c3aed", "#0f766e", "#be123c", "#2563eb", "#a16207", "#15803d", "#c2410c", "#6d28d9"];
 const TOKEN_STORAGE_KEY = "dipakGithubToken";
 const LIST_LIMIT = 15;
+const DEFAULT_SITE_TITLE = "Save Dipak Chand";
 
 function apiUrl(path) {
   return `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${path}`;
@@ -159,7 +160,7 @@ function forgetRememberedToken() {
 
 async function loadAllData() {
   const [site, users, donations] = await Promise.all([
-    readJson(DATA_PATHS.site, { targetAmount: 5000000, currency: "Rs" }),
+    readJson(DATA_PATHS.site, { title: DEFAULT_SITE_TITLE, targetAmount: 5000000, currency: "Rs" }),
     readJson(DATA_PATHS.users, { mainAdmins: [], pending: [], approved: [] }),
     readJson(DATA_PATHS.donations, { donations: [] })
   ]);
@@ -216,17 +217,17 @@ function renderPublicDonationSummary(mountId = "donation-dashboard") {
                   const color = entry.color || DONOR_COLORS[(adminIndex + index) % DONOR_COLORS.length];
                   const image = primaryImage(entry);
                   return `<article class="public-donation-card" style="--donor-color:${color}">
-                    <a class="donor-photo-link" href="donation.html?id=${encodeURIComponent(entry.id)}" target="_blank" rel="noopener" aria-label="${entry.donorName}">
+                    <a class="donor-photo-link" href="donation.html?id=${encodeURIComponent(entry.id)}" aria-label="${entry.donorName}">
                       ${image ? `<img class="donor-photo" src="${image.dataUrl}" alt="${entry.donorName}" style="object-position:${image.focusX || 50}% ${image.focusY || 50}%; transform:scale(${image.zoom || 1})">` : `<span class="donor-photo donor-photo-fallback">${String(entry.donorName || "?").charAt(0).toUpperCase()}</span>`}
                     </a>
                     <div class="donor-summary">
-                      <a href="donation.html?id=${encodeURIComponent(entry.id)}" target="_blank" rel="noopener">${entry.donorName}</a>
+                      <a href="donation.html?id=${encodeURIComponent(entry.id)}">${entry.donorName}</a>
                       <span class="amount">${money(entry.amount, currency)}</span>
                     </div>
                   </article>`;
                 }).join("")}
               </div>
-              ${admin.donations.length > LIST_LIMIT ? `<a class="complete-list-link" href="donations-list.html?admin=${encodeURIComponent(admin.id)}" target="_blank" rel="noopener">View complete list (${admin.donations.length})</a>` : ""}
+              ${admin.donations.length > LIST_LIMIT ? `<a class="complete-list-link" href="donations-list.html?admin=${encodeURIComponent(admin.id)}">View complete list (${admin.donations.length})</a>` : ""}
             </section>`).join("")}
         </div>
       </div>`;
@@ -239,6 +240,7 @@ function renderPublicDonationSummary(mountId = "donation-dashboard") {
 window.DipakCMS = {
   DATA_PATHS,
   DONOR_COLORS,
+  DEFAULT_SITE_TITLE,
   money,
   slugify,
   uid,
