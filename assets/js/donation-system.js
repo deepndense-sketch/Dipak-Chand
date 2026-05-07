@@ -122,6 +122,24 @@ async function githubPutJson(path, value, token, message, sha) {
   return response.json();
 }
 
+async function githubDeletePath(path, token, message, sha) {
+  const response = await fetch(apiUrl(path), {
+    method: "DELETE",
+    headers: {
+      Accept: "application/vnd.github+json",
+      Authorization: `Bearer ${token}`,
+      "X-GitHub-Api-Version": "2022-11-28"
+    },
+    body: JSON.stringify({
+      message,
+      sha,
+      branch: BRANCH
+    })
+  });
+  if (!response.ok) throw new Error(await response.text());
+  return response.json();
+}
+
 async function saveJson(path, value, token, message) {
   if (!token) throw new Error("GitHub token is required to publish changes.");
   for (let attempt = 0; attempt < 2; attempt += 1) {
@@ -193,6 +211,12 @@ async function loadAllData() {
   let donations = donationIndex;
   if (!Array.isArray(donations.donations)) donations = await readJson(DATA_PATHS.donations, { donations: [] });
   return { site, users, donations: donations.donations || [] };
+}
+
+async function deleteJson(path, token, message) {
+  if (!token) throw new Error("GitHub token is required to delete changes.");
+  const existing = await githubGet(path, token);
+  return githubDeletePath(path, token, message, existing.sha);
 }
 
 async function loadDonationDetail(id) {
@@ -285,6 +309,7 @@ window.DipakCMS = {
   sha256,
   readJson,
   saveJson,
+  deleteJson,
   updateJson,
   sessionSet,
   sessionGet,

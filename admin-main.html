@@ -327,16 +327,25 @@
         if (!mainSession?.token) throw new Error('Enter a GitHub token in the Publishing Token panel to delete admin accounts.');
         const admin = (usersData.approved || []).find((user) => user.id === id);
         if (!admin) throw new Error('Approved admin was not found.');
-        const adminEntries = (donationData.donations || []).filter((entry) => entry.adminId === id);
+        const adminName = String(admin.username || '').trim().toLowerCase();
+        const adminEmail = String(admin.email || '').trim().toLowerCase();
+        const isAdminEntry = (entry) =>
+          entry.adminId === id ||
+          String(entry.adminName || '').trim().toLowerCase() === adminName ||
+          String(entry.adminEmail || '').trim().toLowerCase() === adminEmail;
+        const adminEntries = (donationData.donations || []).filter(isAdminEntry);
         if (!confirm(`Delete donation admin ${admin.username} and remove ${adminEntries.length} donation entr${adminEntries.length === 1 ? 'y' : 'ies'} from the website?`)) return;
         usersData.approved = (usersData.approved || []).filter((user) => user.id !== id);
         await saveUsers(`Delete donation admin ${admin.username}`);
         try {
           await cms.updateJson(cms.DATA_PATHS.donationsIndex, { donations: [] }, mainSession.token, `Remove donations from ${admin.username}`, (latest) => {
-            latest.donations = (latest.donations || []).filter((entry) => entry.adminId !== id);
+            latest.donations = (latest.donations || []).filter((entry) => !isAdminEntry(entry));
             latest.updatedAt = new Date().toISOString();
             return latest;
           });
+          await Promise.all(adminEntries.map((entry) =>
+            cms.deleteJson(cms.donationDetailPath(entry.id), mainSession.token, `Remove donation detail from ${entry.donorName}`).catch(() => null)
+          ));
           setStatus(status, `${admin.username} deleted and ${adminEntries.length} donation entr${adminEntries.length === 1 ? 'y' : 'ies'} removed from the website.`, 'good');
         } catch (entryError) {
           setStatus(status, `${admin.username} deleted, but donation entries could not be removed: ${entryError.message}`, 'bad');
