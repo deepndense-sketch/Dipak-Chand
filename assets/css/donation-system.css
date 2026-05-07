@@ -547,9 +547,9 @@ textarea {
   align-items: center;
   justify-content: center;
   min-height: 38px;
-  border: 1px solid #d7e0e5;
+  border: 1px solid #cfd9e1;
   border-radius: 6px;
-  padding: 8px 12px;
+  padding: 9px 14px;
   background: #ffffff;
   color: #0f4c5c;
   font-weight: 850;
@@ -561,16 +561,11 @@ textarea {
 }
 
 .nav-button:hover,
-.nav-button:focus-visible {
-  background: #f2f6f7;
-  color: #0f4c5c;
-}
-
+.nav-button:focus-visible,
 .nav-button.active {
-  border-color: #0f4c5c;
-  background: #0f4c5c;
-  color: #fff;
-  box-shadow: none;
+  background: #f2f6f7;
+  border-color: #b8c9d2;
+  color: #0f4c5c;
 }
 
 .detail-shell > .public-site-header {
