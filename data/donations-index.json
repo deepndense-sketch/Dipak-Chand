@@ -99,20 +99,6 @@
       "publishedAt": "2026-05-06T19:05:18.388Z"
     },
     {
-      "id": "janam-sing-mouf25lm-2k7lfp",
-      "donorName": "Janam Sing",
-      "amount": 34567,
-      "color": "#c2410c",
-      "status": "published",
-      "adminId": "admin-moue9fg9-gdy0yd",
-      "adminName": "Admin 2",
-      "address": "",
-      "imageCount": 0,
-      "createdAt": "2026-05-06T18:54:26.266Z",
-      "updatedAt": "2026-05-06T19:04:02.230Z",
-      "publishedAt": "2026-05-06T19:04:02.230Z"
-    },
-    {
       "id": "kam-bahadur-mouf0q4u-9fgsc9",
       "donorName": "Kam Bahadur",
       "amount": 123451,
@@ -253,5 +239,5 @@
       "publishedAt": "2026-05-06T18:28:18.853Z"
     }
   ],
-  "updatedAt": "2026-05-07T03:36:50.654Z"
+  "updatedAt": "2026-05-07T03:36:52.224Z"
 }
