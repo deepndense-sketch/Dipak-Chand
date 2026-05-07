@@ -330,13 +330,17 @@
         const adminEntries = (donationData.donations || []).filter((entry) => entry.adminId === id);
         if (!confirm(`Delete donation admin ${admin.username} and remove ${adminEntries.length} donation entr${adminEntries.length === 1 ? 'y' : 'ies'} from the website?`)) return;
         usersData.approved = (usersData.approved || []).filter((user) => user.id !== id);
-        await cms.updateJson(cms.DATA_PATHS.donationsIndex, { donations: [] }, mainSession.token, `Remove donations from ${admin.username}`, (latest) => {
-          latest.donations = (latest.donations || []).filter((entry) => entry.adminId !== id);
-          latest.updatedAt = new Date().toISOString();
-          return latest;
-        });
         await saveUsers(`Delete donation admin ${admin.username}`);
-        setStatus(status, `${admin.username} deleted and ${adminEntries.length} donation entr${adminEntries.length === 1 ? 'y' : 'ies'} removed from the website.`, 'good');
+        try {
+          await cms.updateJson(cms.DATA_PATHS.donationsIndex, { donations: [] }, mainSession.token, `Remove donations from ${admin.username}`, (latest) => {
+            latest.donations = (latest.donations || []).filter((entry) => entry.adminId !== id);
+            latest.updatedAt = new Date().toISOString();
+            return latest;
+          });
+          setStatus(status, `${admin.username} deleted and ${adminEntries.length} donation entr${adminEntries.length === 1 ? 'y' : 'ies'} removed from the website.`, 'good');
+        } catch (entryError) {
+          setStatus(status, `${admin.username} deleted, but donation entries could not be removed: ${entryError.message}`, 'bad');
+        }
       } catch (error) {
         setStatus(status, error.message, 'bad');
       }
