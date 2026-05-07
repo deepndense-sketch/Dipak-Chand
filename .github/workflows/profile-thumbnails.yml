@@ -1,0 +1,53 @@
+name: Sync profile thumbnails
+
+on:
+  push:
+    branches: ["main"]
+    paths:
+      - "data/donations/**/*.json"
+      - "data/donations-index.json"
+      - "scripts/sync-profile-thumbnails.mjs"
+      - ".github/workflows/profile-thumbnails.yml"
+  schedule:
+    - cron: "17 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: profile-thumbnails
+  cancel-in-progress: true
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install image tools
+        run: npm install --no-save sharp@0.33.5
+
+      - name: Sync thumbnails
+        run: node scripts/sync-profile-thumbnails.mjs
+
+      - name: Commit updated thumbnails
+        run: |
+          if git diff --quiet -- data/donations-index.json; then
+            echo "No thumbnail changes."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/donations-index.json
+          git commit -m "Sync profile thumbnails"
+          git pull --rebase origin main
+          git push origin main
