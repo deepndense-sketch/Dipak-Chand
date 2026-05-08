@@ -1,6 +1,22 @@
 {
   "donations": [
     {
+      "id": "ganesh-dhami-mowx4ika-n0yfjm",
+      "donorName": "Ganesh Dhami",
+      "amount": 1055,
+      "color": "#be123c",
+      "status": "published",
+      "adminId": "admin-mouy8t21-l51py5",
+      "adminName": "Padam Malla",
+      "address": "",
+      "profileThumb": null,
+      "profileImage": null,
+      "imageCount": 0,
+      "createdAt": "2026-05-08T12:55:41.818Z",
+      "updatedAt": "2026-05-08T12:55:41.818Z",
+      "publishedAt": "2026-05-08T12:55:41.818Z"
+    },
+    {
       "id": "sabin-chand-mowx3xsw-ltjh51",
       "donorName": "Sabin Chand",
       "amount": 10000,
@@ -849,5 +865,5 @@
       "publishedAt": "2026-05-07T20:40:19.864Z"
     }
   ],
-  "updatedAt": "2026-05-08T12:55:16.743Z"
+  "updatedAt": "2026-05-08T12:55:43.722Z"
 }
