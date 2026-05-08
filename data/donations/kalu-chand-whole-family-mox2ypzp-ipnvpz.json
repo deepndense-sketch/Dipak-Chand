@@ -2,16 +2,17 @@
   "id": "kalu-chand-whole-family-mox2ypzp-ipnvpz",
   "donorName": "Kalu Chand (whole family)",
   "amount": 75000,
-  "address": "Bhi na pa -2 Ultakham",
-  "info": "",
   "color": "#7c3aed",
   "status": "published",
   "adminId": "admin-mouy8t21-l51py5",
   "adminName": "Padam Malla",
-  "profileImage": null,
+  "address": "Bhi na pa -2 Ultakham",
   "profileThumb": null,
-  "otherImages": [],
+  "profileImage": null,
+  "imageCount": 0,
   "createdAt": "2026-05-08T15:39:09.208Z",
-  "updatedAt": "2026-05-08T15:39:09.224Z",
-  "publishedAt": "2026-05-08T15:39:09.224Z"
+  "updatedAt": "2026-05-08T16:30:32.135Z",
+  "publishedAt": "2026-05-08T15:39:09.224Z",
+  "info": "Kalu/champa-24000/-\nRarish/Radha- 10000/-\nSurendra/Udaya Chand-21000/-\nSanjaya/Tulsi-10,000/-\nKeshab/ Hema- 10000/-",
+  "otherImages": []
 }
