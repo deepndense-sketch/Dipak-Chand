@@ -1,6 +1,22 @@
 {
   "donations": [
     {
+      "id": "kalu-chand-whole-family-mox2ypzp-ipnvpz",
+      "donorName": "Kalu Chand (whole family)",
+      "amount": 75000,
+      "color": "#7c3aed",
+      "status": "published",
+      "adminId": "admin-mouy8t21-l51py5",
+      "adminName": "Padam Malla",
+      "address": "Bhi na pa -2 Ultakham",
+      "profileThumb": null,
+      "profileImage": null,
+      "imageCount": 0,
+      "createdAt": "2026-05-08T15:39:09.208Z",
+      "updatedAt": "2026-05-08T15:39:09.224Z",
+      "publishedAt": "2026-05-08T15:39:09.224Z"
+    },
+    {
       "id": "padam-raj-bhatt-mowyekwr-0w9d3f",
       "donorName": "Padam Raj Bhatt",
       "amount": 1212,
@@ -1905,5 +1921,5 @@
       "publishedAt": "2026-05-07T20:40:19.864Z"
     }
   ],
-  "updatedAt": "2026-05-08T13:31:32.998Z"
+  "updatedAt": "2026-05-08T15:39:12.932Z"
 }
