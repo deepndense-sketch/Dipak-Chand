@@ -1,6 +1,22 @@
 {
   "donations": [
     {
+      "id": "global-academy-staffs-mowy4s7j-444s0e",
+      "donorName": "Global Academy Staffs",
+      "amount": 20000,
+      "color": "#7c3aed",
+      "status": "published",
+      "adminId": "admin-mouy8t21-l51py5",
+      "adminName": "Padam Malla",
+      "address": "Mahendranagar",
+      "profileThumb": null,
+      "profileImage": null,
+      "imageCount": 0,
+      "createdAt": "2026-05-08T13:23:53.935Z",
+      "updatedAt": "2026-05-08T13:23:53.935Z",
+      "publishedAt": "2026-05-08T13:23:53.935Z"
+    },
+    {
       "id": "surendra-ojha-mowy3udi-9rlqpf",
       "donorName": "Surendra Ojha",
       "amount": 5000,
@@ -1601,5 +1617,5 @@
       "publishedAt": "2026-05-07T20:40:19.864Z"
     }
   ],
-  "updatedAt": "2026-05-08T13:23:12.499Z"
+  "updatedAt": "2026-05-08T13:23:55.972Z"
 }
