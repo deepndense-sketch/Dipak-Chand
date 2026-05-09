@@ -222,7 +222,8 @@
           <div class="chip-row"><span class="chip">Approved</span></div>
           <div class="action-row">
             <button type="button" data-save-admin="${user.id}">Save Admin</button>
-            <button type="button" class="danger" data-delete-admin="${user.id}">Delete Admin</button>
+            <button type="button" class="danger" data-delete-admin-only="${user.id}">Delete Admin Only</button>
+            <button type="button" class="danger" data-delete-admin-data="${user.id}">Delete Admin + Data</button>
           </div>
         </article>`).join('');
     }
@@ -328,7 +329,7 @@
       }
     }
 
-    async function deleteApprovedAdmin(id) {
+    async function deleteApprovedAdmin(id, removeEntries = false) {
       try {
         if (!mainSession?.token) throw new Error('Enter a GitHub token in the Publishing Token panel to delete admin accounts.');
         const admin = (usersData.approved || []).find((user) => user.id === id);
@@ -340,10 +341,17 @@
           String(entry.adminName || '').trim().toLowerCase() === adminName ||
           String(entry.adminEmail || '').trim().toLowerCase() === adminEmail;
         const adminEntries = (donationData.donations || []).filter(isAdminEntry);
-        if (!confirm(`Delete donation admin ${admin.username} and remove ${adminEntries.length} donation entr${adminEntries.length === 1 ? 'y' : 'ies'} from the website?`)) return;
+        const actionText = removeEntries
+          ? `Delete donation admin ${admin.username} and remove ${adminEntries.length} donation entr${adminEntries.length === 1 ? 'y' : 'ies'} from the website?`
+          : `Delete only the donation admin login for ${admin.username}? ${adminEntries.length} donation entr${adminEntries.length === 1 ? 'y will' : 'ies will'} stay visible on the website.`;
+        if (!confirm(actionText)) return;
         usersData.approved = (usersData.approved || []).filter((user) => user.id !== id);
         await saveUsers(`Delete donation admin ${admin.username}`);
         renderApproved();
+        if (!removeEntries) {
+          setStatus(status, `${admin.username} login deleted. ${adminEntries.length} donation entr${adminEntries.length === 1 ? 'y is' : 'ies are'} still visible on the website.`, 'good');
+          return;
+        }
         try {
           await cms.updateJson(cms.DATA_PATHS.donationsIndex, { donations: [] }, mainSession.token, `Remove donations from ${admin.username}`, (latest) => {
             latest.donations = (latest.donations || []).filter((entry) => !isAdminEntry(entry));
@@ -405,9 +413,11 @@
 
     document.getElementById('approvedList').addEventListener('click', async (event) => {
       const saveId = event.target.dataset.saveAdmin;
-      const deleteId = event.target.dataset.deleteAdmin;
+      const deleteOnlyId = event.target.dataset.deleteAdminOnly;
+      const deleteDataId = event.target.dataset.deleteAdminData;
       if (saveId) await saveApprovedAdmin(saveId);
-      if (deleteId) await deleteApprovedAdmin(deleteId);
+      if (deleteOnlyId) await deleteApprovedAdmin(deleteOnlyId, false);
+      if (deleteDataId) await deleteApprovedAdmin(deleteDataId, true);
     });
 
     document.getElementById('saveTargetBtn').addEventListener('click', async () => {
