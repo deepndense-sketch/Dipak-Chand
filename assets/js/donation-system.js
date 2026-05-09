@@ -261,6 +261,13 @@ function sortDonationsAlphabetically(entries) {
   return [...entries].sort((a, b) => String(a.donorName || "").localeCompare(String(b.donorName || ""), "en", { sensitivity: "base" }));
 }
 
+function publicAdminGroups(donations, users) {
+  return groupPublishedByAdmin(donations, users).map((admin) => ({
+    ...admin,
+    donations: sortDonationsAlphabetically(admin.donations)
+  }));
+}
+
 function escapeHtml(value) {
   return String(value || "").replace(/[&<>"']/g, (char) => ({
     "&": "&amp;",
@@ -299,7 +306,7 @@ function renderPublicDonationSummary(mountId = "donation-dashboard") {
     const total = published.reduce((sum, entry) => sum + Number(entry.amount || 0), 0);
     const percent = Math.min(100, target ? (total / target) * 100 : 0);
     const remaining = Math.max(0, target - total);
-    const entries = sortDonationsAlphabetically(published);
+    const groups = publicAdminGroups(donations, users);
     if (!published.length) {
       mount.innerHTML = `<div class="public-summary"><h2>Donation Updates</h2><p>No published donation entries yet.</p></div>`;
       return;
@@ -310,24 +317,37 @@ function renderPublicDonationSummary(mountId = "donation-dashboard") {
         <p><strong>Total Raised:</strong> ${money(total, currency)} of ${money(target, currency)} (${percent.toFixed(1)}%)</p>
         <div class="progress-shell" aria-label="Donation progress"><div class="progress-fill" style="width:${percent}%"></div></div>
         <p><strong>Remaining:</strong> ${money(remaining, currency)}</p>
-        <div class="home-donation-grid">
-          ${entries.map((entry, index) => {
-            const color = entry.color || DONOR_COLORS[index % DONOR_COLORS.length];
-            const profileImage = entry.profileThumb || entry.profileImage;
-            return `<article class="public-donation-card" style="--donor-color:${color}">
-              <a class="donor-photo-link" href="donation.html?id=${encodeURIComponent(entry.id)}" aria-label="${entry.donorName}">
-                ${profileImage?.dataUrl
-                  ? `<img class="donor-photo" src="${profileImage.dataUrl}" alt="${entry.donorName}" loading="lazy" decoding="async">`
-                  : `<span class="donor-photo donor-photo-fallback">${String(entry.donorName || "?").charAt(0).toUpperCase()}</span>`}
-              </a>
-              <div class="donor-summary">
-                <a href="donation.html?id=${encodeURIComponent(entry.id)}">${entry.donorName}</a>
-                <span class="amount">${money(entry.amount, currency)}</span>
-                ${donationShareButton(entry)}
+        ${groups.map((admin, adminIndex) => `
+          <section class="admin-donation-group">
+            <header class="admin-group-header">
+              <div>
+                <h3>${admin.username}</h3>
+                <div class="admin-group-raised">${money(admin.total, currency)} raised</div>
               </div>
-            </article>`;
-          }).join("")}
-        </div>
+              <div class="admin-group-contributors">
+                <span>Total Contributor</span>
+                <strong>${admin.donations.length}</strong>
+              </div>
+            </header>
+            <div class="home-donation-grid">
+              ${admin.donations.map((entry, index) => {
+                const color = entry.color || DONOR_COLORS[(adminIndex + index) % DONOR_COLORS.length];
+                const profileImage = entry.profileThumb || entry.profileImage;
+                return `<article class="public-donation-card" style="--donor-color:${color}">
+                  <a class="donor-photo-link" href="donation.html?id=${encodeURIComponent(entry.id)}" aria-label="${entry.donorName}">
+                    ${profileImage?.dataUrl
+                      ? `<img class="donor-photo" src="${profileImage.dataUrl}" alt="${entry.donorName}" loading="lazy" decoding="async">`
+                      : `<span class="donor-photo donor-photo-fallback">${String(entry.donorName || "?").charAt(0).toUpperCase()}</span>`}
+                  </a>
+                  <div class="donor-summary">
+                    <a href="donation.html?id=${encodeURIComponent(entry.id)}">${entry.donorName}</a>
+                    <span class="amount">${money(entry.amount, currency)}</span>
+                    ${donationShareButton(entry)}
+                  </div>
+                </article>`;
+              }).join("")}
+            </div>
+          </section>`).join("")}
       </div>`;
   }).catch((error) => {
     mount.innerHTML = `<div class="public-summary"><h2>Donation Updates</h2><p>Unable to load donation data.</p></div>`;
@@ -382,7 +402,7 @@ function showFacebookShareComposer(donorName, url = location.href) {
           <h2 id="facebookSharePopupTitle">Facebook Post Text</h2>
           <button type="button" class="secondary share-popup-close" aria-label="Close">Close</button>
         </div>
-        <img class="share-popup-photo" src="./DipakFBPhoto.jpg" alt="Deepak Chand" loading="lazy" decoding="async">
+        <img class="share-popup-photo" src="./DipakFBPhoto.jpg" alt="Dipak Chand" loading="lazy" decoding="async">
         <textarea id="facebookSharePopupText" readonly></textarea>
         <div class="detail-share-row share-popup-actions">
           <button type="button" class="secondary" id="facebookSharePopupCopy">Copy Text</button>
@@ -427,6 +447,8 @@ window.DipakCMS = {
   imageCount,
   sortDonationsNewest,
   sortDonationsAlphabetically,
+  publicAdminGroups,
+  escapeHtml,
   thankYouNote,
   donationShareButton,
   sha256,

@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Donation Entry Form</title>
-  <link rel="stylesheet" href="./assets/css/donation-system.css?v=33">
+  <link rel="stylesheet" href="./assets/css/donation-system.css?v=34">
 </head>
 <body class="backend-body">
   <main class="backend-shell">
@@ -67,6 +67,18 @@
           <button type="button" class="secondary" id="newDonationBtn">New Entry</button>
         </div>
         <div class="status-line" id="donationStatus"></div>
+        <section class="import-list-panel">
+          <h2>Upload Donation List</h2>
+          <p class="backend-help">Upload a Word document with columns: SN, Name, Donation Amount, Address, Photo. Photo is ignored.</p>
+          <label class="full">Word donation list
+            <input id="donationListFile" type="file" accept=".docx,application/vnd.openxmlformats-officedocument.wordprocessingml.document">
+          </label>
+          <div class="action-row">
+            <button type="button" class="secondary" id="importDonationListBtn" disabled>Import List</button>
+          </div>
+          <div class="status-line" id="importListStatus"></div>
+          <div id="importPreview" class="table-list"></div>
+        </section>
       </div>
 
       <div class="backend-panel">
@@ -88,7 +100,8 @@
     </section>
   </main>
 
-  <script src="./assets/js/donation-system.js?v=21"></script>
+  <script src="https://unpkg.com/mammoth@1.8.0/mammoth.browser.min.js"></script>
+  <script src="./assets/js/donation-system.js?v=22"></script>
   <script>
     const cms = window.DipakCMS;
     let usersData = null;
@@ -99,6 +112,7 @@
     let otherImages = [];
     let visibleEntryCount = 10;
     let isSavingDonation = false;
+    let importEntries = [];
     const LOCAL_PENDING_DONATIONS_KEY = 'dipakPendingDonationEntries';
     const LOCAL_HIDDEN_DONATIONS_KEY = 'dipakHiddenDonationEntries';
 
@@ -210,6 +224,179 @@
           <img src="${image.dataUrl}" alt="${image.name}">
           <span>${image.name}</span>
         </div>`).join('') : '<p class="empty-state">Optional additional images.</p>';
+    }
+
+    function parseAmount(value) {
+      const cleaned = String(value || '').replace(/rs\.?|nrs\.?|रु|,/gi, '').replace(/[^\d.]/g, '');
+      const amount = Number(cleaned);
+      return Number.isFinite(amount) ? amount : 0;
+    }
+
+    function isSerialCell(value) {
+      return /^\s*\d+[.)]?\s*$/.test(String(value || ''));
+    }
+
+    function isHeaderRow(cells) {
+      const text = cells.join(' ').toLowerCase();
+      return /(^|\s)(sn|s\.n|serial|name|donation|amount|address|photo)(\s|$)/i.test(text) && !cells.some((cell) => parseAmount(cell) > 0);
+    }
+
+    function parseDonationCells(cells) {
+      const clean = cells.map((cell) => String(cell || '').replace(/\s+/g, ' ').trim()).filter(Boolean);
+      if (clean.length < 2 || isHeaderRow(clean)) return null;
+      const start = isSerialCell(clean[0]) ? 1 : 0;
+      const amountIndex = clean.findIndex((cell, index) => index > start && parseAmount(cell) > 0);
+      if (amountIndex <= start) return null;
+      const donorName = clean.slice(start, amountIndex).join(' ').trim();
+      const amount = parseAmount(clean[amountIndex]);
+      const address = clean.slice(amountIndex + 1).filter((cell) => !/^photo$/i.test(cell)).join(' ').trim();
+      if (!donorName || !amount) return null;
+      return { donorName, amount, address };
+    }
+
+    function parseDonationRowsFromHtml(html) {
+      const doc = new DOMParser().parseFromString(html, 'text/html');
+      const rows = [];
+      doc.querySelectorAll('tr').forEach((tr) => {
+        const cells = [...tr.children].map((cell) => cell.textContent || '');
+        const entry = parseDonationCells(cells);
+        if (entry) rows.push(entry);
+      });
+      return rows;
+    }
+
+    function parseDonationRowsFromText(text) {
+      const rows = [];
+      String(text || '').split(/\r?\n/).forEach((line) => {
+        const trimmed = line.replace(/\s+/g, ' ').trim();
+        if (!trimmed || isHeaderRow([trimmed])) return;
+        const cells = line.split(/\t| {2,}/).map((cell) => cell.trim()).filter(Boolean);
+        let entry = cells.length >= 3 ? parseDonationCells(cells) : null;
+        if (!entry) {
+          const match = trimmed.match(/^\d+[.)]?\s+(.+?)\s+(?:Rs\.?|Nrs\.?|रु)?\s*([\d,]+(?:\.\d+)?)\s*(.*)$/i);
+          if (match) entry = { donorName: match[1].trim(), amount: parseAmount(match[2]), address: (match[3] || '').trim() };
+        }
+        if (entry?.donorName && entry.amount) rows.push(entry);
+      });
+      return rows;
+    }
+
+    function uniqueImportEntries(entries) {
+      const seen = new Set();
+      return entries.filter((entry) => {
+        const key = `${entry.donorName.toLowerCase()}|${entry.amount}|${entry.address.toLowerCase()}`;
+        if (seen.has(key)) return false;
+        seen.add(key);
+        return true;
+      });
+    }
+
+    function renderImportPreview() {
+      const button = document.getElementById('importDonationListBtn');
+      const mount = document.getElementById('importPreview');
+      button.disabled = !importEntries.length;
+      if (!importEntries.length) {
+        mount.innerHTML = '';
+        return;
+      }
+      const total = importEntries.reduce((sum, entry) => sum + Number(entry.amount || 0), 0);
+      mount.innerHTML = `
+        <article class="donation-admin-card">
+          <strong>${importEntries.length} entries ready</strong>
+          <div>${cms.money(total, siteData?.currency || 'Rs')} total</div>
+        </article>
+        ${importEntries.slice(0, 8).map((entry, index) => `
+          <article class="donation-admin-card">
+            <strong>${index + 1}. ${cms.escapeHtml(entry.donorName)}</strong>
+            <div>${cms.money(entry.amount, siteData?.currency || 'Rs')}</div>
+            ${entry.address ? `<div class="backend-help">${cms.escapeHtml(entry.address)}</div>` : ''}
+          </article>`).join('')}
+        ${importEntries.length > 8 ? `<p class="backend-help">Showing first 8 only. Import will save all ${importEntries.length} entries.</p>` : ''}`;
+    }
+
+    async function parseDonationListFile(event) {
+      try {
+        const file = event.target.files[0];
+        importEntries = [];
+        renderImportPreview();
+        if (!file) return;
+        if (!window.mammoth) throw new Error('Word parser could not load. Please check the internet connection and reload this page.');
+        setStatus('importListStatus', 'Reading Word document...', 'good');
+        const arrayBuffer = await file.arrayBuffer();
+        const htmlResult = await mammoth.convertToHtml({ arrayBuffer });
+        importEntries = uniqueImportEntries(parseDonationRowsFromHtml(htmlResult.value));
+        if (!importEntries.length) {
+          const textResult = await mammoth.extractRawText({ arrayBuffer });
+          importEntries = uniqueImportEntries(parseDonationRowsFromText(textResult.value));
+        }
+        if (!importEntries.length) throw new Error('No donation rows found. Please use columns: SN, Name, Donation Amount, Address.');
+        renderImportPreview();
+        setStatus('importListStatus', `${importEntries.length} donation entries found. Review the preview, then click Import List.`, 'good');
+      } catch (error) {
+        importEntries = [];
+        renderImportPreview();
+        setStatus('importListStatus', error.message, 'bad');
+      }
+    }
+
+    async function importDonationList() {
+      const importButton = document.getElementById('importDonationListBtn');
+      try {
+        if (!importEntries.length) throw new Error('Choose a Word donation list first.');
+        if (!currentAdmin?.token) throw new Error('GitHub token is required to publish donation data.');
+        const approvedAdmin = (usersData.approved || []).find((user) => user.id === currentAdmin.id);
+        if (!approvedAdmin) throw new Error('This admin account is no longer approved. Please log in again.');
+        currentAdmin = { ...approvedAdmin, token: currentAdmin.token };
+        cms.sessionSet('dipakDonationAdmin', currentAdmin);
+        if (!confirm(`Import ${importEntries.length} donation entries for ${currentAdmin.username}?`)) return;
+        isSavingDonation = true;
+        importButton.disabled = true;
+        importButton.textContent = 'Importing...';
+        const now = new Date().toISOString();
+        const entries = importEntries.map((row, index) => ({
+          id: cms.uid(cms.slugify(row.donorName || `donation-${index + 1}`)),
+          donorName: row.donorName,
+          amount: Number(row.amount || 0),
+          address: row.address || '',
+          info: '',
+          color: cms.DONOR_COLORS[index % cms.DONOR_COLORS.length],
+          status: 'published',
+          adminId: currentAdmin.id,
+          adminName: currentAdmin.username,
+          profileImage: null,
+          profileThumb: null,
+          otherImages: [],
+          createdAt: now,
+          updatedAt: now,
+          publishedAt: now
+        }));
+        for (let index = 0; index < entries.length; index += 1) {
+          const entry = entries[index];
+          setStatus('importListStatus', `Saving ${index + 1} of ${entries.length}: ${entry.donorName}`, 'good');
+          await cms.saveJson(cms.donationDetailPath(entry.id), entry, currentAdmin.token, `Import donation detail from ${entry.donorName}`);
+        }
+        const summaries = entries.map((entry) => cms.donationSummary(entry));
+        setStatus('importListStatus', 'Updating website donation list...', 'good');
+        await cms.updateJson(cms.DATA_PATHS.donationsIndex, { donations: [] }, currentAdmin.token, `Import ${entries.length} donation entries from Word list`, (latest) => {
+          const importedIds = new Set(summaries.map((entry) => entry.id));
+          latest.donations = [...summaries, ...((latest.donations || []).filter((entry) => !importedIds.has(entry.id)))];
+          latest.updatedAt = new Date().toISOString();
+          return latest;
+        });
+        await reloadData();
+        visibleEntryCount = Math.max(visibleEntryCount, Math.min(50, entries.length));
+        renderDonations();
+        importEntries = [];
+        document.getElementById('donationListFile').value = '';
+        renderImportPreview();
+        setStatus('importListStatus', `${entries.length} donation entries imported and published.`, 'good');
+      } catch (error) {
+        setStatus('importListStatus', error.message, 'bad');
+      } finally {
+        isSavingDonation = false;
+        importButton.disabled = !importEntries.length;
+        importButton.textContent = 'Import List';
+      }
     }
 
     function fileToDataUrl(file, maxSize = 1400) {
@@ -438,6 +625,8 @@
     });
     document.getElementById('saveDonationBtn').addEventListener('click', saveDonation);
     document.getElementById('newDonationBtn').addEventListener('click', clearForm);
+    document.getElementById('donationListFile').addEventListener('change', parseDonationListFile);
+    document.getElementById('importDonationListBtn').addEventListener('click', importDonationList);
     document.getElementById('showMoreEntriesBtn').addEventListener('click', () => {
       visibleEntryCount += 50;
       renderDonations();
