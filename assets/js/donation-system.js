@@ -257,6 +257,10 @@ function sortDonationsNewest(entries) {
   return [...entries].sort((a, b) => new Date(b.publishedAt || b.createdAt || 0) - new Date(a.publishedAt || a.createdAt || 0));
 }
 
+function sortDonationsAlphabetically(entries) {
+  return [...entries].sort((a, b) => String(a.donorName || "").localeCompare(String(b.donorName || ""), "en", { sensitivity: "base" }));
+}
+
 function escapeHtml(value) {
   return String(value || "").replace(/[&<>"']/g, (char) => ({
     "&": "&amp;",
@@ -295,7 +299,7 @@ function renderPublicDonationSummary(mountId = "donation-dashboard") {
     const total = published.reduce((sum, entry) => sum + Number(entry.amount || 0), 0);
     const percent = Math.min(100, target ? (total / target) * 100 : 0);
     const remaining = Math.max(0, target - total);
-    const groups = groupPublishedByAdmin(donations, users);
+    const entries = sortDonationsAlphabetically(published);
     if (!published.length) {
       mount.innerHTML = `<div class="public-summary"><h2>Donation Updates</h2><p>No published donation entries yet.</p></div>`;
       return;
@@ -306,31 +310,23 @@ function renderPublicDonationSummary(mountId = "donation-dashboard") {
         <p><strong>Total Raised:</strong> ${money(total, currency)} of ${money(target, currency)} (${percent.toFixed(1)}%)</p>
         <div class="progress-shell" aria-label="Donation progress"><div class="progress-fill" style="width:${percent}%"></div></div>
         <p><strong>Remaining:</strong> ${money(remaining, currency)}</p>
-        <div class="admin-columns">
-          ${groups.map((admin, adminIndex) => `
-            <section class="admin-column">
-              <h3>${admin.username}</h3>
-              <div class="admin-total">${money(admin.total, currency)} raised</div>
-              <div class="timeline-list">
-                ${sortDonationsNewest(admin.donations).slice(0, LIST_LIMIT).map((entry, index) => {
-                  const color = entry.color || DONOR_COLORS[(adminIndex + index) % DONOR_COLORS.length];
-                  const profileImage = entry.profileThumb || entry.profileImage;
-                  return `<article class="public-donation-card" style="--donor-color:${color}">
-                    <a class="donor-photo-link" href="donation.html?id=${encodeURIComponent(entry.id)}" aria-label="${entry.donorName}">
-                      ${profileImage?.dataUrl
-                        ? `<img class="donor-photo" src="${profileImage.dataUrl}" alt="${entry.donorName}" loading="lazy" decoding="async">`
-                        : `<span class="donor-photo donor-photo-fallback">${String(entry.donorName || "?").charAt(0).toUpperCase()}</span>`}
-                    </a>
-                    <div class="donor-summary">
-                      <a href="donation.html?id=${encodeURIComponent(entry.id)}">${entry.donorName}</a>
-                      <span class="amount">${money(entry.amount, currency)}</span>
-                      ${donationShareButton(entry)}
-                    </div>
-                  </article>`;
-                }).join("")}
+        <div class="home-donation-grid">
+          ${entries.map((entry, index) => {
+            const color = entry.color || DONOR_COLORS[index % DONOR_COLORS.length];
+            const profileImage = entry.profileThumb || entry.profileImage;
+            return `<article class="public-donation-card" style="--donor-color:${color}">
+              <a class="donor-photo-link" href="donation.html?id=${encodeURIComponent(entry.id)}" aria-label="${entry.donorName}">
+                ${profileImage?.dataUrl
+                  ? `<img class="donor-photo" src="${profileImage.dataUrl}" alt="${entry.donorName}" loading="lazy" decoding="async">`
+                  : `<span class="donor-photo donor-photo-fallback">${String(entry.donorName || "?").charAt(0).toUpperCase()}</span>`}
+              </a>
+              <div class="donor-summary">
+                <a href="donation.html?id=${encodeURIComponent(entry.id)}">${entry.donorName}</a>
+                <span class="amount">${money(entry.amount, currency)}</span>
+                ${donationShareButton(entry)}
               </div>
-              ${admin.donations.length > LIST_LIMIT ? `<a class="complete-list-link" href="donations-list.html?admin=${encodeURIComponent(admin.id)}">View complete list (${admin.donations.length})</a>` : ""}
-            </section>`).join("")}
+            </article>`;
+          }).join("")}
         </div>
       </div>`;
   }).catch((error) => {
@@ -430,6 +426,7 @@ window.DipakCMS = {
   donationSummary,
   imageCount,
   sortDonationsNewest,
+  sortDonationsAlphabetically,
   thankYouNote,
   donationShareButton,
   sha256,
