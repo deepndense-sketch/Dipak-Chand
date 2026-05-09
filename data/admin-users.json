@@ -20,7 +20,17 @@
       "status": "approved",
       "createdAt": "2026-05-07T03:51:29.305Z",
       "approvedAt": "2026-05-07T03:51:29.305Z"
+    },
+    {
+      "id": "admin-moyar4nw-vasf33",
+      "email": "bharatmalla18@gmail.com",
+      "username": "Temp Admin",
+      "passwordHash": "7b8bf142f6ce2ffb13e3db67b8b9e892780ac00e389f62c8064b4065957feaf8",
+      "role": "donation-admin",
+      "status": "approved",
+      "createdAt": "2026-05-09T12:04:58.076Z",
+      "approvedAt": "2026-05-09T12:04:58.076Z"
     }
   ],
-  "updatedAt": "2026-05-07T14:41:16.907Z"
+  "updatedAt": "2026-05-09T12:04:58.076Z"
 }
