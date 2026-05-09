@@ -565,6 +565,22 @@ body:not(.backend-body) .section {
   box-shadow: none;
 }
 
+@media (hover: hover) and (pointer: fine) {
+  .public-donation-card .entry-share-button {
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(4px);
+    transition: opacity 160ms ease, transform 160ms ease;
+  }
+
+  .public-donation-card:hover .entry-share-button,
+  .public-donation-card:focus-within .entry-share-button {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(0);
+  }
+}
+
 .complete-list-link {
   display: inline-flex;
   align-items: center;
