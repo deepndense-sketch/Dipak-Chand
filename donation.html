@@ -51,6 +51,13 @@
       }
       const profileImage = entry.profileImage || (entry.images || [])[0] || null;
       const otherImages = entry.otherImages || (entry.images || []).slice(profileImage ? 1 : 0);
+      const thankYouNote = `Dear ${entry.donorName},
+
+With heartfelt gratitude, we sincerely thank you for your generous donation to support Dipak, who is bravely fighting blood cancer. Your kindness and compassion have brought hope, comfort, and strength during this challenging time.
+
+Your contribution is more than financial support—it represents care, solidarity, and encouragement for Dipak and his loved ones as they face medical treatment and recovery. Because of compassionate individuals like you, difficult journeys become a little easier and filled with hope.
+
+On behalf of Dipak Chand and everyone involved, we deeply appreciate your generosity, trust, and support. Your kindness will always be remembered and cherished.`;
       document.title = `${siteTitle} - ${entry.donorName}`;
       mount.innerHTML = `
         <section class="detail-hero ${profileImage ? 'with-profile' : ''}">
@@ -60,9 +67,15 @@
             <h1>${entry.donorName}</h1>
             <div class="detail-amount">${cms.money(entry.amount, site.currency)}</div>
             ${entry.address ? `<p class="detail-address"><strong>Address:</strong> ${entry.address}</p>` : ''}
-            <a class="complete-list-link facebook-share-button" href="${cms.facebookShareHref(location.href)}" target="_blank" rel="noopener">Share this donation on Facebook</a>
           </div>
         </section>
+        <section class="thank-you-note">
+          <h2>Thank You Note</h2>
+          <p>${thankYouNote.replace(/\n/g, '<br>')}</p>
+        </section>
+        <div class="detail-share-row">
+          <a class="complete-list-link facebook-share-button" href="${cms.facebookShareHref(location.href, thankYouNote)}" target="_blank" rel="noopener">Share this donation on Facebook</a>
+        </div>
         <section>
           <h2>Donation Information</h2>
           <p>${(entry.info || 'No additional information provided.').replace(/\n/g, '<br>')}</p>

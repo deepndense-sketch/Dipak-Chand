@@ -718,6 +718,27 @@ body:not(.backend-body) .section {
   line-height: 1.55;
 }
 
+.thank-you-note {
+  margin: 0 0 16px;
+  padding: 16px;
+  border: 1px solid #dce3e8;
+  border-radius: 8px;
+  background: #f9fbfc;
+}
+
+.thank-you-note p {
+  margin: 0;
+  color: #25324a;
+  font-size: 16px;
+  line-height: 1.75;
+}
+
+.detail-share-row {
+  display: flex;
+  justify-content: flex-end;
+  margin: 0 0 18px;
+}
+
 .image-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));

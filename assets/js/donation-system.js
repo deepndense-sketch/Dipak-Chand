@@ -314,8 +314,10 @@ function shareUrl(path = location.href) {
   return new URL(path, location.href).href;
 }
 
-function facebookShareHref(path = location.href) {
-  return `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl(path))}`;
+function facebookShareHref(path = location.href, quote = "") {
+  const params = new URLSearchParams({ u: shareUrl(path) });
+  if (quote) params.set("quote", quote);
+  return `https://www.facebook.com/sharer/sharer.php?${params.toString()}`;
 }
 
 function renderFacebookShareLinks() {
