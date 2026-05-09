@@ -739,6 +739,20 @@ body:not(.backend-body) .section {
   margin: 0 0 18px;
 }
 
+.facebook-share-panel {
+  margin: 0 0 18px;
+  padding: 16px;
+  border: 1px solid #cfd9e1;
+  border-radius: 8px;
+  background: #ffffff;
+}
+
+.facebook-share-panel textarea {
+  min-height: 260px;
+  color: #25324a;
+  line-height: 1.6;
+}
+
 .image-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
