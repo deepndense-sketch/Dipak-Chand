@@ -492,16 +492,16 @@ body:not(.backend-body) .section {
 
 .admin-group-header h3 {
   margin: 0;
-  color: #0f2e3d;
-  font-size: clamp(26px, 3.2vw, 40px);
-  line-height: 1.05;
+  color: #315d6d;
+  font-size: clamp(20px, 2.2vw, 28px);
+  line-height: 1.15;
 }
 
 .admin-group-raised {
   margin-top: 6px;
-  color: #0f4c5c;
-  font-size: clamp(20px, 2.4vw, 30px);
-  font-weight: 900;
+  color: #176b87;
+  font-size: clamp(18px, 2vw, 24px);
+  font-weight: 850;
 }
 
 .admin-group-contributors {
@@ -877,6 +877,22 @@ body:not(.backend-body) .section {
   border: 1px solid #cfd9e1;
   border-radius: 8px;
   background: #ffffff;
+}
+
+.facebook-share-panel .detail-share-row {
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  margin: 12px 0 10px;
+}
+
+.facebook-share-panel .detail-share-row button,
+.facebook-share-panel .detail-share-row .complete-list-link {
+  min-height: 40px;
+  margin-top: 0;
+  border-radius: 6px;
+  padding: 9px 14px;
+  box-shadow: none;
 }
 
 .facebook-share-panel textarea {
