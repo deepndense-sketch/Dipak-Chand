@@ -386,6 +386,7 @@ function showFacebookShareComposer(donorName, url = location.href) {
           <h2 id="facebookSharePopupTitle">Facebook Post Text</h2>
           <button type="button" class="secondary share-popup-close" aria-label="Close">Close</button>
         </div>
+        <img class="share-popup-photo" src="./DipakFBPhoto.jpg" alt="Deepak Chand" loading="lazy" decoding="async">
         <textarea id="facebookSharePopupText" readonly></textarea>
         <div class="detail-share-row share-popup-actions">
           <button type="button" class="secondary" id="facebookSharePopupCopy">Copy Text</button>
