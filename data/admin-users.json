@@ -20,7 +20,17 @@
       "status": "approved",
       "createdAt": "2026-05-07T03:51:29.305Z",
       "approvedAt": "2026-05-07T03:51:29.305Z"
+    },
+    {
+      "id": "admin-moye9qch-4tq42g",
+      "email": "b@gmail.com",
+      "username": "This is Test",
+      "passwordHash": "1eb79602411ef02cf6fe117897015fff89f80face4eccd50425c45149b148408",
+      "role": "donation-admin",
+      "status": "approved",
+      "createdAt": "2026-05-09T13:43:24.833Z",
+      "approvedAt": "2026-05-09T13:43:24.834Z"
     }
   ],
-  "updatedAt": "2026-05-09T12:42:22.795Z"
+  "updatedAt": "2026-05-09T13:43:24.834Z"
 }
