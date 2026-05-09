@@ -555,6 +555,16 @@ body:not(.backend-body) .section {
   font-weight: 850;
 }
 
+.entry-share-button {
+  min-height: 32px;
+  margin-top: 8px;
+  border-radius: 6px;
+  padding: 7px 12px;
+  font-size: 13px;
+  line-height: 1;
+  box-shadow: none;
+}
+
 .complete-list-link {
   display: inline-flex;
   align-items: center;
@@ -749,6 +759,50 @@ body:not(.backend-body) .section {
 
 .facebook-share-panel textarea {
   min-height: 260px;
+  color: #25324a;
+  line-height: 1.6;
+}
+
+.share-popup {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: grid;
+  place-items: center;
+  padding: 18px;
+  background: rgba(15, 33, 47, 0.56);
+}
+
+.share-popup[hidden] {
+  display: none;
+}
+
+.share-popup-card {
+  width: min(720px, 100%);
+  max-height: min(760px, calc(100vh - 36px));
+  overflow: auto;
+  border: 1px solid #cfd9e1;
+  border-radius: 8px;
+  background: #ffffff;
+  padding: 18px;
+  box-shadow: 0 22px 60px rgba(15, 33, 47, 0.25);
+}
+
+.share-popup-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.share-popup-head h2 {
+  margin: 0;
+  font-size: 22px;
+}
+
+.share-popup textarea {
+  min-height: 280px;
   color: #25324a;
   line-height: 1.6;
 }

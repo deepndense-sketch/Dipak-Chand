@@ -257,6 +257,34 @@ function sortDonationsNewest(entries) {
   return [...entries].sort((a, b) => new Date(b.publishedAt || b.createdAt || 0) - new Date(a.publishedAt || a.createdAt || 0));
 }
 
+function escapeHtml(value) {
+  return String(value || "").replace(/[&<>"']/g, (char) => ({
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#39;"
+  })[char]);
+}
+
+function thankYouNote(donorName) {
+  return `Dear ${donorName || "Friend"},
+
+With heartfelt gratitude, we sincerely thank you for your generous donation to support Dipak, who is bravely fighting blood cancer. Your kindness and compassion have brought hope, comfort, and strength during this challenging time.
+
+Your contribution is more than financial support - it represents care, solidarity, and encouragement for Dipak and his loved ones as they face medical treatment and recovery. Because of compassionate individuals like you, difficult journeys become a little easier and filled with hope.
+
+On behalf of Dipak Chand and everyone involved, we deeply appreciate your generosity, trust, and support. Your kindness will always be remembered and cherished.`;
+}
+
+function donationPageUrl(id) {
+  return shareUrl(`donation.html?id=${encodeURIComponent(id || "")}`);
+}
+
+function donationShareButton(entry) {
+  return `<button type="button" class="entry-share-button facebook-share-button" data-donor-share data-donor-name="${escapeHtml(entry.donorName)}" data-share-url="${escapeHtml(donationPageUrl(entry.id))}">Share</button>`;
+}
+
 function renderPublicDonationSummary(mountId = "donation-dashboard") {
   const mount = document.getElementById(mountId);
   if (!mount) return;
@@ -296,6 +324,7 @@ function renderPublicDonationSummary(mountId = "donation-dashboard") {
                     <div class="donor-summary">
                       <a href="donation.html?id=${encodeURIComponent(entry.id)}">${entry.donorName}</a>
                       <span class="amount">${money(entry.amount, currency)}</span>
+                      ${donationShareButton(entry)}
                     </div>
                   </article>`;
                 }).join("")}
@@ -329,6 +358,65 @@ function renderFacebookShareLinks() {
   });
 }
 
+async function copyText(text, statusEl) {
+  try {
+    await navigator.clipboard.writeText(text);
+    if (statusEl) statusEl.textContent = "Text copied. Paste it into the Facebook post box.";
+  } catch (error) {
+    const textarea = document.getElementById("facebookSharePopupText");
+    if (textarea) {
+      textarea.focus();
+      textarea.select();
+      document.execCommand("copy");
+    }
+    if (statusEl) statusEl.textContent = "Text selected. Copy it, then paste it into the Facebook post box.";
+  }
+}
+
+function showFacebookShareComposer(donorName, url = location.href) {
+  const note = thankYouNote(donorName);
+  let modal = document.getElementById("facebookSharePopup");
+  if (!modal) {
+    modal = document.createElement("div");
+    modal.id = "facebookSharePopup";
+    modal.className = "share-popup";
+    modal.innerHTML = `
+      <div class="share-popup-card" role="dialog" aria-modal="true" aria-labelledby="facebookSharePopupTitle">
+        <div class="share-popup-head">
+          <h2 id="facebookSharePopupTitle">Facebook Post Text</h2>
+          <button type="button" class="secondary share-popup-close" aria-label="Close">Close</button>
+        </div>
+        <textarea id="facebookSharePopupText" readonly></textarea>
+        <div class="detail-share-row">
+          <button type="button" class="secondary" id="facebookSharePopupCopy">Copy Text</button>
+          <a class="complete-list-link facebook-share-button" id="facebookSharePopupOpen" target="_blank" rel="noopener">Open Facebook</a>
+        </div>
+        <p class="backend-help" id="facebookSharePopupStatus">Copy this text, then paste it into your Facebook post after Facebook opens.</p>
+      </div>`;
+    document.body.appendChild(modal);
+    modal.addEventListener("click", (event) => {
+      if (event.target === modal || event.target.closest(".share-popup-close")) modal.hidden = true;
+    });
+    modal.querySelector("#facebookSharePopupCopy").addEventListener("click", () => {
+      copyText(modal.querySelector("#facebookSharePopupText").value, modal.querySelector("#facebookSharePopupStatus"));
+    });
+  }
+  modal.querySelector("#facebookSharePopupText").value = note;
+  modal.querySelector("#facebookSharePopupOpen").href = facebookShareHref(url);
+  modal.querySelector("#facebookSharePopupStatus").textContent = "Copy this text, then paste it into your Facebook post after Facebook opens.";
+  modal.hidden = false;
+  const textarea = modal.querySelector("#facebookSharePopupText");
+  textarea.focus();
+  textarea.select();
+  copyText(note, modal.querySelector("#facebookSharePopupStatus"));
+}
+
+document.addEventListener("click", (event) => {
+  const shareButton = event.target.closest("[data-donor-share]");
+  if (!shareButton) return;
+  showFacebookShareComposer(shareButton.dataset.donorName, shareButton.dataset.shareUrl || location.href);
+});
+
 window.DipakCMS = {
   DATA_PATHS,
   DONOR_COLORS,
@@ -341,6 +429,8 @@ window.DipakCMS = {
   donationSummary,
   imageCount,
   sortDonationsNewest,
+  thankYouNote,
+  donationShareButton,
   sha256,
   readJson,
   loadGithubJson,
@@ -357,7 +447,8 @@ window.DipakCMS = {
   loadDonationDetail,
   renderPublicDonationSummary,
   facebookShareHref,
-  renderFacebookShareLinks
+  renderFacebookShareLinks,
+  showFacebookShareComposer
 };
 
 document.addEventListener("DOMContentLoaded", renderFacebookShareLinks);

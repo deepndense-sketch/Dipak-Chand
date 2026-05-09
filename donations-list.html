@@ -57,6 +57,7 @@
         <div class="donor-summary">
           <a href="donation.html?id=${encodeURIComponent(entry.id)}">${entry.donorName}</a>
           <span class="amount">${cms.money(entry.amount, currency)}</span>
+          ${cms.donationShareButton(entry)}
         </div>
       </article>`;
     }
