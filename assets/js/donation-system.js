@@ -322,7 +322,7 @@ function renderPublicDonationSummary(mountId = "donation-dashboard") {
             <header class="admin-group-header">
               <div>
                 <h3>${admin.username}</h3>
-                <div class="admin-group-raised">${money(admin.total, currency)} raised</div>
+                <div class="admin-group-raised">${admin.username} raised Total ${money(admin.total, currency)} /-</div>
               </div>
               <div class="admin-group-contributors">
                 <span>Total Contributor</span>
