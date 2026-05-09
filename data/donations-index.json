@@ -401,22 +401,6 @@
       "publishedAt": "2026-05-09T12:14:46Z"
     },
     {
-      "id": "full-list-padam-025-bhawana-saud",
-      "donorName": "Bhawana Saud",
-      "amount": 2000,
-      "color": "#be123c",
-      "status": "published",
-      "adminId": "admin-mouy8t21-l51py5",
-      "adminName": "Padam Malla",
-      "address": "",
-      "profileThumb": null,
-      "profileImage": null,
-      "imageCount": 0,
-      "createdAt": "2026-05-09T12:14:45Z",
-      "updatedAt": "2026-05-09T12:14:45Z",
-      "publishedAt": "2026-05-09T12:14:45Z"
-    },
-    {
       "id": "full-list-padam-026-jamuna-thapa",
       "donorName": "Jamuna Thapa",
       "amount": 585,
@@ -5441,5 +5425,5 @@
       "publishedAt": "2026-05-09T12:09:29Z"
     }
   ],
-  "updatedAt": "2026-05-09T15:31:21.992Z"
+  "updatedAt": "2026-05-09T15:33:39.525Z"
 }
