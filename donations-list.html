@@ -15,6 +15,7 @@
         <a class="nav-button" href="./index.html">Home</a>
         <a class="nav-button" href="./about.html">About Dipak</a>
         <a class="nav-button" href="./donate.html">Donate</a>
+        <a class="nav-button facebook-share-button" href="#" data-facebook-share>Share on Facebook</a>
       </nav>
       </header>
       <div class="hero-photos">
@@ -71,7 +72,7 @@
       document.getElementById('listScope').textContent = admin ? admin.username : 'All admins';
       document.getElementById('listTitle').textContent = admin ? `${admin.username} Donations` : 'Complete Donation List';
       document.title = `${siteTitle} - ${admin ? `${admin.username} Donations` : 'Complete Donation List'}`;
-      document.getElementById('listSummary').textContent = `${entries.length} entries · ${cms.money(total, currency)} raised`;
+      document.getElementById('listSummary').innerHTML = `${entries.length} entries · ${cms.money(total, currency)} raised <a class="complete-list-link facebook-share-button inline-share-link" href="${cms.facebookShareHref(location.href)}" target="_blank" rel="noopener">Share on Facebook</a>`;
       mount.innerHTML = entries.length
         ? entries.map((entry, index) => donationCard(entry, currency, index)).join('')
         : '<p class="empty-state">No published donations found.</p>';

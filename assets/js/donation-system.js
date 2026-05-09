@@ -188,12 +188,17 @@ async function updateJson(path, fallback, token, message, updater) {
 }
 
 function sessionSet(key, value) {
-  sessionStorage.setItem(key, JSON.stringify(value));
+  localStorage.setItem(key, JSON.stringify(value));
 }
 
 function sessionGet(key) {
-  try { return JSON.parse(sessionStorage.getItem(key) || "null"); }
+  try { return JSON.parse(localStorage.getItem(key) || sessionStorage.getItem(key) || "null"); }
   catch { return null; }
+}
+
+function sessionRemove(key) {
+  localStorage.removeItem(key);
+  sessionStorage.removeItem(key);
 }
 
 function rememberToken(token) {
@@ -305,6 +310,23 @@ function renderPublicDonationSummary(mountId = "donation-dashboard") {
   });
 }
 
+function shareUrl(path = location.href) {
+  return new URL(path, location.href).href;
+}
+
+function facebookShareHref(path = location.href) {
+  return `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl(path))}`;
+}
+
+function renderFacebookShareLinks() {
+  document.querySelectorAll("[data-facebook-share]").forEach((link) => {
+    const target = link.getAttribute("data-share-url") || location.href;
+    link.href = facebookShareHref(target);
+    link.target = "_blank";
+    link.rel = "noopener";
+  });
+}
+
 window.DipakCMS = {
   DATA_PATHS,
   DONOR_COLORS,
@@ -325,10 +347,15 @@ window.DipakCMS = {
   updateJson,
   sessionSet,
   sessionGet,
+  sessionRemove,
   rememberToken,
   getRememberedToken,
   forgetRememberedToken,
   loadAllData,
   loadDonationDetail,
-  renderPublicDonationSummary
+  renderPublicDonationSummary,
+  facebookShareHref,
+  renderFacebookShareLinks
 };
+
+document.addEventListener("DOMContentLoaded", renderFacebookShareLinks);

@@ -16,6 +16,7 @@
       <nav class="backend-nav">
         <a class="secondary" href="./index.html" target="_blank" rel="noopener">Website</a>
         <a href="./admin-data.html" target="_blank" rel="noopener">Donation Admin</a>
+        <button type="button" class="secondary" id="mainLogoutBtn" hidden>Logout</button>
       </nav>
     </header>
 
@@ -134,6 +135,17 @@
       el.textContent = text;
     }
 
+    function setLoggedInPanels(isLoggedIn) {
+      document.getElementById('loginPanel').hidden = isLoggedIn;
+      document.getElementById('publishingPanel').hidden = !isLoggedIn;
+      document.getElementById('approvalPanel').hidden = !isLoggedIn;
+      document.getElementById('createAdminPanel').hidden = !isLoggedIn;
+      document.getElementById('targetPanel').hidden = !isLoggedIn;
+      document.getElementById('mainPasswordPanel').hidden = !isLoggedIn;
+      document.getElementById('approvedPanel').hidden = !isLoggedIn;
+      document.getElementById('mainLogoutBtn').hidden = !isLoggedIn;
+    }
+
     async function loadPanels() {
       const all = await cms.loadAllData();
       usersData = all.users;
@@ -163,13 +175,7 @@
         return;
       }
       cms.sessionSet('dipakMainAdmin', mainSession);
-      document.getElementById('loginPanel').hidden = true;
-      document.getElementById('publishingPanel').hidden = false;
-      document.getElementById('approvalPanel').hidden = false;
-      document.getElementById('createAdminPanel').hidden = false;
-      document.getElementById('targetPanel').hidden = false;
-      document.getElementById('mainPasswordPanel').hidden = false;
-      document.getElementById('approvedPanel').hidden = false;
+      setLoggedInPanels(true);
       setStatus(status, 'Logged in.', 'good');
     }
 
@@ -358,6 +364,12 @@
     }
 
     document.getElementById('mainLoginBtn').addEventListener('click', login);
+    document.getElementById('mainLogoutBtn').addEventListener('click', () => {
+      cms.sessionRemove('dipakMainAdmin');
+      mainSession = null;
+      setLoggedInPanels(false);
+      setStatus(status, 'Logged out.', 'good');
+    });
     document.getElementById('mainPassword').addEventListener('keydown', (event) => {
       if (event.key === 'Enter') login();
     });
@@ -410,6 +422,26 @@
         setStatus(targetStatus, error.message, 'bad');
       }
     });
+
+    async function initMainAdmin() {
+      mainSession = cms.sessionGet('dipakMainAdmin');
+      if (!mainSession) return;
+      try {
+        await loadPanels();
+        const validAdmin = (usersData.mainAdmins || []).find((user) => user.id === mainSession.id);
+        if (!validAdmin) throw new Error('Saved login is no longer valid.');
+        mainSession = { ...validAdmin, token: mainSession.token || cms.getRememberedToken() };
+        cms.sessionSet('dipakMainAdmin', mainSession);
+        setLoggedInPanels(true);
+        setStatus(status, 'Logged in.', 'good');
+      } catch (error) {
+        cms.sessionRemove('dipakMainAdmin');
+        setLoggedInPanels(false);
+        setStatus(status, error.message || 'Please log in again.', 'bad');
+      }
+    }
+
+    initMainAdmin();
   </script>
 </body>
 </html>

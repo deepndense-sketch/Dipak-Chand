@@ -420,7 +420,7 @@
       await reloadData();
       const approvedAdmin = (usersData.approved || []).find((user) => user.id === currentAdmin.id);
       if (!approvedAdmin) {
-        sessionStorage.removeItem('dipakDonationAdmin');
+        cms.sessionRemove('dipakDonationAdmin');
         document.getElementById('notLoggedIn').hidden = false;
         return;
       }
@@ -433,7 +433,7 @@
     }
 
     document.getElementById('logoutBtn').addEventListener('click', () => {
-      sessionStorage.removeItem('dipakDonationAdmin');
+      cms.sessionRemove('dipakDonationAdmin');
       window.location.href = './admin-data.html';
     });
     document.getElementById('saveDonationBtn').addEventListener('click', saveDonation);

@@ -15,6 +15,7 @@
         <a class="nav-button" href="./index.html">Home</a>
         <a class="nav-button" href="./about.html">About Dipak</a>
         <a class="nav-button" href="./donate.html">Donate</a>
+        <a class="nav-button facebook-share-button" href="#" data-facebook-share>Share on Facebook</a>
       </nav>
     </header>
       <div class="hero-photos">
@@ -59,6 +60,7 @@
             <h1>${entry.donorName}</h1>
             <div class="detail-amount">${cms.money(entry.amount, site.currency)}</div>
             ${entry.address ? `<p class="detail-address"><strong>Address:</strong> ${entry.address}</p>` : ''}
+            <a class="complete-list-link facebook-share-button" href="${cms.facebookShareHref(location.href)}" target="_blank" rel="noopener">Share this donation on Facebook</a>
           </div>
         </section>
         <section>

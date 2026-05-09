@@ -659,6 +659,16 @@ body:not(.backend-body) .section {
   color: #ffffff;
 }
 
+.facebook-share-button {
+  border-color: #1877f2 !important;
+  background: #1877f2 !important;
+  color: #ffffff !important;
+}
+
+.inline-share-link {
+  margin: 8px 0 0 0;
+}
+
 .detail-shell > .public-site-header {
   margin-bottom: 18px;
 }
