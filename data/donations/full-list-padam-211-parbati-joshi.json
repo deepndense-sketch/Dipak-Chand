@@ -1,17 +1,18 @@
 {
   "id": "full-list-padam-211-parbati-joshi",
   "donorName": "Parbati Joshi",
-  "amount": 1000,
-  "address": "",
-  "info": "",
+  "amount": 1500,
   "color": "#176b87",
   "status": "published",
   "adminId": "admin-mouy8t21-l51py5",
   "adminName": "Padam Malla",
-  "profileImage": null,
+  "address": "",
   "profileThumb": null,
-  "otherImages": [],
+  "profileImage": null,
+  "imageCount": 0,
   "createdAt": "2026-05-09T12:11:39Z",
-  "updatedAt": "2026-05-09T12:11:39Z",
-  "publishedAt": "2026-05-09T12:11:39Z"
+  "updatedAt": "2026-05-09T15:25:02.505Z",
+  "publishedAt": "2026-05-09T12:11:39Z",
+  "info": "",
+  "otherImages": []
 }
