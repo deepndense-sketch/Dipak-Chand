@@ -804,13 +804,13 @@ body:not(.backend-body) .section {
 
 .share-popup-photo {
   display: block;
-  width: 100%;
-  max-height: 300px;
-  margin: 0 0 14px;
+  width: 86px;
+  height: 86px;
+  margin: 0 auto 14px;
   border: 1px solid #d9e0e7;
-  border-radius: 8px;
+  border-radius: 50%;
   object-fit: cover;
-  object-position: center;
+  object-position: center top;
   background: #eef2f5;
 }
 
