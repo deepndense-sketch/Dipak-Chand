@@ -387,7 +387,7 @@ function showFacebookShareComposer(donorName, url = location.href) {
           <button type="button" class="secondary share-popup-close" aria-label="Close">Close</button>
         </div>
         <textarea id="facebookSharePopupText" readonly></textarea>
-        <div class="detail-share-row">
+        <div class="detail-share-row share-popup-actions">
           <button type="button" class="secondary" id="facebookSharePopupCopy">Copy Text</button>
           <a class="complete-list-link facebook-share-button" id="facebookSharePopupOpen" target="_blank" rel="noopener">Open Facebook</a>
         </div>

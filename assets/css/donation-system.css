@@ -746,6 +746,7 @@ body:not(.backend-body) .section {
 .detail-share-row {
   display: flex;
   justify-content: flex-end;
+  gap: 10px;
   margin: 0 0 18px;
 }
 
@@ -805,6 +806,22 @@ body:not(.backend-body) .section {
   min-height: 280px;
   color: #25324a;
   line-height: 1.6;
+}
+
+.share-popup-actions {
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  margin: 12px 0 10px;
+}
+
+.share-popup-actions button,
+.share-popup-actions .complete-list-link {
+  min-height: 40px;
+  margin-top: 0;
+  border-radius: 6px;
+  padding: 9px 14px;
+  box-shadow: none;
 }
 
 .image-grid {
