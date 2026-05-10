@@ -44,7 +44,7 @@
     </section>
   </main>
 
-  <script src="./assets/js/donation-system.js?v=29"></script>
+  <script src="./assets/js/donation-system.js?v=30"></script>
   <script>
     const cms = window.DipakCMS;
     const mount = document.getElementById('detailMount');
@@ -97,23 +97,40 @@ On behalf of Dipak Chand and everyone involved, we deeply appreciate your genero
         <div class="detail-share-row">
           <button class="complete-list-link facebook-share-button" type="button" id="showFacebookShareText">Share on Facebook</button>
         </div>
+        <section class="facebook-share-panel" id="facebookSharePanel" hidden>
+          <h2>Facebook Post Text</h2>
+          <textarea id="facebookShareText" readonly>${escapeHtml(thankYouNote)}</textarea>
+          <div class="detail-share-row">
+            <button class="secondary" type="button" id="copyFacebookShareText">Copy Text</button>
+            <a class="complete-list-link facebook-share-button" href="${cms.facebookShareHref(location.href)}" target="_blank" rel="noopener">Open Facebook</a>
+          </div>
+          <p class="backend-help" id="facebookShareStatus">Copy this text, then paste it into your Facebook post after Facebook opens.</p>
+        </section>
         ${entry.info ? `<section>
           <h2>Donation Information</h2>
           <p>${entry.info.replace(/\n/g, '<br>')}</p>
         </section>` : ''}
         ${otherImages.length ? `<section><h2>Photos</h2><div class="image-grid">${otherImages.map((image) => `<img src="${image.dataUrl}" alt="${image.name || entry.donorName}">`).join('')}</div></section>` : ''}
       `;
+      const sharePanel = document.getElementById('facebookSharePanel');
+      const shareText = document.getElementById('facebookShareText');
+      const shareStatus = document.getElementById('facebookShareStatus');
       async function copyShareText() {
+        shareText.focus();
+        shareText.select();
         try {
           await navigator.clipboard.writeText(thankYouNote);
+          shareStatus.textContent = 'Thank-you text copied. Paste it into the Facebook post box.';
         } catch (error) {
-          console.warn('Facebook text could not be copied automatically.', error);
+          document.execCommand('copy');
+          shareStatus.textContent = 'Thank-you text selected. Copy it, then paste it into the Facebook post box.';
         }
       }
       document.getElementById('showFacebookShareText').addEventListener('click', async () => {
+        sharePanel.hidden = false;
         await copyShareText();
-        window.open(cms.facebookShareHref(location.href, thankYouNote), '_blank', 'noopener');
       });
+      document.getElementById('copyFacebookShareText').addEventListener('click', copyShareText);
     }).catch((error) => {
       mount.innerHTML = '<h1>Unable to load donation</h1><p class="empty-state">Please try again later.</p>';
       console.error(error);
