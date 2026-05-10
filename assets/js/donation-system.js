@@ -388,7 +388,8 @@ function renderPublicDonationSummary(mountId = "donation-dashboard") {
             </button>
             ${groups.map((admin) => `
               <button type="button" class="fundraiser-filter" data-fundraiser-filter="${escapeHtml(admin.id)}">
-                <span>${escapeHtml(admin.username)} Raised Total ${money(admin.total, currency)}</span>
+                <span>${escapeHtml(admin.username)} Raised Total</span>
+                <strong>${money(admin.total, currency)}</strong>
                 <em>${admin.donations.length} contributors</em>
               </button>`).join("")}
           </div>

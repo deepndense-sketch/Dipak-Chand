@@ -509,11 +509,11 @@ body:not(.backend-body) .section {
 
 .fundraiser-filter {
   display: grid;
-  gap: 4px;
+  gap: 8px;
   min-height: 0;
   border: 1px solid #dce3e8;
   border-radius: 8px;
-  padding: 11px 12px;
+  padding: 16px 14px;
   background: #ffffff;
   color: #17212f;
   text-align: left;
@@ -527,18 +527,20 @@ body:not(.backend-body) .section {
 
 .fundraiser-filter span {
   color: #315d6d;
+  font-size: 28px;
+  line-height: 1.12;
   font-weight: 850;
 }
 
 .fundraiser-filter strong {
   color: #176b87;
-  font-size: 18px;
+  font-size: 36px;
   line-height: 1.15;
 }
 
 .fundraiser-filter em {
   color: #5f6b7a;
-  font-size: 13px;
+  font-size: 18px;
   font-style: normal;
   font-weight: 750;
 }
