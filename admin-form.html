@@ -174,7 +174,7 @@
       const serverIds = new Set(serverDonations.map((entry) => entry.id));
       const hidden = getHiddenDonations();
       Object.keys(hidden).forEach((id) => {
-        if (!serverIds.has(id)) delete hidden[id];
+        if (serverIds.has(id)) delete hidden[id];
       });
       setHiddenDonations(hidden);
 
