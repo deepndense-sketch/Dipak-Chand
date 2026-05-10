@@ -1,6 +1,22 @@
 {
   "donations": [
     {
+      "id": "bhagrati-seti-mp0f67fy-ut0me2",
+      "donorName": "Bhagrati Seti",
+      "amount": 1000,
+      "color": "#6d28d9",
+      "status": "published",
+      "adminId": "admin-mouy8t21-l51py5",
+      "adminName": "Padam Malla",
+      "address": "Gobriya",
+      "profileThumb": null,
+      "profileImage": null,
+      "imageCount": 0,
+      "createdAt": "2026-05-10T23:44:12.334Z",
+      "updatedAt": "2026-05-10T23:44:12.342Z",
+      "publishedAt": "2026-05-10T23:44:12.342Z"
+    },
+    {
       "id": "bhagi-chand-mp00ppru-81d0nw",
       "donorName": "Bhagi Chand",
       "amount": 2400,
@@ -5939,5 +5955,5 @@
       "publishedAt": "2026-05-09T12:09:29Z"
     }
   ],
-  "updatedAt": "2026-05-10T17:06:49.965Z"
+  "updatedAt": "2026-05-10T23:44:15.755Z"
 }
