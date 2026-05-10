@@ -366,6 +366,24 @@ body:not(.backend-body) .section {
 .status-line.good { color: var(--admin-accent-2); }
 .status-line.bad { color: var(--admin-danger); }
 
+.delete-status {
+  margin: 12px 0;
+  padding: 12px 14px;
+  border: 1px solid rgba(22, 163, 74, 0.28);
+  border-radius: 8px;
+  background: rgba(22, 163, 74, 0.08);
+  color: var(--admin-accent-2);
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+.delete-status.bad {
+  border-color: rgba(220, 38, 38, 0.28);
+  background: rgba(220, 38, 38, 0.08);
+  color: var(--admin-danger);
+}
+
 .import-list-panel {
   margin-top: 22px;
   padding-top: 18px;

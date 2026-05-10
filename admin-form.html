@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Donation Entry Form</title>
-  <link rel="stylesheet" href="./assets/css/donation-system.css?v=39">
+  <link rel="stylesheet" href="./assets/css/donation-system.css?v=40">
 </head>
 <body class="backend-body">
   <main class="backend-shell">
@@ -99,6 +99,7 @@
       <div class="backend-panel">
         <h2>All Entries</h2>
         <div class="metrics-grid" id="adminMetrics"></div>
+        <div class="delete-status" id="deleteStatus" hidden></div>
         <div id="donationList" class="table-list"></div>
         <div class="action-row" id="showMoreEntriesRow" hidden>
           <button type="button" class="secondary" id="showMoreEntriesBtn">See more</button>
@@ -135,6 +136,14 @@
       const el = document.getElementById(id);
       el.className = `status-line ${type}`;
       el.textContent = text;
+    }
+
+    function setDeleteStatus(text, type = '') {
+      const el = document.getElementById('deleteStatus');
+      el.hidden = !text;
+      el.className = `delete-status ${type}`;
+      el.textContent = text;
+      if (text) setStatus('donationStatus', text, type);
     }
 
     function readLocalJson(key, fallback) {
@@ -540,7 +549,7 @@
         if (!entry) return;
         if (!confirm(`Delete donation entry for ${entry.donorName}? This will remove it from the homepage donation database first, then remove the detail page file.`)) return;
         previousDonations = [...(donationData.donations || [])];
-        setStatus('donationStatus', `Removing ${entry.donorName} from the homepage donation database. Please keep this page open...`, 'good');
+        setDeleteStatus(`Deleting ${entry.donorName}. Removing it from the homepage database first. Please keep this page open...`, 'good');
         await cms.updateJson(cms.DATA_PATHS.donationsIndex, { donations: [] }, currentAdmin.token, `Delete donation from ${entry.donorName}`, (latest) => {
           latest.donations = (latest.donations || []).filter((item) => item.id !== id);
           latest.updatedAt = new Date().toISOString();
@@ -548,12 +557,12 @@
         });
         const latest = await cms.loadGithubJson(cms.DATA_PATHS.donationsIndex, currentAdmin.token);
         if ((latest.donations || []).some((item) => item.id === id)) throw new Error('Homepage database still has this donation. Please click Delete again.');
-        setStatus('donationStatus', `Homepage database updated. Removing ${entry.donorName}'s detail page file...`, 'good');
+        setDeleteStatus(`Homepage database updated. Removing ${entry.donorName}'s detail page file...`, 'good');
         await cms.deleteJson(cms.donationDetailPath(id), currentAdmin.token, `Delete donation detail from ${entry.donorName}`).catch(() => null);
         rememberHiddenDonation(id);
         donationData.donations = previousDonations.filter((item) => item.id !== id);
         renderDonations();
-        setStatus('donationStatus', `${entry.donorName} removed from the homepage and admin list.`, 'good');
+        setDeleteStatus(`${entry.donorName} removed from the homepage and admin list.`, 'good');
         clearForm();
       } catch (error) {
         forgetHiddenDonation(id);
@@ -561,7 +570,7 @@
           donationData.donations = previousDonations;
           renderDonations();
         }
-        setStatus('donationStatus', error.message, 'bad');
+        setDeleteStatus(error.message, 'bad');
       }
     }
 
