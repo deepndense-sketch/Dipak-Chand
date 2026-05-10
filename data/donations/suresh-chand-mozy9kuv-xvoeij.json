@@ -1,17 +1,18 @@
 {
   "id": "suresh-chand-mozy9kuv-xvoeij",
   "donorName": "Suresh  Chand",
-  "amount": 6466,
-  "address": "From saudi",
-  "info": "",
+  "amount": 10345,
   "color": "#b45309",
   "status": "published",
   "adminId": "admin-mouy8t21-l51py5",
   "adminName": "Padam Malla",
-  "profileImage": null,
+  "address": "From saudi",
   "profileThumb": null,
-  "otherImages": [],
+  "profileImage": null,
+  "imageCount": 0,
   "createdAt": "2026-05-10T15:50:56.215Z",
-  "updatedAt": "2026-05-10T15:50:56.221Z",
-  "publishedAt": "2026-05-10T15:50:56.221Z"
+  "updatedAt": "2026-05-10T16:04:20.893Z",
+  "publishedAt": "2026-05-10T15:50:56.221Z",
+  "info": "",
+  "otherImages": []
 }
