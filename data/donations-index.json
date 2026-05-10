@@ -1,22 +1,6 @@
 {
   "donations": [
     {
-      "id": "kapil-singh-mozvrtgt-rvvm9b",
-      "donorName": "Kapil Singh",
-      "amount": 1005,
-      "color": "#0f766e",
-      "status": "published",
-      "adminId": "admin-mouy8t21-l51py5",
-      "adminName": "Padam Malla",
-      "address": "",
-      "profileThumb": null,
-      "profileImage": null,
-      "imageCount": 0,
-      "createdAt": "2026-05-10T14:41:08.333Z",
-      "updatedAt": "2026-05-10T14:41:08.333Z",
-      "publishedAt": "2026-05-10T14:41:08.333Z"
-    },
-    {
       "id": "sunaulo-paila-mozu7iwa-45a8pv",
       "donorName": "Sunaulo Paila",
       "amount": 14050,
@@ -5731,5 +5715,5 @@
       "publishedAt": "2026-05-09T12:09:29Z"
     }
   ],
-  "updatedAt": "2026-05-10T14:41:10.769Z"
+  "updatedAt": "2026-05-10T14:57:51.122Z"
 }
