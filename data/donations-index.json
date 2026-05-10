@@ -1,6 +1,22 @@
 {
   "donations": [
     {
+      "id": "jang-singh-bhandari-moz14sui-cbng1q",
+      "donorName": "Jang Singh Bhandari",
+      "amount": 2000,
+      "color": "#2563eb",
+      "status": "published",
+      "adminId": "admin-mouy8t21-l51py5",
+      "adminName": "Padam Malla",
+      "address": "Titabai",
+      "profileThumb": null,
+      "profileImage": null,
+      "imageCount": 0,
+      "createdAt": "2026-05-10T00:23:25.963Z",
+      "updatedAt": "2026-05-10T00:23:25.963Z",
+      "publishedAt": "2026-05-10T00:23:25.963Z"
+    },
+    {
       "id": "govind-singh-bhandari-moz12nb1-g95qe6",
       "donorName": "Govind Singh Bhandari",
       "amount": 480,
@@ -5585,5 +5601,5 @@
       "publishedAt": "2026-05-09T12:09:29Z"
     }
   ],
-  "updatedAt": "2026-05-10T00:21:47.307Z"
+  "updatedAt": "2026-05-10T00:23:29.015Z"
 }
