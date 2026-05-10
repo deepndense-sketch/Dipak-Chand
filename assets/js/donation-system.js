@@ -261,6 +261,10 @@ function sortDonationsAlphabetically(entries) {
   return [...entries].sort((a, b) => String(a.donorName || "").localeCompare(String(b.donorName || ""), "en", { sensitivity: "base" }));
 }
 
+function sortDonationsByAmount(entries) {
+  return [...entries].sort((a, b) => Number(b.amount || 0) - Number(a.amount || 0));
+}
+
 function publicAdminGroups(donations, users) {
   return groupPublishedByAdmin(donations, users).map((admin) => ({
     ...admin,
@@ -303,10 +307,64 @@ function renderPublicDonationSummary(mountId = "donation-dashboard") {
     const target = Number(site.targetAmount || 5000000);
     const currency = site.currency || "Rs";
     const published = donations.filter((entry) => entry.status === "published");
-    const total = published.reduce((sum, entry) => sum + Number(entry.amount || 0), 0);
-    const percent = Math.min(100, target ? (total / target) * 100 : 0);
-    const remaining = Math.max(0, target - total);
+    const grandTotal = published.reduce((sum, entry) => sum + Number(entry.amount || 0), 0);
     const groups = publicAdminGroups(donations, users);
+    const state = {
+      fundraiser: "all",
+      sort: "recent"
+    };
+    const sortEntries = (entries) => {
+      if (state.sort === "major") return sortDonationsByAmount(entries);
+      if (state.sort === "alpha") return sortDonationsAlphabetically(entries);
+      return sortDonationsNewest(entries);
+    };
+    const filteredEntries = () => state.fundraiser === "all"
+      ? published
+      : published.filter((entry) => (entry.adminId || "unknown") === state.fundraiser);
+    const selectedFundraiserName = () => {
+      if (state.fundraiser === "all") return "All Fundraisers";
+      const group = groups.find((admin) => admin.id === state.fundraiser);
+      return group?.username || "Selected Fundraiser";
+    };
+    const donationCard = (entry, index) => {
+      const color = entry.color || DONOR_COLORS[index % DONOR_COLORS.length];
+      const profileImage = entry.profileThumb || entry.profileImage;
+      return `<article class="public-donation-card" data-admin-id="${escapeHtml(entry.adminId || "unknown")}" style="--donor-color:${escapeHtml(color)}">
+        <a class="donor-photo-link" href="donation.html?id=${encodeURIComponent(entry.id)}" aria-label="${escapeHtml(entry.donorName)}">
+          ${profileImage?.dataUrl
+            ? `<img class="donor-photo" src="${profileImage.dataUrl}" alt="${escapeHtml(entry.donorName)}" loading="lazy" decoding="async">`
+            : `<span class="donor-photo donor-photo-fallback">${escapeHtml(String(entry.donorName || "?").charAt(0).toUpperCase())}</span>`}
+        </a>
+        <div class="donor-summary">
+          <a href="donation.html?id=${encodeURIComponent(entry.id)}">${escapeHtml(entry.donorName)}</a>
+          <span class="amount">${money(entry.amount, currency)}</span>
+          ${donationShareButton(entry)}
+        </div>
+      </article>`;
+    };
+    const renderFilteredView = () => {
+      const entries = sortEntries(filteredEntries());
+      const total = entries.reduce((sum, entry) => sum + Number(entry.amount || 0), 0);
+      const percent = Math.min(100, target ? (total / target) * 100 : 0);
+      const remaining = Math.max(0, target - total);
+      const fundraiserName = selectedFundraiserName();
+      const totalLabel = state.fundraiser === "all"
+        ? "Total Raised"
+        : `${fundraiserName} Raised Total`;
+      mount.querySelector("[data-public-total-label]").textContent = totalLabel;
+      mount.querySelector("[data-public-total]").textContent = money(total, currency);
+      mount.querySelector("[data-public-target]").textContent = money(target, currency);
+      mount.querySelector("[data-public-percent]").textContent = `${percent.toFixed(1)}%`;
+      mount.querySelector("[data-public-remaining]").textContent = money(remaining, currency);
+      mount.querySelector("[data-public-progress]").style.width = `${percent}%`;
+      mount.querySelector("[data-public-contributors]").textContent = `${entries.length} contributor${entries.length === 1 ? "" : "s"}`;
+      mount.querySelector("[data-public-filter-title]").textContent = state.fundraiser === "all"
+        ? "Showing all donor data"
+        : `Showing donor data raised by ${fundraiserName}`;
+      mount.querySelector("[data-public-donation-grid]").innerHTML = entries.length
+        ? entries.map(donationCard).join("")
+        : `<p class="empty-state">No donor data found for this fundraiser.</p>`;
+    };
     if (!published.length) {
       mount.innerHTML = `<div class="public-summary"><h2>Donation Updates</h2><p>No published donation entries yet.</p></div>`;
       return;
@@ -314,40 +372,56 @@ function renderPublicDonationSummary(mountId = "donation-dashboard") {
     mount.innerHTML = `
       <div class="public-summary">
         <h2>Donation Progress</h2>
-        <p><strong>Total Raised:</strong> ${money(total, currency)} of ${money(target, currency)} (${percent.toFixed(1)}%)</p>
-        <div class="progress-shell" aria-label="Donation progress"><div class="progress-fill" style="width:${percent}%"></div></div>
-        <p><strong>Remaining:</strong> ${money(remaining, currency)}</p>
-        ${groups.map((admin, adminIndex) => `
-          <section class="admin-donation-group">
-            <header class="admin-group-header">
-              <div>
-                <div class="admin-group-raised">${admin.username} raised Total ${money(admin.total, currency)} /-</div>
-              </div>
-              <div class="admin-group-contributors">
-                <span>Total Contributor</span>
-                <strong>${admin.donations.length}</strong>
-              </div>
-            </header>
-            <div class="home-donation-grid">
-              ${admin.donations.map((entry, index) => {
-                const color = entry.color || DONOR_COLORS[(adminIndex + index) % DONOR_COLORS.length];
-                const profileImage = entry.profileThumb || entry.profileImage;
-                return `<article class="public-donation-card" style="--donor-color:${color}">
-                  <a class="donor-photo-link" href="donation.html?id=${encodeURIComponent(entry.id)}" aria-label="${entry.donorName}">
-                    ${profileImage?.dataUrl
-                      ? `<img class="donor-photo" src="${profileImage.dataUrl}" alt="${entry.donorName}" loading="lazy" decoding="async">`
-                      : `<span class="donor-photo donor-photo-fallback">${String(entry.donorName || "?").charAt(0).toUpperCase()}</span>`}
-                  </a>
-                  <div class="donor-summary">
-                    <a href="donation.html?id=${encodeURIComponent(entry.id)}">${entry.donorName}</a>
-                    <span class="amount">${money(entry.amount, currency)}</span>
-                    ${donationShareButton(entry)}
-                  </div>
-                </article>`;
-              }).join("")}
-            </div>
-          </section>`).join("")}
+        <p><strong data-public-total-label>Total Raised</strong>: <span data-public-total>${money(grandTotal, currency)}</span> of <span data-public-target>${money(target, currency)}</span> (<span data-public-percent></span>)</p>
+        <div class="progress-shell" aria-label="Donation progress"><div class="progress-fill" data-public-progress></div></div>
+        <div class="public-filter-stats">
+          <p><strong>Remaining:</strong> <span data-public-remaining></span></p>
+          <p><strong>Contributors:</strong> <span data-public-contributors></span></p>
+        </div>
+        <section class="fundraiser-panel">
+          <h3>Fundraisers</h3>
+          <div class="fundraiser-list">
+            <button type="button" class="fundraiser-filter active" data-fundraiser-filter="all">
+              <span>All Fundraisers</span>
+              <strong>${money(grandTotal, currency)}</strong>
+              <em>${published.length} contributors</em>
+            </button>
+            ${groups.map((admin) => `
+              <button type="button" class="fundraiser-filter" data-fundraiser-filter="${escapeHtml(admin.id)}">
+                <span>${escapeHtml(admin.username)} Raised Total ${money(admin.total, currency)}</span>
+                <em>${admin.donations.length} contributors</em>
+              </button>`).join("")}
+          </div>
+        </section>
+        <section class="donor-toolbar" aria-label="Donor list filters">
+          <div>
+            <h3 data-public-filter-title>Showing all donor data</h3>
+            <p>Choose how donor data is ordered.</p>
+          </div>
+          <label>
+            Sort donor data
+            <select data-donor-sort>
+              <option value="recent">Recent entries at top</option>
+              <option value="major">Major contributor</option>
+              <option value="alpha">Alphabetical order</option>
+            </select>
+          </label>
+        </section>
+        <div class="home-donation-grid" data-public-donation-grid>
+        </div>
       </div>`;
+    mount.querySelectorAll("[data-fundraiser-filter]").forEach((button) => {
+      button.addEventListener("click", () => {
+        state.fundraiser = button.dataset.fundraiserFilter;
+        mount.querySelectorAll("[data-fundraiser-filter]").forEach((item) => item.classList.toggle("active", item === button));
+        renderFilteredView();
+      });
+    });
+    mount.querySelector("[data-donor-sort]").addEventListener("change", (event) => {
+      state.sort = event.target.value;
+      renderFilteredView();
+    });
+    renderFilteredView();
   }).catch((error) => {
     mount.innerHTML = `<div class="public-summary"><h2>Donation Updates</h2><p>Unable to load donation data.</p></div>`;
     console.error(error);
