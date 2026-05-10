@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Donation Entry Form</title>
-  <link rel="stylesheet" href="./assets/css/donation-system.css?v=38">
+  <link rel="stylesheet" href="./assets/css/donation-system.css?v=39">
 </head>
 <body class="backend-body">
   <main class="backend-shell">
@@ -85,10 +85,14 @@
           <div id="importPreview" class="table-list"></div>
         </section>
         <section class="fundraiser-name-panel">
-          <label class="full">Fundraiser name for saved/imported donations
-            <input id="fundraiserName" placeholder="Leave as your admin name, or type another fundraiser">
+          <h2>Fundraiser Name</h2>
+          <label class="full">Name
+            <input id="fundraiserName" placeholder="Fundraiser name">
           </label>
-          <p class="backend-help">This name is applied when you save one donation or import a Word list.</p>
+          <div class="action-row">
+            <button type="button" id="publishFundraiserBtn">Publish Fundraiser</button>
+          </div>
+          <div class="status-line" id="fundraiserNameStatus"></div>
         </section>
       </div>
 
@@ -112,7 +116,7 @@
   </main>
 
   <script src="https://unpkg.com/mammoth@1.8.0/mammoth.browser.min.js"></script>
-  <script src="./assets/js/donation-system.js?v=31"></script>
+  <script src="./assets/js/donation-system.js?v=33"></script>
   <script>
     const cms = window.DipakCMS;
     let usersData = null;
@@ -206,12 +210,7 @@
       document.getElementById('otherImages').value = '';
       profileImage = null;
       otherImages = [];
-      if (currentAdmin) document.getElementById('fundraiserName').value = currentAdmin.username || '';
       renderPreview();
-    }
-
-    function getFundraiserName() {
-      return document.getElementById('fundraiserName').value.trim() || currentAdmin?.username || 'Admin';
     }
 
     function renderPreview() {
@@ -364,8 +363,7 @@
         if (!approvedAdmin) throw new Error('This admin account is no longer approved. Please log in again.');
         currentAdmin = { ...approvedAdmin, token: currentAdmin.token };
         cms.sessionSet('dipakDonationAdmin', currentAdmin);
-        const fundraiserName = getFundraiserName();
-        if (!confirm(`Import ${importEntries.length} donation entries for ${fundraiserName}?`)) return;
+        if (!confirm(`Import ${importEntries.length} donation entries for ${currentAdmin.username}?`)) return;
         isSavingDonation = true;
         importButton.disabled = true;
         importButton.classList.add('is-importing');
@@ -380,7 +378,7 @@
           color: cms.DONOR_COLORS[index % cms.DONOR_COLORS.length],
           status: 'published',
           adminId: currentAdmin.id,
-          adminName: fundraiserName,
+          adminName: currentAdmin.username,
           profileImage: null,
           profileThumb: null,
           otherImages: [],
@@ -480,7 +478,6 @@
         const donorName = document.getElementById('donorName').value.trim();
         const amount = Number(document.getElementById('donorAmount').value || 0);
         if (!donorName || !amount) throw new Error('Donor name and amount are required.');
-        const fundraiserName = getFundraiserName();
         const id = document.getElementById('donationId').value || cms.uid(cms.slugify(donorName));
         const status = document.getElementById('donorStatus').value;
         const existing = (donationData.donations || []).find((entry) => entry.id === id);
@@ -495,7 +492,7 @@
           color: document.getElementById('donorColor').value,
           status,
           adminId: currentAdmin.id,
-          adminName: fundraiserName,
+          adminName: currentAdmin.username,
           profileImage,
           profileThumb,
           otherImages,
@@ -565,6 +562,33 @@
       }
     }
 
+    async function publishFundraiserName() {
+      const button = document.getElementById('publishFundraiserBtn');
+      const input = document.getElementById('fundraiserName');
+      const name = input.value.trim();
+      try {
+        if (!name) throw new Error('Enter a fundraiser name first.');
+        if (!currentAdmin?.token) throw new Error('GitHub token is required to publish fundraiser names.');
+        button.disabled = true;
+        button.textContent = 'Publishing...';
+        await cms.updateJson(cms.DATA_PATHS.site, { title: cms.DEFAULT_SITE_TITLE, targetAmount: 5000000, currency: 'Rs', fundraisers: [] }, currentAdmin.token, `Publish fundraiser ${name}`, (latest) => {
+          const fundraisers = Array.isArray(latest.fundraisers) ? latest.fundraisers : [];
+          const exists = fundraisers.some((item) => String(item || '').trim().toLowerCase() === name.toLowerCase());
+          latest.fundraisers = exists ? fundraisers : [...fundraisers, name];
+          latest.updatedAt = new Date().toISOString();
+          return latest;
+        });
+        await reloadData();
+        input.value = '';
+        setStatus('fundraiserNameStatus', `${name} published on the homepage fundraiser list.`, 'good');
+      } catch (error) {
+        setStatus('fundraiserNameStatus', error.message, 'bad');
+      } finally {
+        button.disabled = false;
+        button.textContent = 'Publish Fundraiser';
+      }
+    }
+
     async function editDonation(id) {
       const entry = await cms.loadDonationDetail(id);
       if (!entry) return;
@@ -575,7 +599,6 @@
       document.getElementById('donorInfo').value = entry.info || '';
       document.getElementById('donorStatus').value = entry.status || 'draft';
       document.getElementById('donorColor').value = entry.color || '#176b87';
-      document.getElementById('fundraiserName').value = entry.adminName || currentAdmin.username || '';
       profileImage = entry.profileImage || (entry.images || [])[0] || null;
       if (profileImage && !profileImage.zoom) profileImage.zoom = 1;
       otherImages = entry.otherImages || (entry.images || []).slice(profileImage ? 1 : 0);
@@ -635,7 +658,6 @@
       currentAdmin = { ...approvedAdmin, token: currentAdmin.token };
       cms.sessionSet('dipakDonationAdmin', currentAdmin);
       document.getElementById('dashboardTitle').textContent = `Donation Form - ${currentAdmin.username}`;
-      document.getElementById('fundraiserName').value = currentAdmin.username || '';
       document.getElementById('workArea').hidden = false;
       clearForm();
       renderDonations();
@@ -647,6 +669,7 @@
     });
     document.getElementById('saveDonationBtn').addEventListener('click', saveDonation);
     document.getElementById('newDonationBtn').addEventListener('click', clearForm);
+    document.getElementById('publishFundraiserBtn').addEventListener('click', publishFundraiserName);
     document.getElementById('toggleDonationFormBtn').addEventListener('click', () => {
       const body = document.getElementById('donationFormBody');
       const button = document.getElementById('toggleDonationFormBtn');

@@ -589,6 +589,27 @@ body:not(.backend-body) .section {
   font-weight: 750;
 }
 
+.fundraiser-name-item {
+  display: flex;
+  align-items: center;
+  min-height: 46px;
+  border: 1px solid #dce3e8;
+  border-radius: 8px;
+  padding: 10px 12px;
+  background: #ffffff;
+  color: #315d6d;
+  font-size: 20px;
+  font-weight: 750;
+  line-height: 1.35;
+}
+
+.fundraiser-name-item::before {
+  content: "•";
+  margin-right: 8px;
+  color: #176b87;
+  font-weight: 850;
+}
+
 .donor-toolbar {
   display: flex;
   align-items: end;

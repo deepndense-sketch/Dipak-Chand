@@ -310,6 +310,10 @@ function renderPublicDonationSummary(mountId = "donation-dashboard") {
     const published = donations.filter((entry) => entry.status === "published");
     const grandTotal = published.reduce((sum, entry) => sum + Number(entry.amount || 0), 0);
     const groups = publicAdminGroups(donations, users);
+    const fundraiserNames = [...new Set([
+      ...groups.map((admin) => admin.username),
+      ...((site.fundraisers || []).map((name) => String(name || "").trim()).filter(Boolean))
+    ].map((name) => name.trim()).filter(Boolean))];
     const state = {
       fundraiser: "all",
       sort: "recent",
@@ -386,10 +390,7 @@ function renderPublicDonationSummary(mountId = "donation-dashboard") {
               <strong>${money(grandTotal, currency)}</strong>
               <em>${published.length} contributors</em>
             </button>
-            ${groups.map((admin) => `
-              <button type="button" class="fundraiser-filter" data-fundraiser-filter="${escapeHtml(admin.id)}">
-                <span>${escapeHtml(admin.username)}</span>
-              </button>`).join("")}
+            ${fundraiserNames.map((name) => `<span class="fundraiser-name-item">${escapeHtml(name)}</span>`).join("")}
           </div>
         </section>
         <section class="donor-toolbar" aria-label="Donor list filters">
