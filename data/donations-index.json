@@ -1,6 +1,22 @@
 {
   "donations": [
     {
+      "id": "bhagi-chand-mp00ppru-81d0nw",
+      "donorName": "Bhagi Chand",
+      "amount": 2400,
+      "color": "#a16207",
+      "status": "published",
+      "adminId": "admin-mouy8t21-l51py5",
+      "adminName": "Padam Malla",
+      "address": "",
+      "profileThumb": null,
+      "profileImage": null,
+      "imageCount": 0,
+      "createdAt": "2026-05-10T16:59:28.314Z",
+      "updatedAt": "2026-05-10T17:06:47.385Z",
+      "publishedAt": "2026-05-10T16:59:28.315Z"
+    },
+    {
       "id": "bhawana-chand-mp00s8uk-iq270l",
       "donorName": "Bhawana Chand",
       "amount": 2400,
@@ -15,22 +31,6 @@
       "createdAt": "2026-05-10T17:01:26.348Z",
       "updatedAt": "2026-05-10T17:01:26.348Z",
       "publishedAt": "2026-05-10T17:01:26.348Z"
-    },
-    {
-      "id": "bhagi-chand-mp00ppru-81d0nw",
-      "donorName": "Bhagi Chand",
-      "amount": 1500,
-      "color": "#a16207",
-      "status": "published",
-      "adminId": "admin-mouy8t21-l51py5",
-      "adminName": "Padam Malla",
-      "address": "",
-      "profileThumb": null,
-      "profileImage": null,
-      "imageCount": 0,
-      "createdAt": "2026-05-10T16:59:28.314Z",
-      "updatedAt": "2026-05-10T16:59:28.315Z",
-      "publishedAt": "2026-05-10T16:59:28.315Z"
     },
     {
       "id": "surya-roshan-chand-mp00accd-bkadeo",
@@ -5939,5 +5939,5 @@
       "publishedAt": "2026-05-09T12:09:29Z"
     }
   ],
-  "updatedAt": "2026-05-10T17:01:28.774Z"
+  "updatedAt": "2026-05-10T17:06:49.965Z"
 }
