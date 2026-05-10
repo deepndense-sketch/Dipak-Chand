@@ -93,6 +93,14 @@ button.danger {
   background: var(--admin-danger);
 }
 
+button.import-action {
+  background: #176b87;
+}
+
+button.import-action.is-importing {
+  background: var(--admin-accent-2);
+}
+
 button:disabled {
   opacity: 0.58;
   cursor: not-allowed;
@@ -131,6 +139,23 @@ button:disabled {
   margin: 0 0 12px;
   font-size: 22px;
   letter-spacing: 0;
+}
+
+.panel-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.panel-title-row h2 {
+  margin: 0;
+}
+
+.panel-toggle {
+  min-height: 36px;
+  padding: 8px 12px;
 }
 
 .backend-panel p,
@@ -356,6 +381,12 @@ body:not(.backend-body) .section {
   margin-top: 12px;
 }
 
+.fundraiser-name-panel {
+  margin-top: 22px;
+  padding-top: 18px;
+  border-top: 1px solid var(--admin-line);
+}
+
 .table-list {
   display: grid;
   gap: 10px;
@@ -530,6 +561,10 @@ body:not(.backend-body) .section {
   font-size: 28px;
   line-height: 1.12;
   font-weight: 850;
+}
+
+.fundraiser-filter:not(:first-child) {
+  align-content: center;
 }
 
 .fundraiser-filter strong {

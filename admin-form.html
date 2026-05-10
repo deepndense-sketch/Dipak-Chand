@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Donation Entry Form</title>
-  <link rel="stylesheet" href="./assets/css/donation-system.css?v=35">
+  <link rel="stylesheet" href="./assets/css/donation-system.css?v=37">
 </head>
 <body class="backend-body">
   <main class="backend-shell">
@@ -21,52 +21,57 @@
 
     <section class="backend-grid" id="workArea" hidden>
       <div class="backend-panel">
-        <h2>Donation Info Form</h2>
+        <div class="panel-title-row">
+          <h2>Donation Info Form</h2>
+          <button type="button" class="secondary panel-toggle" id="toggleDonationFormBtn" aria-expanded="true" aria-controls="donationFormBody">Hide</button>
+        </div>
         <input id="donationId" type="hidden">
-        <div class="form-grid">
-          <label>Donor Name
-            <input id="donorName" placeholder="Donor name">
-          </label>
-          <label>Amount Donated
-            <input id="donorAmount" type="number" min="0" step="1" placeholder="5000">
-          </label>
-          <label class="full">Address
-            <input id="donorAddress" placeholder="Donor address">
-          </label>
-          <label class="full">Information
-            <textarea id="donorInfo" placeholder="Write donation details, message, date, receipt notes, etc."></textarea>
-          </label>
-          <label>Status
-            <select id="donorStatus">
-              <option value="published">Publish</option>
-              <option value="draft">Draft</option>
-            </select>
-          </label>
-          <label class="visually-hidden">Timeline color
-            <input id="donorColor" type="color" value="#176b87">
-          </label>
-          <label class="full">Profile photo
-            <input id="profileImage" type="file" accept="image/*">
-          </label>
-          <label class="full">Other images
-            <input id="otherImages" type="file" accept="image/*" multiple>
-          </label>
-        </div>
-        <div class="upload-preview-layout">
-          <div>
-            <h3>Profile Photo</h3>
-            <div id="profilePreview" class="preview-grid face-preview-grid"></div>
+        <div id="donationFormBody">
+          <div class="form-grid">
+            <label>Donor Name
+              <input id="donorName" placeholder="Donor name">
+            </label>
+            <label>Amount Donated
+              <input id="donorAmount" type="number" min="0" step="1" placeholder="5000">
+            </label>
+            <label class="full">Address
+              <input id="donorAddress" placeholder="Donor address">
+            </label>
+            <label class="full">Information
+              <textarea id="donorInfo" placeholder="Write donation details, message, date, receipt notes, etc."></textarea>
+            </label>
+            <label>Status
+              <select id="donorStatus">
+                <option value="published">Publish</option>
+                <option value="draft">Draft</option>
+              </select>
+            </label>
+            <label class="visually-hidden">Timeline color
+              <input id="donorColor" type="color" value="#176b87">
+            </label>
+            <label class="full">Profile photo
+              <input id="profileImage" type="file" accept="image/*">
+            </label>
+            <label class="full">Other images
+              <input id="otherImages" type="file" accept="image/*" multiple>
+            </label>
           </div>
-          <div>
-            <h3>Other Images</h3>
-            <div id="otherPreview" class="preview-grid gallery-preview-grid"></div>
+          <div class="upload-preview-layout">
+            <div>
+              <h3>Profile Photo</h3>
+              <div id="profilePreview" class="preview-grid face-preview-grid"></div>
+            </div>
+            <div>
+              <h3>Other Images</h3>
+              <div id="otherPreview" class="preview-grid gallery-preview-grid"></div>
+            </div>
           </div>
+          <div class="action-row">
+            <button type="button" id="saveDonationBtn">Save Donation</button>
+            <button type="button" class="secondary" id="newDonationBtn">New Entry</button>
+          </div>
+          <div class="status-line" id="donationStatus"></div>
         </div>
-        <div class="action-row">
-          <button type="button" id="saveDonationBtn">Save Donation</button>
-          <button type="button" class="secondary" id="newDonationBtn">New Entry</button>
-        </div>
-        <div class="status-line" id="donationStatus"></div>
         <section class="import-list-panel">
           <h2>Upload Donation List</h2>
           <p class="backend-help">Upload a Word document with columns: SN, Name, Donation Amount, Address, Photo. Photo is ignored.</p>
@@ -74,10 +79,15 @@
             <input id="donationListFile" type="file" accept=".docx,application/vnd.openxmlformats-officedocument.wordprocessingml.document">
           </label>
           <div class="action-row">
-            <button type="button" class="secondary" id="importDonationListBtn" disabled>Import List</button>
+            <button type="button" class="import-action" id="importDonationListBtn" disabled>Import List</button>
           </div>
           <div class="status-line" id="importListStatus"></div>
           <div id="importPreview" class="table-list"></div>
+        </section>
+        <section class="fundraiser-name-panel">
+          <label class="full">Add new Fundraiser name
+            <input id="fundraiserName" placeholder="Fundraiser name">
+          </label>
         </section>
       </div>
 
@@ -101,7 +111,7 @@
   </main>
 
   <script src="https://unpkg.com/mammoth@1.8.0/mammoth.browser.min.js"></script>
-  <script src="./assets/js/donation-system.js?v=25"></script>
+  <script src="./assets/js/donation-system.js?v=31"></script>
   <script>
     const cms = window.DipakCMS;
     let usersData = null;
@@ -195,7 +205,12 @@
       document.getElementById('otherImages').value = '';
       profileImage = null;
       otherImages = [];
+      if (currentAdmin) document.getElementById('fundraiserName').value = currentAdmin.username || '';
       renderPreview();
+    }
+
+    function getFundraiserName() {
+      return document.getElementById('fundraiserName').value.trim() || currentAdmin?.username || 'Admin';
     }
 
     function renderPreview() {
@@ -348,9 +363,11 @@
         if (!approvedAdmin) throw new Error('This admin account is no longer approved. Please log in again.');
         currentAdmin = { ...approvedAdmin, token: currentAdmin.token };
         cms.sessionSet('dipakDonationAdmin', currentAdmin);
-        if (!confirm(`Import ${importEntries.length} donation entries for ${currentAdmin.username}?`)) return;
+        const fundraiserName = getFundraiserName();
+        if (!confirm(`Import ${importEntries.length} donation entries for ${fundraiserName}?`)) return;
         isSavingDonation = true;
         importButton.disabled = true;
+        importButton.classList.add('is-importing');
         importButton.textContent = 'Importing...';
         const now = new Date().toISOString();
         const entries = importEntries.map((row, index) => ({
@@ -362,7 +379,7 @@
           color: cms.DONOR_COLORS[index % cms.DONOR_COLORS.length],
           status: 'published',
           adminId: currentAdmin.id,
-          adminName: currentAdmin.username,
+          adminName: fundraiserName,
           profileImage: null,
           profileThumb: null,
           otherImages: [],
@@ -394,6 +411,7 @@
         setStatus('importListStatus', error.message, 'bad');
       } finally {
         isSavingDonation = false;
+        importButton.classList.remove('is-importing');
         importButton.disabled = !importEntries.length;
         importButton.textContent = 'Import List';
       }
@@ -461,6 +479,7 @@
         const donorName = document.getElementById('donorName').value.trim();
         const amount = Number(document.getElementById('donorAmount').value || 0);
         if (!donorName || !amount) throw new Error('Donor name and amount are required.');
+        const fundraiserName = getFundraiserName();
         const id = document.getElementById('donationId').value || cms.uid(cms.slugify(donorName));
         const status = document.getElementById('donorStatus').value;
         const existing = (donationData.donations || []).find((entry) => entry.id === id);
@@ -475,7 +494,7 @@
           color: document.getElementById('donorColor').value,
           status,
           adminId: currentAdmin.id,
-          adminName: currentAdmin.username,
+          adminName: fundraiserName,
           profileImage,
           profileThumb,
           otherImages,
@@ -555,6 +574,7 @@
       document.getElementById('donorInfo').value = entry.info || '';
       document.getElementById('donorStatus').value = entry.status || 'draft';
       document.getElementById('donorColor').value = entry.color || '#176b87';
+      document.getElementById('fundraiserName').value = entry.adminName || currentAdmin.username || '';
       profileImage = entry.profileImage || (entry.images || [])[0] || null;
       if (profileImage && !profileImage.zoom) profileImage.zoom = 1;
       otherImages = entry.otherImages || (entry.images || []).slice(profileImage ? 1 : 0);
@@ -614,6 +634,7 @@
       currentAdmin = { ...approvedAdmin, token: currentAdmin.token };
       cms.sessionSet('dipakDonationAdmin', currentAdmin);
       document.getElementById('dashboardTitle').textContent = `Donation Form - ${currentAdmin.username}`;
+      document.getElementById('fundraiserName').value = currentAdmin.username || '';
       document.getElementById('workArea').hidden = false;
       clearForm();
       renderDonations();
@@ -625,6 +646,14 @@
     });
     document.getElementById('saveDonationBtn').addEventListener('click', saveDonation);
     document.getElementById('newDonationBtn').addEventListener('click', clearForm);
+    document.getElementById('toggleDonationFormBtn').addEventListener('click', () => {
+      const body = document.getElementById('donationFormBody');
+      const button = document.getElementById('toggleDonationFormBtn');
+      const nextHidden = !body.hidden;
+      body.hidden = nextHidden;
+      button.textContent = nextHidden ? 'Expand' : 'Hide';
+      button.setAttribute('aria-expanded', String(!nextHidden));
+    });
     document.getElementById('donationListFile').addEventListener('change', parseDonationListFile);
     document.getElementById('importDonationListBtn').addEventListener('click', importDonationList);
     document.getElementById('showMoreEntriesBtn').addEventListener('click', () => {

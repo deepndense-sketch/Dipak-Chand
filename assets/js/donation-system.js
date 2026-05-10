@@ -242,9 +242,10 @@ function groupPublishedByAdmin(donations, users) {
   const approved = users.approved || [];
   const admins = new Map(approved.map((admin) => [admin.id, { ...admin, donations: [], total: 0 }]));
   for (const donation of donations.filter((entry) => entry.status === "published")) {
-    const adminId = donation.adminId || "unknown";
+    const adminName = donation.adminName || "Unknown admin";
+    const adminId = `${donation.adminId || "unknown"}::${adminName}`;
     if (!admins.has(adminId)) {
-      admins.set(adminId, { id: adminId, username: donation.adminName || "Unknown admin", email: "", donations: [], total: 0 });
+      admins.set(adminId, { id: adminId, username: adminName, email: "", donations: [], total: 0 });
     }
     const admin = admins.get(adminId);
     admin.donations.push(donation);
@@ -320,11 +321,11 @@ function renderPublicDonationSummary(mountId = "donation-dashboard") {
     };
     const filteredEntries = () => state.fundraiser === "all"
       ? published
-      : published.filter((entry) => (entry.adminId || "unknown") === state.fundraiser);
-    const selectedFundraiserName = () => {
-      if (state.fundraiser === "all") return "All Fundraisers";
-      const group = groups.find((admin) => admin.id === state.fundraiser);
-      return group?.username || "Selected Fundraiser";
+      : published.filter((entry) => `${entry.adminId || "unknown"}::${entry.adminName || "Unknown admin"}` === state.fundraiser);
+    const sortLabel = () => {
+      if (state.sort === "major") return "Showing Donation data with major contributors at the top";
+      if (state.sort === "alpha") return "Showing Donation data in alphabetical order";
+      return "Showing Donation data with recent entries at the top";
     };
     const donationCard = (entry, index) => {
       const color = entry.color || DONOR_COLORS[index % DONOR_COLORS.length];
@@ -347,20 +348,14 @@ function renderPublicDonationSummary(mountId = "donation-dashboard") {
       const total = entries.reduce((sum, entry) => sum + Number(entry.amount || 0), 0);
       const percent = Math.min(100, target ? (total / target) * 100 : 0);
       const remaining = Math.max(0, target - total);
-      const fundraiserName = selectedFundraiserName();
-      const totalLabel = state.fundraiser === "all"
-        ? "Total Raised"
-        : `${fundraiserName} Raised Total`;
-      mount.querySelector("[data-public-total-label]").textContent = totalLabel;
+      mount.querySelector("[data-public-total-label]").textContent = "Total Raised";
       mount.querySelector("[data-public-total]").textContent = money(total, currency);
       mount.querySelector("[data-public-target]").textContent = money(target, currency);
       mount.querySelector("[data-public-percent]").textContent = `${percent.toFixed(1)}%`;
       mount.querySelector("[data-public-remaining]").textContent = money(remaining, currency);
       mount.querySelector("[data-public-progress]").style.width = `${percent}%`;
       mount.querySelector("[data-public-contributors]").textContent = `${entries.length} contributor${entries.length === 1 ? "" : "s"}`;
-      mount.querySelector("[data-public-filter-title]").textContent = state.fundraiser === "all"
-        ? "Showing all donor data"
-        : `Showing donor data raised by ${fundraiserName}`;
+      mount.querySelector("[data-public-filter-title]").textContent = sortLabel();
       mount.querySelector("[data-public-donation-grid]").innerHTML = entries.length
         ? entries.map(donationCard).join("")
         : `<p class="empty-state">No donor data found for this fundraiser.</p>`;
@@ -388,15 +383,13 @@ function renderPublicDonationSummary(mountId = "donation-dashboard") {
             </button>
             ${groups.map((admin) => `
               <button type="button" class="fundraiser-filter" data-fundraiser-filter="${escapeHtml(admin.id)}">
-                <span>${escapeHtml(admin.username)} Raised Total</span>
-                <strong>${money(admin.total, currency)}</strong>
-                <em>${admin.donations.length} contributors</em>
+                <span>${escapeHtml(admin.username)}</span>
               </button>`).join("")}
           </div>
         </section>
         <section class="donor-toolbar" aria-label="Donor list filters">
           <div>
-            <h3 data-public-filter-title>Showing all donor data</h3>
+            <h3 data-public-filter-title>Showing Donation data with recent entries at the top</h3>
             <p>Choose how donor data is ordered.</p>
           </div>
           <label>
