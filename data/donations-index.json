@@ -1,22 +1,6 @@
 {
   "donations": [
     {
-      "id": "ram-test-mozwhafq-l907h7",
-      "donorName": "Ram Test",
-      "amount": 1234,
-      "color": "#176b87",
-      "status": "published",
-      "adminId": "admin-mouy8t21-l51py5",
-      "adminName": "Padam Malla",
-      "address": "",
-      "profileThumb": null,
-      "profileImage": null,
-      "imageCount": 0,
-      "createdAt": "2026-05-10T15:00:56.726Z",
-      "updatedAt": "2026-05-10T15:00:56.726Z",
-      "publishedAt": "2026-05-10T15:00:56.726Z"
-    },
-    {
       "id": "sunaulo-paila-mozu7iwa-45a8pv",
       "donorName": "Sunaulo Paila",
       "amount": 14050,
@@ -5731,5 +5715,5 @@
       "publishedAt": "2026-05-09T12:09:29Z"
     }
   ],
-  "updatedAt": "2026-05-10T15:00:58.798Z"
+  "updatedAt": "2026-05-10T15:01:34.181Z"
 }
