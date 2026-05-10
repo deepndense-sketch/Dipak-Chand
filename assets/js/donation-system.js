@@ -5,7 +5,8 @@ const DATA_PATHS = {
   site: "data/site.json",
   users: "data/admin-users.json",
   donations: "data/donations.json",
-  donationsIndex: "data/donations-index.json"
+  donationsIndex: "data/donations-index.json",
+  cancerUpdates: "data/cancer-updates.json"
 };
 const DONOR_COLORS = ["#176b87", "#b45309", "#7c3aed", "#0f766e", "#be123c", "#2563eb", "#a16207", "#15803d", "#c2410c", "#6d28d9"];
 const TOKEN_STORAGE_KEY = "dipakGithubToken";
@@ -216,14 +217,15 @@ function forgetRememberedToken() {
 }
 
 async function loadAllData() {
-  const [site, users, donationIndex] = await Promise.all([
+  const [site, users, donationIndex, cancerUpdates] = await Promise.all([
     readJson(DATA_PATHS.site, { title: DEFAULT_SITE_TITLE, targetAmount: 5000000, currency: "Rs" }),
     readJson(DATA_PATHS.users, { mainAdmins: [], pending: [], approved: [] }),
-    readJson(DATA_PATHS.donationsIndex, { donations: null })
+    readJson(DATA_PATHS.donationsIndex, { donations: null }),
+    readJson(DATA_PATHS.cancerUpdates, { updates: [] })
   ]);
   let donations = donationIndex;
   if (!Array.isArray(donations.donations)) donations = await readJson(DATA_PATHS.donations, { donations: [] });
-  return { site, users, donations: donations.donations || [] };
+  return { site, users, donations: donations.donations || [], cancerUpdates: cancerUpdates.updates || [] };
 }
 
 async function deleteJson(path, token, message) {
@@ -437,6 +439,59 @@ function renderPublicDonationSummary(mountId = "donation-dashboard") {
   });
 }
 
+function renderFightUpdates(mountId = "fight-updates") {
+  const mount = document.getElementById(mountId);
+  if (!mount) return;
+
+  readJson(DATA_PATHS.cancerUpdates, { updates: [] }).then((data) => {
+    const updates = [...(data.updates || [])].sort((a, b) => {
+      const aTime = new Date(a.createdAt || a.updatedAt || 0).getTime();
+      const bTime = new Date(b.createdAt || b.updatedAt || 0).getTime();
+      return bTime - aTime;
+    });
+
+    if (!updates.length) {
+      mount.innerHTML = `
+        <div class="public-summary fight-summary">
+          <h2>Dipak's Fight Against Cancer</h2>
+          <p class="empty-state">No updates have been published yet.</p>
+        </div>`;
+      return;
+    }
+
+    mount.innerHTML = `
+      <div class="public-summary fight-summary">
+        <h2>Dipak's Fight Against Cancer</h2>
+        <div class="fight-timeline">
+          ${updates.map((update) => {
+            const photos = Array.isArray(update.photos) ? update.photos : [];
+            const dateText = update.createdAt ? new Date(update.createdAt).toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" }) : "";
+            return `
+              <article class="fight-update-card">
+                <div class="fight-update-dot" aria-hidden="true"></div>
+                <div class="fight-update-body">
+                  ${dateText ? `<p class="fight-update-date">${escapeHtml(dateText)}</p>` : ""}
+                  <h3>${escapeHtml(update.title)}</h3>
+                  <p>${escapeHtml(update.story).replace(/\n/g, "<br>")}</p>
+                  ${photos.length ? `
+                    <div class="fight-photo-grid">
+                      ${photos.map((photo) => `<img src="${photo.dataUrl}" alt="${escapeHtml(photo.name || update.title || "Fight update photo")}">`).join("")}
+                    </div>` : ""}
+                </div>
+              </article>`;
+          }).join("")}
+        </div>
+      </div>`;
+  }).catch((error) => {
+    mount.innerHTML = `
+      <div class="public-summary fight-summary">
+        <h2>Dipak's Fight Against Cancer</h2>
+        <p class="empty-state">Unable to load updates right now.</p>
+      </div>`;
+    console.error(error);
+  });
+}
+
 function shareUrl(path = location.href) {
   return new URL(path, location.href).href;
 }
@@ -548,6 +603,7 @@ window.DipakCMS = {
   loadAllData,
   loadDonationDetail,
   renderPublicDonationSummary,
+  renderFightUpdates,
   facebookShareHref,
   renderFacebookShareLinks,
   showFacebookShareComposer

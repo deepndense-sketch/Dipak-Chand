@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Donation Entry Form</title>
-  <link rel="stylesheet" href="./assets/css/donation-system.css?v=40">
+  <link rel="stylesheet" href="./assets/css/donation-system.css?v=43">
 </head>
 <body class="backend-body">
   <main class="backend-shell">
@@ -94,6 +94,31 @@
           </div>
           <div class="status-line" id="fundraiserNameStatus"></div>
         </section>
+        <section class="fight-update-panel">
+          <div class="panel-title-row">
+            <h2>Dipak's Fight Against Cancer Update</h2>
+            <button type="button" class="secondary panel-toggle" id="toggleFightUpdateBtn" aria-expanded="false" aria-controls="fightUpdateBody">Expand</button>
+          </div>
+          <div id="fightUpdateBody" hidden>
+            <div class="form-grid">
+              <label class="full">Update Title
+                <input id="fightUpdateTitle" placeholder="Update title">
+              </label>
+              <label class="full">News or Story
+                <textarea id="fightUpdateStory" placeholder="Write news, treatment update, or story"></textarea>
+              </label>
+              <label class="full">Photos
+                <input id="fightUpdatePhotos" type="file" accept="image/*" multiple>
+              </label>
+            </div>
+            <div id="fightPhotoPreview" class="preview-grid gallery-preview-grid"></div>
+            <div class="action-row">
+              <button type="button" id="publishFightUpdateBtn">Submit Update</button>
+              <button type="button" class="secondary" id="clearFightUpdateBtn">Clear</button>
+            </div>
+            <div class="status-line" id="fightUpdateStatus"></div>
+          </div>
+        </section>
       </div>
 
       <div class="backend-panel">
@@ -117,15 +142,17 @@
   </main>
 
   <script src="https://unpkg.com/mammoth@1.8.0/mammoth.browser.min.js"></script>
-  <script src="./assets/js/donation-system.js?v=33"></script>
+  <script src="./assets/js/donation-system.js?v=34"></script>
   <script>
     const cms = window.DipakCMS;
     let usersData = null;
     let donationData = null;
     let siteData = null;
+    let cancerUpdatesData = null;
     let currentAdmin = null;
     let profileImage = null;
     let otherImages = [];
+    let fightUpdatePhotos = [];
     let visibleEntryCount = 10;
     let isSavingDonation = false;
     let importEntries = [];
@@ -205,6 +232,7 @@
       usersData = all.users;
       donationData = { donations: applyLocalDonationDisplay(all.donations || []) };
       siteData = all.site;
+      cancerUpdatesData = { updates: all.cancerUpdates || [] };
     }
 
     function clearForm() {
@@ -248,6 +276,23 @@
           <img src="${image.dataUrl}" alt="${image.name}">
           <span>${image.name}</span>
         </div>`).join('') : '<p class="empty-state">Optional additional images.</p>';
+    }
+
+    function renderFightPhotoPreview() {
+      const mount = document.getElementById('fightPhotoPreview');
+      mount.innerHTML = fightUpdatePhotos.length ? fightUpdatePhotos.map((image) => `
+        <div class="gallery-preview-card">
+          <img src="${image.dataUrl}" alt="${image.name}">
+          <span>${image.name}</span>
+        </div>`).join('') : '<p class="empty-state">Optional update photos.</p>';
+    }
+
+    function clearFightUpdateForm() {
+      document.getElementById('fightUpdateTitle').value = '';
+      document.getElementById('fightUpdateStory').value = '';
+      document.getElementById('fightUpdatePhotos').value = '';
+      fightUpdatePhotos = [];
+      renderFightPhotoPreview();
     }
 
     function parseAmount(value) {
@@ -601,6 +646,61 @@
       }
     }
 
+    async function parseFightUpdatePhotos(event) {
+      try {
+        const files = [...(event.target.files || [])];
+        fightUpdatePhotos = [];
+        renderFightPhotoPreview();
+        if (!files.length) return;
+        setStatus('fightUpdateStatus', 'Preparing photos...', 'good');
+        fightUpdatePhotos = await Promise.all(files.map((file) => fileToDataUrl(file, 1400)));
+        renderFightPhotoPreview();
+        setStatus('fightUpdateStatus', `${fightUpdatePhotos.length} photo(s) ready.`, 'good');
+      } catch (error) {
+        fightUpdatePhotos = [];
+        renderFightPhotoPreview();
+        setStatus('fightUpdateStatus', error.message, 'bad');
+      }
+    }
+
+    async function publishFightUpdate() {
+      const button = document.getElementById('publishFightUpdateBtn');
+      const title = document.getElementById('fightUpdateTitle').value.trim();
+      const story = document.getElementById('fightUpdateStory').value.trim();
+      try {
+        if (!title) throw new Error('Enter an update title first.');
+        if (!story) throw new Error('Enter news or story text first.');
+        if (!currentAdmin?.token) throw new Error('GitHub token is required to publish this update.');
+        button.disabled = true;
+        button.textContent = 'Submitting...';
+        setStatus('fightUpdateStatus', 'Publishing fight update to the website. Please keep this page open...', 'good');
+        const now = new Date().toISOString();
+        const update = {
+          id: cms.uid('fight'),
+          title,
+          story,
+          photos: fightUpdatePhotos,
+          adminId: currentAdmin.id,
+          adminName: currentAdmin.username,
+          createdAt: now,
+          updatedAt: now
+        };
+        await cms.updateJson(cms.DATA_PATHS.cancerUpdates, { updates: [] }, currentAdmin.token, `Publish cancer update: ${title}`, (latest) => {
+          latest.updates = [update, ...(latest.updates || [])];
+          latest.updatedAt = now;
+          return latest;
+        });
+        cancerUpdatesData.updates = [update, ...(cancerUpdatesData.updates || [])];
+        setStatus('fightUpdateStatus', 'Fight update published on the website.', 'good');
+        clearFightUpdateForm();
+      } catch (error) {
+        setStatus('fightUpdateStatus', error.message, 'bad');
+      } finally {
+        button.disabled = false;
+        button.textContent = 'Submit Update';
+      }
+    }
+
     async function editDonation(id) {
       const entry = await cms.loadDonationDetail(id);
       if (!entry) return;
@@ -672,6 +772,7 @@
       document.getElementById('dashboardTitle').textContent = `Donation Form - ${currentAdmin.username}`;
       document.getElementById('workArea').hidden = false;
       clearForm();
+      clearFightUpdateForm();
       renderDonations();
     }
 
@@ -682,6 +783,17 @@
     document.getElementById('saveDonationBtn').addEventListener('click', saveDonation);
     document.getElementById('newDonationBtn').addEventListener('click', clearForm);
     document.getElementById('publishFundraiserBtn').addEventListener('click', publishFundraiserName);
+    document.getElementById('publishFightUpdateBtn').addEventListener('click', publishFightUpdate);
+    document.getElementById('clearFightUpdateBtn').addEventListener('click', clearFightUpdateForm);
+    document.getElementById('fightUpdatePhotos').addEventListener('change', parseFightUpdatePhotos);
+    document.getElementById('toggleFightUpdateBtn').addEventListener('click', () => {
+      const body = document.getElementById('fightUpdateBody');
+      const button = document.getElementById('toggleFightUpdateBtn');
+      const nextHidden = !body.hidden;
+      body.hidden = nextHidden;
+      button.textContent = nextHidden ? 'Expand' : 'Hide';
+      button.setAttribute('aria-expanded', String(!nextHidden));
+    });
     document.getElementById('toggleDonationFormBtn').addEventListener('click', () => {
       const body = document.getElementById('donationFormBody');
       const button = document.getElementById('toggleDonationFormBtn');
