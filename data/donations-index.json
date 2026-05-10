@@ -1,22 +1,6 @@
 {
   "donations": [
     {
-      "id": "mina-chand-singh-moz8p9xe-mpmktn",
-      "donorName": "Mina Chand Singh",
-      "amount": 1600,
-      "color": "#a16207",
-      "status": "published",
-      "adminId": "admin-mouy8t21-l51py5",
-      "adminName": "Padam Malla",
-      "address": "",
-      "profileThumb": null,
-      "profileImage": null,
-      "imageCount": 0,
-      "createdAt": "2026-05-10T03:55:18.530Z",
-      "updatedAt": "2026-05-10T03:55:18.530Z",
-      "publishedAt": "2026-05-10T03:55:18.530Z"
-    },
-    {
       "id": "mina-chand-singh-moz898wt-dmsv8g",
       "donorName": "Mina Chand Singh",
       "amount": 1600,
@@ -5617,5 +5601,5 @@
       "publishedAt": "2026-05-09T12:09:29Z"
     }
   ],
-  "updatedAt": "2026-05-10T03:55:21.223Z"
+  "updatedAt": "2026-05-10T03:55:45.331Z"
 }
