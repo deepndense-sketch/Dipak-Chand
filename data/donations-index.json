@@ -17,22 +17,6 @@
       "publishedAt": "2026-05-10T02:15:08.028Z"
     },
     {
-      "id": "mina-chand-singh-moz898wt-dmsv8g",
-      "donorName": "Mina Chand Singh",
-      "amount": 1600,
-      "color": "#0f766e",
-      "status": "published",
-      "adminId": "admin-mouy8t21-l51py5",
-      "adminName": "Padam Malla",
-      "address": "",
-      "profileThumb": null,
-      "profileImage": null,
-      "imageCount": 0,
-      "createdAt": "2026-05-10T03:42:50.717Z",
-      "updatedAt": "2026-05-10T03:42:50.717Z",
-      "publishedAt": "2026-05-10T03:42:50.717Z"
-    },
-    {
       "id": "nanu-bhatt-baij-moz54yys-jy6b6u",
       "donorName": "Nanu Bhatt Baij",
       "amount": 505,
@@ -5601,5 +5585,5 @@
       "publishedAt": "2026-05-09T12:09:29Z"
     }
   ],
-  "updatedAt": "2026-05-10T03:56:42.440Z"
+  "updatedAt": "2026-05-10T04:01:35.024Z"
 }
