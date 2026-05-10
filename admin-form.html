@@ -538,19 +538,22 @@
         if (!currentAdmin?.token) throw new Error('GitHub token is required to delete donation data.');
         const entry = (donationData.donations || []).find((item) => item.id === id);
         if (!entry) return;
-        if (!confirm(`Delete donation entry for ${entry.donorName}? This will remove it from the website data.`)) return;
+        if (!confirm(`Delete donation entry for ${entry.donorName}? This will remove it from the homepage donation database first, then remove the detail page file.`)) return;
         previousDonations = [...(donationData.donations || [])];
-        rememberHiddenDonation(id);
-        donationData.donations = previousDonations.filter((item) => item.id !== id);
-        setStatus('donationStatus', 'Deleting donation entry...', 'good');
-        renderDonations();
+        setStatus('donationStatus', `Removing ${entry.donorName} from the homepage donation database. Please keep this page open...`, 'good');
         await cms.updateJson(cms.DATA_PATHS.donationsIndex, { donations: [] }, currentAdmin.token, `Delete donation from ${entry.donorName}`, (latest) => {
           latest.donations = (latest.donations || []).filter((item) => item.id !== id);
           latest.updatedAt = new Date().toISOString();
           return latest;
         });
+        const latest = await cms.loadGithubJson(cms.DATA_PATHS.donationsIndex, currentAdmin.token);
+        if ((latest.donations || []).some((item) => item.id === id)) throw new Error('Homepage database still has this donation. Please click Delete again.');
+        setStatus('donationStatus', `Homepage database updated. Removing ${entry.donorName}'s detail page file...`, 'good');
         await cms.deleteJson(cms.donationDetailPath(id), currentAdmin.token, `Delete donation detail from ${entry.donorName}`).catch(() => null);
-        setStatus('donationStatus', 'Donation entry deleted and website data updated.', 'good');
+        rememberHiddenDonation(id);
+        donationData.donations = previousDonations.filter((item) => item.id !== id);
+        renderDonations();
+        setStatus('donationStatus', `${entry.donorName} removed from the homepage and admin list.`, 'good');
         clearForm();
       } catch (error) {
         forgetHiddenDonation(id);
