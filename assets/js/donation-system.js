@@ -312,7 +312,8 @@ function renderPublicDonationSummary(mountId = "donation-dashboard") {
     const groups = publicAdminGroups(donations, users);
     const state = {
       fundraiser: "all",
-      sort: "recent"
+      sort: "recent",
+      visibleCount: 100
     };
     const sortEntries = (entries) => {
       if (state.sort === "major") return sortDonationsByAmount(entries);
@@ -345,6 +346,7 @@ function renderPublicDonationSummary(mountId = "donation-dashboard") {
     };
     const renderFilteredView = () => {
       const entries = sortEntries(filteredEntries());
+      const visibleEntries = entries.slice(0, state.visibleCount);
       const total = entries.reduce((sum, entry) => sum + Number(entry.amount || 0), 0);
       const percent = Math.min(100, target ? (total / target) * 100 : 0);
       const remaining = Math.max(0, target - total);
@@ -357,8 +359,11 @@ function renderPublicDonationSummary(mountId = "donation-dashboard") {
       mount.querySelector("[data-public-contributors]").textContent = `${entries.length} contributor${entries.length === 1 ? "" : "s"}`;
       mount.querySelector("[data-public-filter-title]").textContent = sortLabel();
       mount.querySelector("[data-public-donation-grid]").innerHTML = entries.length
-        ? entries.map(donationCard).join("")
+        ? visibleEntries.map(donationCard).join("")
         : `<p class="empty-state">No donor data found for this fundraiser.</p>`;
+      const seeMoreButton = mount.querySelector("[data-donor-see-more]");
+      seeMoreButton.hidden = state.visibleCount >= entries.length;
+      seeMoreButton.textContent = `See ${Math.min(100, entries.length - state.visibleCount)} more`;
     };
     if (!published.length) {
       mount.innerHTML = `<div class="public-summary"><h2>Donation Updates</h2><p>No published donation entries yet.</p></div>`;
@@ -403,16 +408,25 @@ function renderPublicDonationSummary(mountId = "donation-dashboard") {
         </section>
         <div class="home-donation-grid" data-public-donation-grid>
         </div>
+        <div class="donor-see-more-row">
+          <button type="button" class="secondary" data-donor-see-more>See 100 more</button>
+        </div>
       </div>`;
     mount.querySelectorAll("[data-fundraiser-filter]").forEach((button) => {
       button.addEventListener("click", () => {
         state.fundraiser = button.dataset.fundraiserFilter;
+        state.visibleCount = 100;
         mount.querySelectorAll("[data-fundraiser-filter]").forEach((item) => item.classList.toggle("active", item === button));
         renderFilteredView();
       });
     });
     mount.querySelector("[data-donor-sort]").addEventListener("change", (event) => {
       state.sort = event.target.value;
+      state.visibleCount = 100;
+      renderFilteredView();
+    });
+    mount.querySelector("[data-donor-see-more]").addEventListener("click", () => {
+      state.visibleCount += 100;
       renderFilteredView();
     });
     renderFilteredView();

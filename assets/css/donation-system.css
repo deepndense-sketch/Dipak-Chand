@@ -616,6 +616,16 @@ body:not(.backend-body) .section {
   width: min(100%, 260px);
 }
 
+.donor-see-more-row {
+  display: flex;
+  justify-content: center;
+  margin-top: 18px;
+}
+
+.donor-see-more-row button {
+  min-width: min(100%, 220px);
+}
+
 .admin-column {
   position: relative;
   min-height: 180px;
