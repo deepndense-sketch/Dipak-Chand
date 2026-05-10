@@ -20,7 +20,17 @@
       "status": "approved",
       "createdAt": "2026-05-07T03:51:29.305Z",
       "approvedAt": "2026-05-07T03:51:29.305Z"
+    },
+    {
+      "id": "admin-moz6dsiu-s3sczy",
+      "email": "deepndense@gmail.com",
+      "username": "temp",
+      "passwordHash": "a6864eb339b0e1f6e00d75293a8840abf069a2c0fe82e6e53af6ac099793c1d5",
+      "role": "donation-admin",
+      "status": "approved",
+      "createdAt": "2026-05-10T02:50:23.526Z",
+      "approvedAt": "2026-05-10T02:50:23.526Z"
     }
   ],
-  "updatedAt": "2026-05-09T14:19:39.057Z"
+  "updatedAt": "2026-05-10T02:50:23.526Z"
 }
