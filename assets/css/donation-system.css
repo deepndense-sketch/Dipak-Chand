@@ -558,13 +558,22 @@ body:not(.backend-body) .section {
 
 .fundraiser-filter span {
   color: #315d6d;
-  font-size: 28px;
-  line-height: 1.12;
+  font-size: 18px;
+  line-height: 1.35;
+  font-weight: 500;
+}
+
+.fundraiser-filter:not(:first-child) span::before {
+  content: "•";
+  margin-right: 8px;
+  color: #176b87;
   font-weight: 850;
 }
 
 .fundraiser-filter:not(:first-child) {
   align-content: center;
+  min-height: 46px;
+  padding: 10px 12px;
 }
 
 .fundraiser-filter strong {
