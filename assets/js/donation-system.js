@@ -463,49 +463,16 @@ async function copyText(text, statusEl) {
   }
 }
 
-function showFacebookShareComposer(donorName, url = location.href) {
+function shareDonationToFacebook(donorName, url = location.href) {
   const note = thankYouNote(donorName);
-  let modal = document.getElementById("facebookSharePopup");
-  if (!modal) {
-    modal = document.createElement("div");
-    modal.id = "facebookSharePopup";
-    modal.className = "share-popup";
-    modal.innerHTML = `
-      <div class="share-popup-card" role="dialog" aria-modal="true" aria-labelledby="facebookSharePopupTitle">
-        <div class="share-popup-head">
-          <h2 id="facebookSharePopupTitle">Facebook Post Text</h2>
-          <button type="button" class="secondary share-popup-close" aria-label="Close">Close</button>
-        </div>
-        <img class="share-popup-photo" src="./DipakFBPhoto.jpg" alt="Dipak Chand" loading="lazy" decoding="async">
-        <textarea id="facebookSharePopupText" readonly></textarea>
-        <div class="detail-share-row share-popup-actions">
-          <button type="button" class="secondary" id="facebookSharePopupCopy">Copy Text</button>
-          <a class="complete-list-link facebook-share-button" id="facebookSharePopupOpen" target="_blank" rel="noopener">Open Facebook</a>
-        </div>
-        <p class="backend-help" id="facebookSharePopupStatus">Copy this text, then paste it into your Facebook post after Facebook opens.</p>
-      </div>`;
-    document.body.appendChild(modal);
-    modal.addEventListener("click", (event) => {
-      if (event.target === modal || event.target.closest(".share-popup-close")) modal.hidden = true;
-    });
-    modal.querySelector("#facebookSharePopupCopy").addEventListener("click", () => {
-      copyText(modal.querySelector("#facebookSharePopupText").value, modal.querySelector("#facebookSharePopupStatus"));
-    });
-  }
-  modal.querySelector("#facebookSharePopupText").value = note;
-  modal.querySelector("#facebookSharePopupOpen").href = facebookShareHref(url);
-  modal.querySelector("#facebookSharePopupStatus").textContent = "Copy this text, then paste it into your Facebook post after Facebook opens.";
-  modal.hidden = false;
-  const textarea = modal.querySelector("#facebookSharePopupText");
-  textarea.focus();
-  textarea.select();
-  copyText(note, modal.querySelector("#facebookSharePopupStatus"));
+  copyText(note);
+  window.open(facebookShareHref(url, note), "_blank", "noopener");
 }
 
 document.addEventListener("click", (event) => {
   const shareButton = event.target.closest("[data-donor-share]");
   if (!shareButton) return;
-  showFacebookShareComposer(shareButton.dataset.donorName, shareButton.dataset.shareUrl || location.href);
+  shareDonationToFacebook(shareButton.dataset.donorName, shareButton.dataset.shareUrl || location.href);
 });
 
 window.DipakCMS = {
@@ -542,7 +509,7 @@ window.DipakCMS = {
   renderPublicDonationSummary,
   facebookShareHref,
   renderFacebookShareLinks,
-  showFacebookShareComposer
+  shareDonationToFacebook
 };
 
 document.addEventListener("DOMContentLoaded", renderFacebookShareLinks);
