@@ -1,6 +1,22 @@
 {
   "donations": [
     {
+      "id": "krishna-chand-mp2t7l21-6q4kwx",
+      "donorName": "Krishna Chand",
+      "amount": 2000,
+      "color": "#15803d",
+      "status": "published",
+      "adminId": "admin-mouy8t21-l51py5",
+      "adminName": "Padam Malla",
+      "address": "",
+      "profileThumb": null,
+      "profileImage": null,
+      "imageCount": 0,
+      "createdAt": "2026-05-12T15:52:43.609Z",
+      "updatedAt": "2026-05-12T15:52:43.624Z",
+      "publishedAt": "2026-05-12T15:52:43.624Z"
+    },
+    {
       "id": "entry-mp2cd2om-fnhup9",
       "donorName": "गंगाराम राना",
       "amount": 1009,
@@ -6057,5 +6073,5 @@
       "publishedAt": "2026-05-09T12:09:29Z"
     }
   ],
-  "updatedAt": "2026-05-12T08:01:09.164Z"
+  "updatedAt": "2026-05-12T15:52:46.649Z"
 }
