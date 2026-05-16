@@ -6107,22 +6107,6 @@
       "publishedAt": "2026-05-09T12:09:36Z"
     },
     {
-      "id": "full-list-padam-335-ganesh-pant",
-      "donorName": "Ganesh Pant",
-      "amount": 1050,
-      "color": "#be123c",
-      "status": "published",
-      "adminId": "admin-mouy8t21-l51py5",
-      "adminName": "Padam Malla",
-      "address": "",
-      "profileThumb": null,
-      "profileImage": null,
-      "imageCount": 0,
-      "createdAt": "2026-05-09T12:09:35Z",
-      "updatedAt": "2026-05-09T12:09:35Z",
-      "publishedAt": "2026-05-09T12:09:35Z"
-    },
-    {
       "id": "full-list-padam-336-deepak-chand",
       "donorName": "Deepak Chand",
       "amount": 1000,
@@ -6187,5 +6171,5 @@
       "publishedAt": "2026-05-09T12:09:30Z"
     }
   ],
-  "updatedAt": "2026-05-16T09:20:30.342Z"
+  "updatedAt": "2026-05-16T09:20:40.629Z"
 }
