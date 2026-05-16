@@ -3691,22 +3691,6 @@
       "publishedAt": "2026-05-09T12:12:45Z"
     },
     {
-      "id": "full-list-padam-146-nab-raj-joshi",
-      "donorName": "Nab Raj Joshi",
-      "amount": 525,
-      "color": "#2563eb",
-      "status": "published",
-      "adminId": "admin-mouy8t21-l51py5",
-      "adminName": "Padam Malla",
-      "address": "",
-      "profileThumb": null,
-      "profileImage": null,
-      "imageCount": 0,
-      "createdAt": "2026-05-09T12:12:44Z",
-      "updatedAt": "2026-05-09T12:12:44Z",
-      "publishedAt": "2026-05-09T12:12:44Z"
-    },
-    {
       "id": "full-list-padam-147-hikmat-bahadur-singh",
       "donorName": "Hikmat Bahadur Singh",
       "amount": 2000,
@@ -6267,5 +6251,5 @@
       "publishedAt": "2026-05-09T12:09:29Z"
     }
   ],
-  "updatedAt": "2026-05-15T14:33:56.187Z"
+  "updatedAt": "2026-05-16T09:11:35.850Z"
 }
