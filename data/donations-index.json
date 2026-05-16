@@ -6185,23 +6185,7 @@
       "createdAt": "2026-05-09T12:09:30Z",
       "updatedAt": "2026-05-09T12:09:30Z",
       "publishedAt": "2026-05-09T12:09:30Z"
-    },
-    {
-      "id": "full-list-padam-341-nabraj-joshi",
-      "donorName": "Nabraj Joshi",
-      "amount": 555,
-      "color": "#176b87",
-      "status": "published",
-      "adminId": "admin-mouy8t21-l51py5",
-      "adminName": "Padam Malla",
-      "address": "",
-      "profileThumb": null,
-      "profileImage": null,
-      "imageCount": 0,
-      "createdAt": "2026-05-09T12:09:29Z",
-      "updatedAt": "2026-05-09T12:09:29Z",
-      "publishedAt": "2026-05-09T12:09:29Z"
     }
   ],
-  "updatedAt": "2026-05-16T09:20:18.876Z"
+  "updatedAt": "2026-05-16T09:20:30.342Z"
 }
