@@ -5723,22 +5723,6 @@
       "publishedAt": "2026-05-09T12:10:19Z"
     },
     {
-      "id": "full-list-padam-293-ashna-shrestha",
-      "donorName": "Ashna Shrestha",
-      "amount": 1071,
-      "color": "#7c3aed",
-      "status": "published",
-      "adminId": "admin-mouy8t21-l51py5",
-      "adminName": "Padam Malla",
-      "address": "",
-      "profileThumb": null,
-      "profileImage": null,
-      "imageCount": 0,
-      "createdAt": "2026-05-09T12:10:17Z",
-      "updatedAt": "2026-05-09T12:10:17Z",
-      "publishedAt": "2026-05-09T12:10:17Z"
-    },
-    {
       "id": "full-list-padam-294-ganesh-bokati",
       "donorName": "Ganesh Bokati",
       "amount": 3100,
@@ -6155,5 +6139,5 @@
       "publishedAt": "2026-05-09T12:09:30Z"
     }
   ],
-  "updatedAt": "2026-05-16T09:21:04.213Z"
+  "updatedAt": "2026-05-16T09:21:09.477Z"
 }
