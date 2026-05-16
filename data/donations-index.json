@@ -4763,22 +4763,6 @@
       "publishedAt": "2026-05-09T12:11:33Z"
     },
     {
-      "id": "full-list-padam-218-dipak-chand",
-      "donorName": "Dipak Chand",
-      "amount": 1010,
-      "color": "#15803d",
-      "status": "published",
-      "adminId": "admin-mouy8t21-l51py5",
-      "adminName": "Padam Malla",
-      "address": "",
-      "profileThumb": null,
-      "profileImage": null,
-      "imageCount": 0,
-      "createdAt": "2026-05-09T12:11:32Z",
-      "updatedAt": "2026-05-09T12:11:32Z",
-      "publishedAt": "2026-05-09T12:11:32Z"
-    },
-    {
       "id": "full-list-padam-219-khagraj-pant",
       "donorName": "Khagraj Pant",
       "amount": 2000,
@@ -6235,5 +6219,5 @@
       "publishedAt": "2026-05-09T12:09:29Z"
     }
   ],
-  "updatedAt": "2026-05-16T09:11:55.854Z"
+  "updatedAt": "2026-05-16T09:13:21.130Z"
 }
