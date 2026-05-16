@@ -3867,22 +3867,6 @@
       "publishedAt": "2026-05-09T12:12:32Z"
     },
     {
-      "id": "full-list-padam-159-samir-chand",
-      "donorName": "Samir Chand",
-      "amount": 1500,
-      "color": "#c2410c",
-      "status": "published",
-      "adminId": "admin-mouy8t21-l51py5",
-      "adminName": "Padam Malla",
-      "address": "",
-      "profileThumb": null,
-      "profileImage": null,
-      "imageCount": 0,
-      "createdAt": "2026-05-09T12:12:31Z",
-      "updatedAt": "2026-05-09T12:12:31Z",
-      "publishedAt": "2026-05-09T12:12:31Z"
-    },
-    {
       "id": "full-list-padam-160-dipendra-radhika-chand",
       "donorName": "Dipendra/Radhika Chand",
       "amount": 5100,
@@ -6251,5 +6235,5 @@
       "publishedAt": "2026-05-09T12:09:29Z"
     }
   ],
-  "updatedAt": "2026-05-16T09:11:35.850Z"
+  "updatedAt": "2026-05-16T09:11:55.854Z"
 }
