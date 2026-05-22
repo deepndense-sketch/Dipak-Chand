@@ -757,6 +757,21 @@ body:not(.backend-body) .section {
   width: min(100%, 260px);
 }
 
+.donor-toolbar-controls,
+.admin-list-controls {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(180px, 1fr));
+  gap: 12px;
+}
+
+.donor-toolbar-controls label {
+  width: 100%;
+}
+
+.admin-list-controls {
+  margin: 0 0 14px;
+}
+
 .donor-see-more-row {
   display: flex;
   justify-content: center;
@@ -1054,8 +1069,11 @@ body:not(.backend-body) .section {
     flex-direction: column;
   }
 
-  .donor-toolbar label {
+  .donor-toolbar label,
+  .donor-toolbar-controls,
+  .admin-list-controls {
     width: 100%;
+    grid-template-columns: 1fr;
   }
 
   .home-donation-grid {

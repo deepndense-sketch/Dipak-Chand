@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Donation Entry Form</title>
-  <link rel="stylesheet" href="./assets/css/donation-system.css?v=43">
+  <link rel="stylesheet" href="./assets/css/donation-system.css?v=44">
 </head>
 <body class="backend-body">
   <main class="backend-shell">
@@ -124,6 +124,20 @@
       <div class="backend-panel">
         <h2>All Entries</h2>
         <div class="metrics-grid" id="adminMetrics"></div>
+        <section class="admin-list-controls" aria-label="Donation entry filters">
+          <label>
+            Search donor name
+            <input id="donationSearch" type="search" placeholder="Type donor name">
+          </label>
+          <label>
+            Sort entries
+            <select id="donationSort">
+              <option value="latest">Latest entries</option>
+              <option value="alpha">Alphabetical order</option>
+              <option value="amount">Most amount donated</option>
+            </select>
+          </label>
+        </section>
         <div class="delete-status" id="deleteStatus" hidden></div>
         <div id="donationList" class="table-list"></div>
         <div class="action-row" id="showMoreEntriesRow" hidden>
@@ -142,7 +156,7 @@
   </main>
 
   <script src="https://unpkg.com/mammoth@1.8.0/mammoth.browser.min.js"></script>
-  <script src="./assets/js/donation-system.js?v=34"></script>
+  <script src="./assets/js/donation-system.js?v=35"></script>
   <script>
     const cms = window.DipakCMS;
     let usersData = null;
@@ -154,6 +168,8 @@
     let otherImages = [];
     let fightUpdatePhotos = [];
     let visibleEntryCount = 10;
+    let donationSearchQuery = '';
+    let donationSortMode = 'latest';
     let isSavingDonation = false;
     let importEntries = [];
     const LOCAL_PENDING_DONATIONS_KEY = 'dipakPendingDonationEntries';
@@ -719,10 +735,20 @@
     }
 
     function renderDonations() {
-      const allEntries = cms.sortDonationsNewest(donationData.donations || []);
-      const own = allEntries.filter((entry) => entry.adminId === currentAdmin.id);
+      const baseEntries = donationData.donations || [];
+      const query = donationSearchQuery.trim().toLowerCase();
+      const searchedEntries = query
+        ? baseEntries.filter((entry) => String(entry.donorName || '').toLowerCase().includes(query))
+        : baseEntries;
+      const allEntries = donationSortMode === 'alpha'
+        ? cms.sortDonationsAlphabetically(searchedEntries)
+        : donationSortMode === 'amount'
+          ? [...searchedEntries].sort((a, b) => Number(b.amount || 0) - Number(a.amount || 0))
+          : cms.sortDonationsNewest(searchedEntries);
+      const metricEntries = cms.sortDonationsNewest(baseEntries);
+      const own = metricEntries.filter((entry) => entry.adminId === currentAdmin.id);
       const publishedTotal = own.filter((entry) => entry.status === 'published').reduce((sum, entry) => sum + Number(entry.amount || 0), 0);
-      const allPublished = allEntries.filter((entry) => entry.status === 'published');
+      const allPublished = metricEntries.filter((entry) => entry.status === 'published');
       const allTotal = allPublished.reduce((sum, entry) => sum + Number(entry.amount || 0), 0);
       const listLimit = visibleEntryCount;
       const showMoreRow = document.getElementById('showMoreEntriesRow');
@@ -736,15 +762,15 @@
         <div class="metric-card"><h3>All Total</h3><div class="number">${cms.money(allTotal, siteData.currency)}</div></div>`;
       const mount = document.getElementById('donationList');
       if (!allEntries.length) {
-        mount.innerHTML = '<p class="empty-state">No donation entries yet.</p>';
+        mount.innerHTML = query ? '<p class="empty-state">No donor name found for this search.</p>' : '<p class="empty-state">No donation entries yet.</p>';
         return;
       }
       mount.innerHTML = allEntries.slice(0, listLimit).map((entry) => {
         const canManage = entry.adminId === currentAdmin.id;
         return `<article class="donation-admin-card">
-          <strong>${entry.donorName}</strong>
+          <strong>${cms.escapeHtml(entry.donorName)}</strong>
           <div>${cms.money(entry.amount, siteData.currency)}</div>
-          <div class="chip-row"><span class="chip">${entry.status}</span><span class="chip">${entry.adminName || 'Admin'}</span><span class="chip">${cms.imageCount(entry)} image(s)</span></div>
+          <div class="chip-row"><span class="chip">${cms.escapeHtml(entry.status)}</span><span class="chip">${cms.escapeHtml(entry.adminName || 'Admin')}</span><span class="chip">${cms.imageCount(entry)} image(s)</span></div>
           <div class="action-row">
             ${canManage ? `<button type="button" data-edit="${entry.id}">Edit</button>
             <button type="button" class="danger" data-delete="${entry.id}">Delete</button>` : ''}
@@ -804,6 +830,16 @@
     });
     document.getElementById('donationListFile').addEventListener('change', parseDonationListFile);
     document.getElementById('importDonationListBtn').addEventListener('click', importDonationList);
+    document.getElementById('donationSearch').addEventListener('input', (event) => {
+      donationSearchQuery = event.target.value;
+      visibleEntryCount = 10;
+      renderDonations();
+    });
+    document.getElementById('donationSort').addEventListener('change', (event) => {
+      donationSortMode = event.target.value;
+      visibleEntryCount = 10;
+      renderDonations();
+    });
     document.getElementById('showMoreEntriesBtn').addEventListener('click', () => {
       visibleEntryCount += 50;
       renderDonations();

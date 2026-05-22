@@ -318,6 +318,7 @@ function renderPublicDonationSummary(mountId = "donation-dashboard") {
     ].map((name) => name.trim()).filter(Boolean))];
     const state = {
       fundraiser: "all",
+      search: "",
       sort: "recent",
       visibleCount: 100
     };
@@ -326,9 +327,14 @@ function renderPublicDonationSummary(mountId = "donation-dashboard") {
       if (state.sort === "alpha") return sortDonationsAlphabetically(entries);
       return sortDonationsNewest(entries);
     };
-    const filteredEntries = () => state.fundraiser === "all"
-      ? published
-      : published.filter((entry) => `${entry.adminId || "unknown"}::${entry.adminName || "Unknown admin"}` === state.fundraiser);
+    const filteredEntries = () => {
+      const fundraiserEntries = state.fundraiser === "all"
+        ? published
+        : published.filter((entry) => `${entry.adminId || "unknown"}::${entry.adminName || "Unknown admin"}` === state.fundraiser);
+      const query = state.search.trim().toLowerCase();
+      if (!query) return fundraiserEntries;
+      return fundraiserEntries.filter((entry) => String(entry.donorName || "").toLowerCase().includes(query));
+    };
     const sortLabel = () => {
       if (state.sort === "major") return "Showing Donation data with major contributors at the top";
       if (state.sort === "alpha") return "Showing Donation data in alphabetical order";
@@ -366,7 +372,7 @@ function renderPublicDonationSummary(mountId = "donation-dashboard") {
       mount.querySelector("[data-public-filter-title]").textContent = sortLabel();
       mount.querySelector("[data-public-donation-grid]").innerHTML = entries.length
         ? visibleEntries.map(donationCard).join("")
-        : `<p class="empty-state">No donor data found for this fundraiser.</p>`;
+        : `<p class="empty-state">${state.search.trim() ? "No donor name found for this search." : "No donor data found for this fundraiser."}</p>`;
       const seeMoreButton = mount.querySelector("[data-donor-see-more]");
       seeMoreButton.hidden = state.visibleCount >= entries.length;
       seeMoreButton.textContent = `See ${Math.min(100, entries.length - state.visibleCount)} more`;
@@ -400,14 +406,20 @@ function renderPublicDonationSummary(mountId = "donation-dashboard") {
             <h3 data-public-filter-title>Showing Donation data with recent entries at the top</h3>
             <p>Choose how donor data is ordered.</p>
           </div>
-          <label>
-            Sort donor data
-            <select data-donor-sort>
-              <option value="recent">Recent entries at top</option>
-              <option value="major">Major contributor</option>
-              <option value="alpha">Alphabetical order</option>
-            </select>
-          </label>
+          <div class="donor-toolbar-controls">
+            <label>
+              Search donor name
+              <input data-donor-search type="search" placeholder="Type donor name">
+            </label>
+            <label>
+              Sort donor data
+              <select data-donor-sort>
+                <option value="recent">Recent entries at top</option>
+                <option value="major">Most amount donated</option>
+                <option value="alpha">Alphabetical order</option>
+              </select>
+            </label>
+          </div>
         </section>
         <div class="home-donation-grid" data-public-donation-grid>
         </div>
@@ -425,6 +437,11 @@ function renderPublicDonationSummary(mountId = "donation-dashboard") {
     });
     mount.querySelector("[data-donor-sort]").addEventListener("change", (event) => {
       state.sort = event.target.value;
+      state.visibleCount = 100;
+      renderFilteredView();
+    });
+    mount.querySelector("[data-donor-search]").addEventListener("input", (event) => {
+      state.search = event.target.value;
       state.visibleCount = 100;
       renderFilteredView();
     });
