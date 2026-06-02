@@ -1,22 +1,6 @@
 {
   "donations": [
     {
-      "id": "test-singh-mpw6ybsw-8rseqx",
-      "donorName": "Test singh",
-      "amount": 1200,
-      "color": "#c2410c",
-      "status": "published",
-      "adminId": "admin-mouy8t21-l51py5",
-      "adminName": "Padam Malla",
-      "address": "Testlali",
-      "profileThumb": null,
-      "profileImage": null,
-      "imageCount": 0,
-      "createdAt": "2026-06-02T05:22:45.440Z",
-      "updatedAt": "2026-06-02T05:22:45.440Z",
-      "publishedAt": "2026-06-02T05:22:45.440Z"
-    },
-    {
       "id": "manisha-jora-mpmnblnz-r1kau3",
       "donorName": "MANISHA JORA",
       "amount": 3000,
@@ -6281,5 +6265,5 @@
       "publishedAt": "2026-05-09T12:09:30Z"
     }
   ],
-  "updatedAt": "2026-06-02T05:22:47.988Z"
+  "updatedAt": "2026-06-02T05:23:40.488Z"
 }
